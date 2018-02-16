@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-
+DATABASES = {}
 DATABASES['default'] = dj_database_url.config()
 DATABASES['default']['CONN_MAX_AGE'] = 500
 
