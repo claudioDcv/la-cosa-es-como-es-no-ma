@@ -95,13 +95,23 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'skills_evaluation',
-        'USER': 'postgres',
-        'PASSWORD': '1234567890',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB', 'skills_evaluation'),
+        'USER': os.environ.get('USER', 'postgres'),
+        'PASSWORD': os.environ.get('PASS', '1234567890'),
+        'HOST': os.environ.get('HOST', '127.0.0.1'),
+        'PORT': os.environ.get('PORT', '5432'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'skills_evaluation',
+#         'USER': 'postgres',
+#         'PASSWORD': '1234567890',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
