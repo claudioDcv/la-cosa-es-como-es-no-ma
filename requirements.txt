@@ -5,4 +5,5 @@ Markdown==2.6.11
 psycopg2==2.7.3.2
 gunicorn==19.7.1
 django-tables2==1.19.0
+dj-database-url==0.4.1
 whitenoise==3.2
