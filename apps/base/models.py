@@ -8,7 +8,7 @@ class DescriptiveModel(models.Model):
     - implement field: name, code, description and overwrite to string method
     """
     name = models.CharField(max_length=50, verbose_name='nombre')
-    code = models.CharField(max_length=100, verbose_name='código', unique=True)
+    code = models.CharField(max_length=100, verbose_name='código', unique=True, blank=False, null=False,)
     description = models.TextField(blank=True, verbose_name='descripción')
 
     class Meta:
@@ -61,7 +61,7 @@ class Profile(SoftDeleteTSModel, DescriptiveModel):
 
 class User(AbstractUser):
 
-    email = models.EmailField(max_length=70, blank=True, null=True, unique=True)
+    email = models.EmailField(max_length=70, blank=False, null=False, unique=True)
     external_info = JSONField()
     AUTH_USER_EMAIL_UNIQUE = True
     USERNAME_FIELD = 'email'
@@ -69,6 +69,14 @@ class User(AbstractUser):
 
 
 class UserProfilesProgram(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuario')
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='usuario',
+        related_name='user_profiles_program'
+    )
     program = models.ForeignKey('core.Program', on_delete=models.CASCADE, verbose_name='programa')
     profiles = models.ManyToManyField(Profile, 'Perfiles')
+
+    class Meta:
+        unique_together = ("user", "program")

@@ -1,0 +1,32 @@
+/* .navbar-nav {
+  flex-direction: row;
+} */
+
+/* Theme */
+.custom-bg-primary {
+  background-color: #af2d2d !important;
+}
+.custom-txt-primary {
+  color: #af2d2d !important;
+}
+
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+.navbar-brand .logo {
+  max-height: 30px;
+}
+
+.login-form {
+
+}
+.login-form .logo{
+  max-width: 100%;
+}
+.login-form .description{
+  color: white;
+  font-size: 14px;
+  display: inline-block;
+  height: 100%;
+}

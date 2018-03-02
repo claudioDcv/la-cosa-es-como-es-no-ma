@@ -1,5 +1,11 @@
 import os
+import sys
 import dj_database_url
+
+IS_DEBUG = False
+if len(sys.argv) > 1:
+    IS_DEBUG = (sys.argv[1] == 'runserver')
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,7 +20,7 @@ PROJECT_DIR = BASE_DIR
 SECRET_KEY = 'pwh@p6fuw1$)-w!d6nare@@e9)e(pyalz_5%z@ltbnq)dz-)ou'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = IS_DEBUG
 
 ALLOWED_HOSTS = ['*']
 
@@ -80,9 +86,43 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config()
-DATABASES['default']['CONN_MAX_AGE'] = 500
+
+
+
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'skills_evaluation',
+        'USER': 'postgres',
+        'PASSWORD': '1234567890',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+# if IS_DEBUG:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'skills_evaluation',
+#             'USER': 'postgres',
+#             'PASSWORD': '1234567890',
+#             'HOST': '127.0.0.1',
+#             'PORT': '5432',
+#         }
+#     }
+# else:
+#     DATABASES = {}
+#     DATABASES['default'] = dj_database_url.config()
+#     DATABASES['default']['CONN_MAX_AGE'] = 500
+
+
+
+
+
+
 
 # DATABASES = {
 #     'default': {
@@ -94,16 +134,7 @@ DATABASES['default']['CONN_MAX_AGE'] = 500
 #         'PORT': os.environ.get('DB_PORT', '5432'),
 #     }
 # }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'skills_evaluation',
-#         'USER': 'postgres',
-#         'PASSWORD': '1234567890',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -146,6 +177,9 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'base.User'
 
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'home'
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/

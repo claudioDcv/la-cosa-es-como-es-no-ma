@@ -1,0 +1,9 @@
+<h2>404</h2>
+{% if user.is_authenticated %}
+Se perdio mi amigo
+<a href="{% url 'home' %}" class="card-link">
+  Home
+</a>
+{% else %}
+Usted no tiene permisos de estar aqui
+{% endif %}

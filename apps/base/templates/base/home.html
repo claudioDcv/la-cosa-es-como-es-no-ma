@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row">
+  {% for o in user.user_profiles_program.all %}
+  <div class="col-md-4 mt-2">
+    <div class="card">
+      <div class="card-header">
+        {{ o.program.name }}
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for profile in o.profiles.all %}
+          <li class="list-group-item">
+            <a href="{% url 'program-index' o.program.code profile.id %}">
+              Ingresar como {{ profile.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_tags %}
+
+{% block subheader %}
+  <div class="subnav">
+    <a class="nav-link" href="{% url 'home' %}">
+      <span class="oi" data-glyph="home"></span> Home
+    </a> {% include "subnav.html" %}
+  </div>
+{% endblock %}
+
+{% block title %}Programa{% endblock %}
+
+{% block content %}
+{% if has_profile %}
+
+<div class="row mt-4">
+  <div class="col-12">
+    <h5>Cursos</h5>
+  </div>
+  <div class="col-12">
+    {% if courses|length > 0 %}
+    <table class="table table-responsive">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <th scope="row">{{ course.id }}</th>
+          <td>{{ course.name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      No existen elementos
+    {% endif %}
+  </div>
+</div>
+
+{% else %}
+No posee permisos
+{% endif %}
+
+{% endblock %}

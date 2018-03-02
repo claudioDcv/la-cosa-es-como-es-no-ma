@@ -25,6 +25,11 @@ class UserAdmin(UserAdmin):
             ('Parametros adicionales', {'fields': ('external_info',)}),
     )
 
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('email',)}),
+        ('Parametros adicionales', {'fields': ('external_info',)}),
+    )
+
 
 
 @admin.register(Profile)
@@ -34,4 +39,4 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfilesProgram)
 class UserProfilesProgramAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('id', 'user', 'program')

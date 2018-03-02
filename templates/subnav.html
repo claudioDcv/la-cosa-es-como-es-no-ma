@@ -1,0 +1,19 @@
+{% load custom_tags %}
+
+<div class="description">
+  [{{ object.name }} / {{ current_profile.name }}]
+</div>
+<div class="menu">
+{% if  current_profile|is_profile:'admin' %}
+  {% include "subnavs/admin.html" %}
+{% endif %}
+
+{% if  current_profile|is_profile:'teacher' %}
+  {% include "subnavs/teacher.html" %}
+{% endif %}
+
+{% if  current_profile|is_profile:'student' %}
+  {% include "subnavs/student.html" %}
+{% endif %}
+
+</div>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+  <div class="row mt-4 login-form">
+    <div class="col-4 mx-auto">
+      <div class="card bg-light">
+        <h5 class="card-header custom-bg-primary">
+          <div class="row">
+            <div class="col-md-12">
+              <img class="logo" src="{% static 'custom/img/logo.png' %}" alt="">
+            </div>
+            <div class="col-md-12">
+              <div class="description">
+                FACULTAD DE ARQUITECTURA Y ARTE
+              </div>
+            </div>
+          </div>
+        </h5>
+        <div class="card-body">
+          <form action="{{ app_path }}" method="post">
+            {% csrf_token %}
+            {% form_as_bootstrap4 form=form %}
+            <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
