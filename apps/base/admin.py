@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Profile, UserProfilesProgram
+from .models import User, Profile, UserProfilesProgram, Parameter
 
 
 # admin.site.register(User, UserAdmin)
@@ -31,7 +31,6 @@ class UserAdmin(UserAdmin):
     )
 
 
-
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id',)
@@ -40,3 +39,8 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(UserProfilesProgram)
 class UserProfilesProgramAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'program')
+
+
+@admin.register(Parameter)
+class ParameterAdmin(admin.ModelAdmin):
+    list_display = ('id', 'code', 'program')

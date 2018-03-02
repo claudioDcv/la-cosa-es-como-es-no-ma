@@ -1,0 +1,27 @@
+<div class="row mt-2">
+  <div class="col-12">
+    <h5>Cursos a evaluar</h5>
+  </div>
+  <div class="col-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Progreso</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <th scope="row">{{ course.id }}</th>
+          <td>{{ course.name }}</td>
+          <td>{{ course.name }}</td>
+          <td><a href="{% url 'course-index' code profile course.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

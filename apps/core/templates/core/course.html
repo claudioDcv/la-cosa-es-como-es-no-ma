@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_tags %}
+
+{% block subheader %}
+  <div class="subnav">
+    <a class="nav-link" href="{% url 'home' %}">
+      <span class="oi" data-glyph="home"></span> Home
+    </a> {% include "subnav.html" %}
+  </div>
+{% endblock %}
+
+{% block title %}Programa{% endblock %}
+
+{% block content %}
+{% if has_profile %}
+
+<div class="row mt-2">
+  <div class="col-12">
+    <h5>Cursos a evaluar {{ object.name }}</h5>
+  </div>
+  <div class="col-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Email</th>
+          <th scope="col">Progreso</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in object.students.all %}
+        <tr>
+          <th scope="row">{{ student.id }}</th>
+          <td>{{ student.username }}</td>
+          <td>{{ student.email }}</td>
+          <td>{{ student.email }}</td>
+          <td><a href="{% url 'course-index' code profile student.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+{% else %}
+No posee permisos
+{% endif %}
+
+
+{% endblock %}

@@ -80,3 +80,13 @@ class UserProfilesProgram(models.Model):
 
     class Meta:
         unique_together = ("user", "program")
+
+
+class Parameter(SoftDeleteTSModel, DescriptiveModel):
+    program = models.ForeignKey(
+        'core.Program',
+        on_delete=models.CASCADE,
+        verbose_name='programa',
+        blank=True,
+        null=True,
+    )

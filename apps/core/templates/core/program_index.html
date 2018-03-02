@@ -16,36 +16,26 @@
 {% block content %}
 {% if has_profile %}
 
-<div class="row mt-4">
-  <div class="col-12">
-    <h5>Cursos</h5>
-  </div>
-  <div class="col-12">
-    {% if courses|length > 0 %}
-    <table class="table table-responsive">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for course in courses %}
-        <tr>
-          <th scope="row">{{ course.id }}</th>
-          <td>{{ course.name }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-      No existen elementos
+  {% if courses|length > 0 %}
+    {% if  current_profile|has_profile:'admin' %}
+      {% include "core/admin_index.html" %}
     {% endif %}
-  </div>
-</div>
+
+    {% if  current_profile|has_profile:'teacher' %}
+      {% include "core/teacher_index.html" %}
+    {% endif %}
+
+    {% if  current_profile|has_profile:'student' %}
+      {% include "core/student_index.html" %}
+    {% endif %}
+
+  {% else %}
+    No existen elementos
+  {% endif %}
 
 {% else %}
 No posee permisos
 {% endif %}
+
 
 {% endblock %}

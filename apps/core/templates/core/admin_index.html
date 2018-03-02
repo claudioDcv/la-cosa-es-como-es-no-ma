@@ -1,0 +1,23 @@
+<div class="row mt-2">
+  <div class="col-12">
+    <h5>Cursos</h5>
+  </div>
+  <div class="col-12">
+    <table class="table table-responsive">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <th scope="row">{{ course.id }}</th>
+          <td>{{ course.name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

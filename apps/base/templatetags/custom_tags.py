@@ -1,14 +1,17 @@
 import re
 from django import template
 from django.utils.safestring import mark_safe
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from apps.base.models import Profile
+from apps.base.models import Profile, Parameter
 
 register = template.Library()
 
 
-@register.filter(name='is_profile')
-def is_profile(value, arg):
+@register.filter(name='has_profile')
+def has_profile(value, arg):
+    if not value:
+        return False
     profile = arg
     current_profile = value
     current_profile_name = ''
@@ -16,8 +19,31 @@ def is_profile(value, arg):
         if prof[0] == current_profile.id:
             current_profile_name = prof[1]
     return current_profile_name == profile
-
 # {% has_profile curr=current_profile eval='admin' %}
+
+
+@register.simple_tag
+def infoparam(*args, **kwargs):
+    key = kwargs['code']
+    is_static = True if kwargs.get('static', 'no') == 'yes' else False
+    program = kwargs['program_code']
+    prefix = getattr(kwargs, 'prefix', '')
+    text = getattr(kwargs, 'default_text', '--')
+    try:
+        if program:
+            text = Parameter.objects.get(program__code=program, code=key).description
+        else:
+            text = Parameter.objects.get(code=key).description
+    except Exception as e:
+        if is_static:
+            return static(prefix + text)
+        return prefix + text
+    if is_static:
+        return static(prefix + text)
+    return prefix + text
+
+
+
 @register.simple_tag
 def has_profile(*args, **kwargs):
     profile = kwargs['eval']

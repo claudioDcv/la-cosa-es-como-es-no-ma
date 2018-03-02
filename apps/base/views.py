@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.base.models import Profile
+from apps.core.models import Program
 
 
 def get_context_current_profile(context, _self):
@@ -13,7 +14,7 @@ def get_context_current_profile(context, _self):
         if context['current_profile']:
             _self.request.user.user_profiles_program.get(
                 profiles=context['current_profile'].id,
-                program=_self.get_object(),
+                program=Program.objects.get(code=context['code']),
             )
             context['has_profile'] = True
     except Profile.DoesNotExist as e:
