@@ -104,7 +104,10 @@ def student_list_with_indicator(pk):
             'indicator_evaluated': (len(indicator_list) * 100) / len(total_indicators),
         })
 
-    total_half_percent = total_half_percent / students_with_evaluation
+    if students_with_evaluation is not 0:
+        total_half_percent = total_half_percent / students_with_evaluation
+    else:
+        total_half_percent = 0
     context['total_half_percent'] = total_half_percent
     context['total_indicators'] = len(total_indicators)
     context['students_with_indicator'] = students_with_indicator

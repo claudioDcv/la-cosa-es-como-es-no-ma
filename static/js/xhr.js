@@ -138,3 +138,24 @@ window.XHRUpdate = function(opts) {
 	}
 	xhr.send(json);
 };
+
+window.XHRDelete = function(opts) {
+	// Update a user
+	var url = opts.url;
+	var data = opts.data;
+	var xhr = new XMLHttpRequest();
+	xhr.open("DELETE", url + (data.id || data.pk) + '/', true);
+	xhr.setRequestHeader('X-CSRFToken', data.csrfmiddlewaretoken);
+	xhr.onload = function () {
+		var model = { id: (data.id || data.pk) };
+		if (xhr.responseText) {
+			model = JSON.parse(xhr.responseText);
+		}
+		if (xhr.readyState == 4 && xhr.status == "204") {
+			opts.success(model)
+		} else {
+			opts.error(model);
+		}
+	}
+	xhr.send(null);
+};

@@ -94,16 +94,16 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'skills_evaluation',
-#         'USER': 'postgres',
-#         'PASSWORD': '1234567890',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'skills_evaluation',
+        'USER': 'postgres',
+        'PASSWORD': '1234567890',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
 # if IS_DEBUG:
 #     DATABASES = {
 #         'default': {
@@ -116,9 +116,9 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 #         }
 #     }
 # else:
-DATABASES = {}
-DATABASES['default'] = dj_database_url.config()
-DATABASES['default']['CONN_MAX_AGE'] = 500
+#     DATABASES = {}
+#     DATABASES['default'] = dj_database_url.config()
+#     DATABASES['default']['CONN_MAX_AGE'] = 500
 
 
 
