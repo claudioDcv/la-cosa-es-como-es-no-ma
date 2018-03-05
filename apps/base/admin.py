@@ -43,4 +43,4 @@ class UserProfilesProgramAdmin(admin.ModelAdmin):
 
 @admin.register(Parameter)
 class ParameterAdmin(admin.ModelAdmin):
-    list_display = ('id', 'code', 'program')
+    list_display = ('id', 'code', 'value', 'program')

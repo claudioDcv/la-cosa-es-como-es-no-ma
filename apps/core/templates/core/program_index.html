@@ -5,16 +5,21 @@
 
 {% block subheader %}
   <div class="subnav">
-    <a class="nav-link" href="{% url 'home' %}">
-      <span class="oi" data-glyph="home"></span> Home
-    </a> {% include "subnav.html" %}
+    {% include "subnav.html" %}
   </div>
 {% endblock %}
 
-{% block title %}Programa{% endblock %}
+{% block title %}Programa ({{ program.name }}){% endblock %}
 
 {% block content %}
 {% if has_profile %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><span class="oi" data-glyph="home"></span> Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Programa ({{ program.name }})</li>
+  </ol>
+</nav>
 
   {% if courses|length > 0 %}
     {% if  current_profile|has_profile:'admin' %}

@@ -18,17 +18,17 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE,)
 
 
-class FinalNoteEvaluation(SoftDeleteTSModel):
+class FinalScoreEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher')
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='student')
+    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='note_evaluator')
+    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='note_evaluated')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,)
 
 
-class TempNoteEvaluation(SoftDeleteTSModel):
+class TempScoreEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
     final_note_evaluation = models.ForeignKey(
-        FinalNoteEvaluation,
+        FinalScoreEvaluation,
         on_delete=models.CASCADE,
     )
 
@@ -39,14 +39,18 @@ class FinalIndicatorEvaluation(SoftDeleteTSModel):
     fedback = models.TextField()
     fedback_score = models.FloatField()
 
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eval_teacher')
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eval_student')
+    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluator')
+    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evalueted')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,)
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE,)
+
+    class Meta:
+        unique_together = (('indicator', 'course', 'evaluated'),)
 
 
 class TempFinalIndicatorEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
-    final_note_evaluation = models.ForeignKey(
-        FinalNoteEvaluation,
+    final_indicator_evaluation = models.ForeignKey(
+        FinalIndicatorEvaluation,
         on_delete=models.CASCADE,
     )

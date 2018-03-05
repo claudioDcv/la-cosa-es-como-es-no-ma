@@ -6,7 +6,8 @@ from django.http import Http404
 
 from apps.core.models import Program
 from apps.term.models import Course
-from apps.base.models import Profile
+from apps.base.models import Profile, User
+from apps.base.helpers import get_score, student_list_with_indicator, evaluated_with_indicator
 
 
 def has_profile(current_profile, profile):
@@ -38,6 +39,7 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
+
         context['program'] = Program.objects.get(code=self.kwargs['code'])
         user = self.request.user
 
@@ -64,8 +66,32 @@ class CourseView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
+
+        context = get_context_current_profile(context, self)
+
+        context['score'] = get_score()
         context['program'] = Program.objects.get(code=self.kwargs['code'])
-        user = self.request.user
+
+        students = student_list_with_indicator(self.kwargs['pk'])
+        context['total_half_percent'] = students['total_half_percent']
+        context['total_indicators'] = students['total_indicators']
+        context['students_with_indicator'] = students['students_with_indicator']
+
+        return context
+
+
+class EvaluatedIndexView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "core/evaluated_index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['code'] = self.kwargs['code']
+        context['profile'] = self.kwargs['profile']
+        context['program'] = Program.objects.get(code=self.kwargs['code'])
+        context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+        context['score'] = get_score()
+        context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
 
         context = get_context_current_profile(context, self)
 

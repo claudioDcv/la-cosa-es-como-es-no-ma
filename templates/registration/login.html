@@ -15,11 +15,11 @@
         <h5 class="card-header custom-bg-primary">
           <div class="row">
             <div class="col-md-12">
-              <img class="logo" src="{% infoparam program_code='' code='url_login_logo' static='yes' %}" alt="">
+              <img class="logo" src="{% get_param program_code='' code='url_login_logo' static='yes' %}" alt="">
             </div>
             <div class="col-md-12">
               <div class="description">
-                {% infoparam program_code='' code='site_description' %}
+                {% get_param program_code='' code='site_description' %}
               </div>
             </div>
           </div>
@@ -29,7 +29,7 @@
             {% csrf_token %}
             {% form_as_bootstrap4 form=form %}
             <button class="btn btn-primary" type="submit">
-              {% infoparam program_code='' code='txt_login' default_text='Login' %}
+              {% get_param program_code='' code='txt_login' default_text='Login' %}
             </button>
           </form>
         </div>

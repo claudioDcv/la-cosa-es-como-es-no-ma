@@ -82,7 +82,10 @@ class UserProfilesProgram(models.Model):
         unique_together = ("user", "program")
 
 
-class Parameter(SoftDeleteTSModel, DescriptiveModel):
+class Parameter(SoftDeleteTSModel, models.Model):
+    name = models.CharField(max_length=50, verbose_name='nombre')
+    code = models.CharField(max_length=100, verbose_name='código', blank=False, null=False,)
+    value = models.TextField(blank=True, verbose_name='valor')
     program = models.ForeignKey(
         'core.Program',
         on_delete=models.CASCADE,
@@ -90,3 +93,12 @@ class Parameter(SoftDeleteTSModel, DescriptiveModel):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        abstract = True
+
+    def __str__ (self):
+        return '{0} {1}'.format(self.name, self.code)
+
+    class Meta:
+        unique_together = (('code', 'program'),)

@@ -23,7 +23,7 @@ def has_profile(value, arg):
 
 
 @register.simple_tag
-def infoparam(*args, **kwargs):
+def get_param(*args, **kwargs):
     key = kwargs['code']
     is_static = True if kwargs.get('static', 'no') == 'yes' else False
     program = kwargs['program_code']
@@ -31,9 +31,9 @@ def infoparam(*args, **kwargs):
     text = getattr(kwargs, 'default_text', '--')
     try:
         if program:
-            text = Parameter.objects.get(program__code=program, code=key).description
+            text = Parameter.objects.get(program__code=program, code=key).value
         else:
-            text = Parameter.objects.get(code=key).description
+            text = Parameter.objects.get(code=key).value
     except Exception as e:
         if is_static:
             return static(prefix + text)
@@ -42,17 +42,6 @@ def infoparam(*args, **kwargs):
         return static(prefix + text)
     return prefix + text
 
-
-
-@register.simple_tag
-def has_profile(*args, **kwargs):
-    profile = kwargs['eval']
-    current_profile = kwargs['curr']
-    current_profile_name = ''
-    for prof in current_profile.ROLE_CHOICES:
-        if prof[0] == current_profile.id:
-            current_profile_name = prof[1]
-    return current_profile_name == profile
 
 @register.simple_tag
 def form_as_bootstrap4(*args, **kwargs):

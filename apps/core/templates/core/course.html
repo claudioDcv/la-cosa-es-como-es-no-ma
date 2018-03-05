@@ -1,48 +1,82 @@
 {% extends 'base.html' %}
 
+{% load l10n %}
 {% load static %}
 {% load custom_tags %}
 
 {% block subheader %}
   <div class="subnav">
-    <a class="nav-link" href="{% url 'home' %}">
-      <span class="oi" data-glyph="home"></span> Home
-    </a> {% include "subnav.html" %}
+    {% include "subnav.html" %}
   </div>
 {% endblock %}
 
-{% block title %}Programa{% endblock %}
+{% block title %}Curso ({{ course.name }}){% endblock %}
 
 {% block content %}
 {% if has_profile %}
 
-<div class="row mt-2">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><span class="oi" data-glyph="home"></span> Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Curso ({{ course.name }})</li>
+  </ol>
+</nav>
+
+<div class="row">
   <div class="col-12">
-    <h5>Cursos a evaluar {{ object.name }}</h5>
+
+    <div class="card mb-4 bg-secondary">
+      <h5 class="card-header text-white">Curso: {{ object.name }}</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Logro: {{ total_half_percent }}%</li>
+        <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
+        <li class="list-group-item">
+          Valores:
+            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
+              {{ sc }}
+        {% endfor %}]</li>
+      </ul>
+    </div>
   </div>
   <div class="col-12">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Email</th>
-          <th scope="col">Progreso</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in object.students.all %}
-        <tr>
-          <th scope="row">{{ student.id }}</th>
-          <td>{{ student.username }}</td>
-          <td>{{ student.email }}</td>
-          <td>{{ student.email }}</td>
-          <td><a href="{% url 'course-index' code profile student.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <h6>Listado de Estudiantes</h6>
+  </div>
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th>Indicadores Evaluados</th>
+            <th scope="col">Logro</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students_with_indicator %}
+          <tr>
+            <th scope="row">{{ student.user.id }}</th>
+            <td>{{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.username }})</td>
+            <td>{{ student.user.email }}</td>
+            <td>
+              <div class="progress" style="height:20px">
+                <div class="progress-bar" role="progressbar" style="width: {{ student.indicator_evaluated|unlocalize }}%;height:20px" aria-valuenow="{{ student.indicator_evaluated|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.indicator_evaluated }}%</div>
+              </div>
+            </td>
+            <td>
+              <div class="progress" style="height:20px">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ student.half_percent|unlocalize }}%;height:20px" aria-valuenow="{{ student.half_percent|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.str_half_percent }}%</div>
+              </div>
+            </td>
+            <td><a href="{% url 'evaluated-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
