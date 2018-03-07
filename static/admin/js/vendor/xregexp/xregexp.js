@@ -1803,11 +1803,11 @@ XRegExp = XRegExp || (function (undef) {
         InArabic_Presentation_Forms_A: "FB50-FDFF",
         InVariation_Selectors: "FE00-FE0F",
         InVertical_Forms: "FE10-FE1F",
-        InCombining_Half_Marks: "FE20-FE2F",
+        InCombining_half_Marks: "FE20-FE2F",
         InCJK_Compatibility_Forms: "FE30-FE4F",
         InSmall_Form_Variants: "FE50-FE6F",
         InArabic_Presentation_Forms_B: "FE70-FEFF",
-        InHalfwidth_and_Fullwidth_Forms: "FF00-FFEF",
+        Inhalfwidth_and_Fullwidth_Forms: "FF00-FFEF",
         InSpecials: "FFF0-FFFF"
     });
 

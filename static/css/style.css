@@ -1,3 +1,6 @@
+html, body {
+  background: #f7f7f7;
+}
 .subnav {
   background: #f4f4f4;
   padding: 5px 15px;
@@ -85,4 +88,53 @@ body {
 
 .readonly {
   pointer-events: none;
+}
+
+/* Timeline */
+.timeline {
+  padding-left: 20px;
+  border-left: solid 2px #55a746;
+}
+
+.timeline .card {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.timeline .card::before {
+  display: block;
+  position: absolute;
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: #d8d8d8;
+  transform: rotate(45deg);
+  top: 13px;
+  left: -29px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: solid 2px #55a746;
+}
+
+.timeline .arrow-left {
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #dfdfdf;
+  position: absolute;
+  top: 13px;
+  left: -8px;
+}
+
+.timeline .card .arrow-left::after {
+  display: block;
+  position: absolute;
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  top: -7px;
+  left: 4px;
 }

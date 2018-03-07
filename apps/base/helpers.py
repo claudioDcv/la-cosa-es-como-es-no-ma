@@ -32,13 +32,14 @@ def get_score ():
 
 
 def evaluated_with_indicator(course_id, evaluated):
+    order_by = '-id'
     course = Course.objects.get(pk=course_id)
     total_indicators = course.survey.indicator.all()
 
-    indicator_list = FinalIndicatorEvaluation.objects.filter(course=course, evaluated=evaluated).order_by('-id').all()
+    indicator_list = FinalIndicatorEvaluation.objects.filter(course=course, evaluated=evaluated).order_by(order_by).all()
     indicator_whitout_evaluated = course.survey.indicator.exclude(
         pk__in=[x.indicator_id for x in indicator_list],
-    ).order_by('-id')
+    ).order_by(order_by)
 
     total_achievement = 0
     total_half_percent = 0

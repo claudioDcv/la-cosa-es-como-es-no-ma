@@ -34,7 +34,7 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'custom/css/theme.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'iconic/css/open-iconic.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'fontawesome-free-5.0.8/web-fonts-with-css/css/fontawesome-all.min.css' %}" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
@@ -49,7 +49,7 @@
       {% if user.is_authenticated %}
       <div class="subnav">
         <span class="nav-link">
-          <span class="oi" data-glyph="home"></span> Home
+          <i class="fas fa-home"></i> Home
         </span>
       </div>
       {% endif %}
@@ -75,7 +75,7 @@
     <script src="{% static 'js/serialize.js' %}" charset="utf-8"></script>
     <script src="{% static 'js/functions.js' %}" charset="utf-8"></script>
     <footer class="footer">
-      <div class="container">
+      <div class="container-fluid text-center">
         <span class="text-muted">{% get_param program_code='' code='txt_footer' %}</span>
       </div>
     </footer>

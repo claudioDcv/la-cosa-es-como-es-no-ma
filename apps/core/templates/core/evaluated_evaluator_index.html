@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% load l10n %}
+{% load static %}
+{% load custom_tags %}
+
+{% block subheader %}
+  <div class="subnav">
+  {% include "subnav.html" %}
+  </div>
+{% endblock %}
+
+{% block title %}Evaluado ({{ object.first_name }} {{ object.last_name }}){% endblock %}
+
+{% block content %}
+{% if has_profile %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">Curso ({{ course.name }})</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Evaluado ({{ object.first_name }} {{ object.last_name }})</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <h5 class="card-header">Evaluado: {{ object.first_name }} {{ object.last_name }}</h5>
+      <ul class="list-group list-group-flush">
+
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-md-6">
+              Indicadores Evaluados (totales {{ evaluated.total_indicators }})
+              <div class="progress" style="height:20px">
+                <div
+                  class="progress-bar"
+                  role="progressbar"
+                  style="width: {{ evaluated.indicator_evaluated|unlocalize }}%;height:20px"
+                  aria-valuenow="{{ evaluated.indicator_evaluated|unlocalize }}"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                > {{ evaluated.indicator_evaluated }}%</div>
+              </div>
+            </div>
+              <div class="col-md-6">
+                Nivel de logro
+                  <div class="progress" style="height:20px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: {{ evaluated.half_percent|unlocalize }}%;height:20px"
+                      aria-valuenow="{{ evaluated.half_percent|unlocalize }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    > {{ evaluated.str_half_percent }}%
+                  </div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="list-group-item">Indicadores: {{ evaluated.total_indicators }}</li>
+        <li class="list-group-item">
+          Valores:
+            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
+              {{ sc }}
+        {% endfor %}]</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header">INDICADORES</h5>
+      <div class="">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Nivel de Logro</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for indicator in evaluated.indicator_list %}
+              <tr id="indicator-{{ indicator.indicator_id }}">
+                <td style="max-width: 300px"><strong>{{ indicator.indicator.name }}</strong>
+                  <br />{{ indicator.indicator.description }}
+                </td>
+                <td>
+                  <form
+                    class="finalindicatorevaluation-list-update d-inline-block"
+                    style="width:100%"
+                    action="{% url 'finalindicatorevaluation-list' %}"
+                    method="post"
+                  >
+                    {% csrf_token %}
+                    <input type="hidden" data-type="int" name="pk" value="{{ indicator.id }}">
+                    <input type="hidden" data-type="int" name="indicator" value="{{ indicator.indicator.id }}">
+                    <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+                    <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+                    <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+
+                    <div class="form-group">
+                      <div class="">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          {% for sc in score.values %}
+                          <label class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
+                            <input type="radio" data-type="float" {% if sc == indicator.value %}checked{% endif %} name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
+                          </label>
+                          {% endfor %}
+                        </div>
+                        <button type="submit" class="btn-sm btn btn-success">
+                          <i class="fas fa-save"></i>
+                        </button>
+                        <button
+                          data-pk="{{ indicator.id }}"
+                          data-url="{% url 'finalindicatorevaluation-list' %}"
+                          data-csrfmiddlewaretoken="{{ csrf_token }}"
+                          class="btn-sm btn btn-link finalindicatorevaluation-list-delete"
+                        /><i class="fas fa-trash-alt text-danger"></i></button>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+              {% for indicator in evaluated.indicator_whitout_evaluated %}
+              <tr id="indicator-{{ indicator.id }}">
+                <td style="max-width: 300px"><strong>{{ indicator.name }} (Pendiente de Evaluación)</strong><br />
+                  {{ indicator.description }}
+                </td>
+                <td>
+                  <form class="finalindicatorevaluation-list-create" action="{% url 'finalindicatorevaluation-list' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
+                    <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+                    <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+                    <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+
+                    <div class="form-group">
+                      <div class="">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          {% for sc in score.values %}
+                          <label class="btn btn-outline-success btn-sm">
+                            <input data-type="float" type="radio" name="value" id="option{{ sc }}" required autocomplete="off" value="{{ sc }}"> {{sc}}
+                          </label>
+                          {% endfor %}
+                        </div>
+                        <button type="submit" class="btn-sm btn btn-success">
+                          <i class="fas fa-save"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header text-dark bg-light">
+        FEDBACK
+      </h5>
+      <div class="card-body">
+        <div class="timeline">
+          {% for fedback in fedback_list %}
+          <form
+            method="post"
+            class="card fedback-list-update"
+            action="{% url 'fedback-list' %}"
+          >
+            <span class="arrow-left"></span>
+            <div class="card-body">
+              <h6 class="card-title">{{ fedback.evaluator.first_name }} {{ fedback.evaluator.last_name }} ({{ fedback.evaluator.email }})</h6>
+              {% csrf_token %}
+              <input type="hidden" data-type="int" name="pk" value="{{ fedback.id }}">
+              <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+              <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+              <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+              <textarea
+                class="form-control"
+                name="message"
+                required
+                placeholder="Ingrese comentario"
+              >{{ fedback.message }}</textarea>
+            </div>
+            <small class="card-footer text-muted">
+              <div class="d-inline-block">
+                <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar</button>
+                <button
+                  data-pk="{{ fedback.id }}"
+                  data-url="{% url 'fedback-list' %}"
+                  data-csrfmiddlewaretoken="{{ csrf_token }}"
+                  class="btn-sm btn btn-link fedback-list-delete"
+                /><i class="fas fa-trash-alt text-danger"></i></button>
+              </div>
+              <div class="d-inline-block">
+                {{ fedback.updated_ts|date:'Y-m-d H:i' }}
+              </div>
+            </small>
+          </form>
+          {% endfor %}
+          <form
+            method="post"
+            class="card fedback-list-create"
+            action="{% url 'fedback-list' %}"
+          >
+            <span class="arrow-left"></span>
+            <div class="card-body">
+              <h6 class="card-title"><small>Nuevo</small><br>{{ request.user.first_name }} {{ request.user.last_name }} ({{ request.user.email }})</h6>
+              {% csrf_token %}
+              <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+              <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+              <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+              <textarea
+                class="form-control"
+                name="message"
+                required
+                placeholder="Ingrese comentario"
+              >{{ fedback.message }}</textarea>
+            </div>
+            <small class="card-footer text-muted">
+              <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Crear</button>
+            </small>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+No posee permisos
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  createFinalIndicatorEvaluation();
+  createFedback();
+</script>
+{% endblock %}

@@ -9,13 +9,37 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
 
     checksum = models.CharField(blank=True, max_length=100)
 
-    teachers = models.ManyToManyField(User, related_name='teachers')
+    teachers = models.ManyToManyField(
+        User,
+        related_name='teachers',
+        # limit_choices_to={
+        #     'id__in':User._product_list,
+        # },
+    )
     students = models.ManyToManyField(User, related_name='students')
 
     period = models.ForeignKey(Period, on_delete=models.CASCADE,)
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE,)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE,)
+
+
+class Fedback(SoftDeleteTSModel):
+    score = models.FloatField(blank=True, null=True)
+    message = models.TextField(max_length=500, verbose_name='Mensaje')
+    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fedback_evaluator')
+    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fedback_evaluated')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,)
+
+
+class TempFedbackMessage(SoftDeleteTSModel):
+    message = models.TextField(max_length=500, verbose_name='Mensaje')
+    fedback = models.ForeignKey(Fedback, on_delete=models.CASCADE,)
+
+
+class TempFedbackScore(SoftDeleteTSModel):
+    score = models.FloatField(blank=True, null=True)
+    fedback = models.ForeignKey(Fedback, on_delete=models.CASCADE,)
 
 
 class FinalScoreEvaluation(SoftDeleteTSModel):
@@ -35,9 +59,6 @@ class TempScoreEvaluation(SoftDeleteTSModel):
 
 class FinalIndicatorEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
-
-    fedback = models.TextField()
-    fedback_score = models.FloatField()
 
     evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluator')
     evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evalueted')

@@ -1,20 +1,34 @@
 from django.conf.urls import url, include
-from apps.term.models import FinalIndicatorEvaluation
+from apps.term.models import FinalIndicatorEvaluation, Fedback
 from rest_framework import routers, serializers, viewsets
 
-# Serializers define the API representation.
+
+class FedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fedback
+        fields = '__all__'
+
+
+class FedbackViewSet(viewsets.ModelViewSet):
+    queryset = Fedback.objects.all()
+    serializer_class = FedbackSerializer
+
+
+router = routers.DefaultRouter()
+router.register(r'fedback', FedbackViewSet)
+
+
 class FinalIndicatorEvaluationSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinalIndicatorEvaluation
         fields = '__all__'
 
-# ViewSets define the view behavior.
+
 class FinalIndicatorEvaluationViewSet(viewsets.ModelViewSet):
     queryset = FinalIndicatorEvaluation.objects.all()
     serializer_class = FinalIndicatorEvaluationSerializer
 
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
+
 router.register(r'final-indicator-evaluation', FinalIndicatorEvaluationViewSet)
 
 # Wire up our API using automatic URL routing.

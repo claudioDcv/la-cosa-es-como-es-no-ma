@@ -17,7 +17,7 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}"><span class="oi" data-glyph="home"></span> Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
     <li class="breadcrumb-item active" aria-current="page">Curso ({{ course.name }})</li>
   </ol>
@@ -25,9 +25,8 @@
 
 <div class="row">
   <div class="col-12">
-
-    <div class="card mb-4 bg-secondary">
-      <h5 class="card-header text-white">Curso: {{ object.name }}</h5>
+    <div class="card mb-4">
+      <h5 class="card-header">Curso: {{ object.name }}</h5>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Logro: {{ total_half_percent }}%</li>
         <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
@@ -44,7 +43,7 @@
   </div>
   <div class="col-12">
     <div class="table-responsive">
-      <table class="table table-bordered table-hover">
+      <table class="table table-bordered table-hover table-sm">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -71,7 +70,7 @@
                 <div class="progress-bar bg-success" role="progressbar" style="width: {{ student.half_percent|unlocalize }}%;height:20px" aria-valuenow="{{ student.half_percent|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.str_half_percent }}%</div>
               </div>
             </td>
-            <td><a href="{% url 'evaluated-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
+            <td><a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
           </tr>
           {% endfor %}
         </tbody>

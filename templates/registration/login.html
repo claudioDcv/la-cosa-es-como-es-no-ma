@@ -29,7 +29,7 @@
             {% csrf_token %}
             {% form_as_bootstrap4 form=form %}
             <button class="btn btn-primary" type="submit">
-              {% get_param program_code='' code='txt_login' default_text='Login' %}
+              <i class="fas fa-sign-in-alt"></i> {% get_param program_code='' code='txt_login' default_text='Login' %}
             </button>
           </form>
         </div>

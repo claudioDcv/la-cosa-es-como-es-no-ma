@@ -5,7 +5,7 @@ from apps.base.views import get_context_current_profile
 from django.http import Http404
 
 from apps.core.models import Program
-from apps.term.models import Course
+from apps.term.models import Course, Fedback
 from apps.base.models import Profile, User
 from apps.base.helpers import get_score, student_list_with_indicator, evaluated_with_indicator
 
@@ -80,6 +80,28 @@ class CourseView(LoginRequiredMixin, DetailView):
         return context
 
 
+class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "core/evaluated_evaluator_index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['code'] = self.kwargs['code']
+        context['profile'] = self.kwargs['profile']
+        context['program'] = Program.objects.get(code=self.kwargs['code'])
+        context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+        context['score'] = get_score()
+        context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
+        context['fedback_list'] = Fedback.objects.filter(
+            course=context['course'],
+            evaluated=self.get_object().pk,
+        ).all()
+
+        context = get_context_current_profile(context, self)
+
+        return context
+
+
 class EvaluatedIndexView(LoginRequiredMixin, DetailView):
     model = User
     template_name = "core/evaluated_index.html"
@@ -92,6 +114,10 @@ class EvaluatedIndexView(LoginRequiredMixin, DetailView):
         context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
         context['score'] = get_score()
         context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
+        context['fedback_list'] = Fedback.objects.filter(
+            course=context['course'],
+            evaluated=self.request.user.id,
+        ).all()
 
         context = get_context_current_profile(context, self)
 

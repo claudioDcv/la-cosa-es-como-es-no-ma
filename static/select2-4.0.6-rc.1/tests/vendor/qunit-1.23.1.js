@@ -3529,7 +3529,7 @@ QUnit.diff = ( function() {
 		}
 
 		// Check to see if the problem can be split in two.
-		hm = this.diffHalfMatch( text1, text2 );
+		hm = this.diffhalfMatch( text1, text2 );
 		if ( hm ) {
 
 			// A half-match was found, sort out the return data.
@@ -3567,7 +3567,7 @@ QUnit.diff = ( function() {
 	 *     text2 and the common middle.  Or null if there was no match.
 	 * @private
 	 */
-	DiffMatchPatch.prototype.diffHalfMatch = function( text1, text2 ) {
+	DiffMatchPatch.prototype.diffhalfMatch = function( text1, text2 ) {
 		var longtext, shorttext, dmp,
 			text1A, text2B, text2A, text1B, midCommon,
 			hm1, hm2, hm;
@@ -3591,7 +3591,7 @@ QUnit.diff = ( function() {
 		 *     of shorttext and the common middle.  Or null if there was no match.
 		 * @private
 		 */
-		function diffHalfMatchI( longtext, shorttext, i ) {
+		function diffhalfMatchI( longtext, shorttext, i ) {
 			var seed, j, bestCommon, prefixLength, suffixLength,
 				bestLongtextA, bestLongtextB, bestShorttextA, bestShorttextB;
 
@@ -3623,11 +3623,11 @@ QUnit.diff = ( function() {
 		}
 
 		// First check if the second quarter is the seed for a half-match.
-		hm1 = diffHalfMatchI( longtext, shorttext,
+		hm1 = diffhalfMatchI( longtext, shorttext,
 			Math.ceil( longtext.length / 4 ) );
 
 		// Check again based on the third quarter.
-		hm2 = diffHalfMatchI( longtext, shorttext,
+		hm2 = diffhalfMatchI( longtext, shorttext,
 			Math.ceil( longtext.length / 2 ) );
 		if ( !hm1 && !hm2 ) {
 			return null;

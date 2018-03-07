@@ -60,6 +60,23 @@ def form_as_bootstrap4(*args, **kwargs):
     return mark_safe(out)
 
 
+@register.simple_tag
+def form_as_semantic_ui(*args, **kwargs):
+    form = kwargs['form']
+    ctx = form.as_p()
+    out = re.sub(r'(\<input)|(\<textarea)|(\<select)', r'\1\2\3 class="form-control"', ctx)
+
+    names = re.findall(r'name="([a-zA-Z0-9\-\_]+)"', ctx)
+
+    for v in names:
+        if v in form.errors:
+            out = re.sub(r'name="{0}"'.format(v), r'name="{0}" data-error'.format(v), out)
+
+    out = re.sub(r'(\<p)', r'<div class="field"', out)
+    out = re.sub(r'(\</p>)', r'</div>', out)
+    return mark_safe(out)
+
+
 # @register.simple_tag(takes_context=True)
 # def current_time(context, *args, **kwargs):
 #     request = context['request']

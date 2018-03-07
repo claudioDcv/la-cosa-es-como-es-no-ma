@@ -67,6 +67,21 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'external_info']
 
+    # @classmethod
+    # def _product_list(cls):
+    #     """
+    #     return a list containing the one product_id contained in the request URL,
+    #     or a query containing all valid product_ids if not id present in URL
+    #
+    #     used to limit the choice of foreign key object to those related to the current product
+    #     """
+    #     import ipdb; ipdb.set_trace()
+    #     id = threadlocals.get_current_product()
+    #     if id is not None:
+    #         return [id]
+    #     else:
+    #         return self.objects.all().values('pk').query
+
 
 class UserProfilesProgram(models.Model):
     user = models.ForeignKey(

@@ -17,44 +17,59 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}"><span class="oi" data-glyph="home"></span> Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">Curso ({{ course.name }})</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Evaluado ({{ object.first_name }} {{ object.last_name }})</li>
+    <li class="breadcrumb-item active" aria-current="page">Curso ({{ course.name }})</li>
   </ol>
 </nav>
 
 <div class="row">
   <div class="col-12">
-    <div class="card mb-4 bg-secondary">
-      <h5 class="card-header text-white">Evaluado: {{ object.first_name }} {{ object.last_name }}</h5>
+    <div class="card mb-4">
+      <h5 class="card-header text-dark bg-light">CURSO ({{ course.name }})</h5>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Indicadores Evaluados:
-          <div class="progress" style="height:20px">
-            <div
-              class="progress-bar"
-              role="progressbar"
-              style="width: {{ evaluated.indicator_evaluated|unlocalize }}%;height:20px"
-              aria-valuenow="{{ evaluated.indicator_evaluated|unlocalize }}"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            > {{ evaluated.indicator_evaluated }}%</div>
-        </div></li>
-        <li class="list-group-item">Logro:
-          <div class="progress" style="height:20px">
-            <div
-              class="progress-bar bg-success"
-              role="progressbar"
-              style="width: {{ evaluated.half_percent|unlocalize }}%;height:20px"
-              aria-valuenow="{{ evaluated.half_percent|unlocalize }}"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            > {{ evaluated.str_half_percent }}%</div>
-        </li>
-        <li class="list-group-item">Indicadores: {{ evaluated.total_indicators }}</li>
         <li class="list-group-item">
-          Valores:
-            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
+          <div class="row">
+            <div class="col-md-6">
+              Indicadores Evaluados (totales {{ evaluated.total_indicators }})
+                <div class="progress" style="height:20px">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ evaluated.indicator_evaluated|unlocalize }}%;height:20px"
+                    aria-valuenow="{{ evaluated.indicator_evaluated|unlocalize }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  > {{ evaluated.indicator_evaluated }}%
+                </div>
+              </div>
+            </div>
+              <div class="col-md-6">
+                Nivel de logro
+                  <div class="progress" style="height:20px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: {{ evaluated.half_percent|unlocalize }}%;height:20px"
+                      aria-valuenow="{{ evaluated.half_percent|unlocalize }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    > {{ evaluated.str_half_percent }}%
+                  </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="list-group-item">
+          Profesores
+          <ul>
+            {% for sc in course.teachers.all %}
+              <li>{{ sc.first_name }} {{ sc.last_name }} ({{ sc.email }})</li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li class="list-group-item">
+          Valores posibles: [{% for sc in score.values %}
               {{ sc }}
         {% endfor %}]</li>
       </ul>
@@ -62,87 +77,97 @@
   </div>
 </div>
 
-<div class="row mt-2">
+<div class="row">
   <div class="col-12">
-    <h5>Indicadores</h5>
-  </div>
-  <div class="col-12">
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Logro</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for indicator in evaluated.indicator_list %}
-          <tr>
-            <th scope="row">{{ indicator.indicator_id }}</th>
-            <td>{{ indicator.indicator.name }}</td>
-            <td>
-              <form class="finalindicatorevaluation-list-update d-inline-block" action="{% url 'finalindicatorevaluation-list' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" data-type="int" name="pk" value="{{ indicator.id }}">
-                <input type="hidden" data-type="int" name="indicator" value="{{ indicator.indicator.id }}">
-                <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
-                <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
-                <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
-                <input type="hidden" name="fedback" value="_">
-                <input type="hidden" data-type="float" name="fedback_score" value="0">
-
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  {% for sc in score.values %}
-                  <label class="btn btn-success btn-sm{% if sc == indicator.value %} active{% endif %}">
-                    <input type="radio" data-type="float" {% if sc == indicator.value %}checked{% endif %} name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
-                  </label>
-                  {% endfor %}
-                </div>
-                <input type="submit" class="btn-sm btn btn-primary" value="Guardar" />
-              </form>
-              <button
-                type="button"
-                data-pk="{{ indicator.id }}"
-                data-url="{% url 'finalindicatorevaluation-list' %}"
-                data-csrfmiddlewaretoken="{{ csrf_token }}"
-                class="d-inline-block btn-sm btn btn-danger finalindicatorevaluation-list-delete"
-              />Eliminar</button>
-            </td>
-          </tr>
-          {% endfor %}
-          {% for indicator in evaluated.indicator_whitout_evaluated %}
-          <tr>
-            <th scope="row">{{ indicator.id }}</th>
-            <td>{{ indicator.name }}</td>
-            <td>
-              <form class="finalindicatorevaluation-list-create" action="{% url 'finalindicatorevaluation-list' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
-                <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
-                <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
-                <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
-                <input type="hidden" name="fedback" value="_">
-                <input type="hidden" data-type="float" name="fedback_score" value="0">
-
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  {% for sc in score.values %}
-                  <label class="btn btn-success btn-sm">
-                    <input data-type="float" type="radio" name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
-                  </label>
-                  {% endfor %}
-                </div>
-                <input type="submit" class="btn-sm btn btn-primary" value="Guardar" />
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="card">
+      <h5 class="card-header text-dark bg-light">
+        INDICADORES
+      </h5>
+      <div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Nivel de logro</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for indicator in evaluated.indicator_list %}
+              <tr id="indicator-{{ indicator.indicator_id }}">
+                <td><strong>{{ indicator.indicator.name }}</strong><br>
+                  {{ indicator.indicator.description }}
+                </td>
+                <td>
+                  <form
+                    class="finalindicatorevaluation-list-update d-inline-block"
+                    style="width:100%"
+                    action="{% url 'finalindicatorevaluation-list' %}"
+                    method="post"
+                  >
+                    {% csrf_token %}
+                    <input type="hidden" data-type="int" name="pk" value="{{ indicator.id }}">
+                    <div class="form-group">
+                      <div class="">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          {% for sc in score.values %}
+                          <label class="btn btn-success btn-sm readonly{% if sc == indicator.value %} active{% endif %}">
+                            <input readonly type="radio" data-type="float" {% if sc == indicator.value %}checked{% endif %} name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
+                          </label>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+              {% for indicator in evaluated.indicator_whitout_evaluated %}
+              <tr id="indicator-{{ indicator.id }}">
+                <td style="max-width: 300px"><strong>{{ indicator.name }} (Pendiente de evaluación)</strong><br />
+                  {{ indicator.description }}
+                </td>
+                <td></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header text-dark bg-light">
+        FEDBACK
+      </h5>
+      <div class="card-body">
+        <div class="timeline">
+          {% for fedback in fedback_list %}
+          <div class="card">
+            <span class="arrow-left"></span>
+            <div class="card-body">
+              <h6 class="card-title">{{ fedback.evaluator.first_name }} {{ fedback.evaluator.last_name }} ({{ fedback.evaluator.email }})</h6>
+              {{ fedback.message }}
+            </div>
+            <small class="card-footer text-muted">
+              <div class="d-inline-block">
+                Creado: {{ fedback.created_ts|date:'Y-m-d H:i' }}
+              </div> | 
+              <div class="d-inline-block">
+                Actualizado: {{ fedback.updated_ts|date:'Y-m-d H:i' }}
+              </div>
+            </small>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 {% else %}
