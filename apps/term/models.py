@@ -24,22 +24,22 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE,)
 
 
-class Fedback(SoftDeleteTSModel):
+class Feedback(SoftDeleteTSModel):
     score = models.FloatField(blank=True, null=True)
     message = models.TextField(max_length=500, verbose_name='Mensaje')
-    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fedback_evaluator')
-    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='fedback_evaluated')
+    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback_evaluator')
+    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback_evaluated')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,)
 
 
-class TempFedbackMessage(SoftDeleteTSModel):
+class TempFeedbackMessage(SoftDeleteTSModel):
     message = models.TextField(max_length=500, verbose_name='Mensaje')
-    fedback = models.ForeignKey(Fedback, on_delete=models.CASCADE,)
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE,)
 
 
 class TempFedbackScore(SoftDeleteTSModel):
     score = models.FloatField(blank=True, null=True)
-    fedback = models.ForeignKey(Fedback, on_delete=models.CASCADE,)
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE,)
 
 
 class FinalScoreEvaluation(SoftDeleteTSModel):

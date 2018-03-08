@@ -5,7 +5,7 @@ from apps.base.views import get_context_current_profile
 from django.http import Http404
 
 from apps.core.models import Program
-from apps.term.models import Course, Fedback
+from apps.term.models import Course, Feedback
 from apps.base.models import Profile, User
 from apps.base.helpers import get_score, student_list_with_indicator, evaluated_with_indicator
 
@@ -92,7 +92,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
         context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
         context['score'] = get_score()
         context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
-        context['fedback_list'] = Fedback.objects.filter(
+        context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.get_object().pk,
         ).all()
@@ -114,7 +114,7 @@ class EvaluatedIndexView(LoginRequiredMixin, DetailView):
         context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
         context['score'] = get_score()
         context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
-        context['fedback_list'] = Fedback.objects.filter(
+        context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.request.user.id,
         ).all()

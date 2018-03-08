@@ -47,8 +47,6 @@ class Migration(migrations.Migration):
                 ('created_ts', models.DateTimeField(auto_now_add=True)),
                 ('updated_ts', models.DateTimeField(auto_now=True)),
                 ('value', models.FloatField()),
-                ('fedback', models.TextField()),
-                ('fedback_score', models.FloatField()),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='term.Course')),
                 ('evaluated', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='evalueted', to=settings.AUTH_USER_MODEL)),
                 ('evaluator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='evaluator', to=settings.AUTH_USER_MODEL)),

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, FinalScoreEvaluation, TempScoreEvaluation, FinalIndicatorEvaluation, TempFinalIndicatorEvaluation, Fedback
+from .models import Course, FinalScoreEvaluation, TempScoreEvaluation, FinalIndicatorEvaluation, TempFinalIndicatorEvaluation, Feedback
 
 
 @admin.register(Course)
@@ -8,8 +8,8 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
-@admin.register(Fedback)
-class FedbackAdmin(admin.ModelAdmin):
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', 'evaluator', 'evaluated', 'course')
     search_fields = ('name',)
 

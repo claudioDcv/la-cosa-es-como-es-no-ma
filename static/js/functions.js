@@ -47,10 +47,10 @@ window.createFinalIndicatorEvaluation = function() {
 };
 
 
-window.createFedback = function() {
-  var createSelector = '.fedback-list-create';
-  var updateSelector = '.fedback-list-update';
-  var deleteSelector = '.fedback-list-delete';
+window.createFeedback = function() {
+  var createSelector = '.feedback-list-create';
+  var updateSelector = '.feedback-list-update';
+  var deleteSelector = '.feedback-list-delete';
 
   var save = function(e) {
     e.preventDefault();

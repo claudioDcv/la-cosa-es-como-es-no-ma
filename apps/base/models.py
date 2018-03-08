@@ -67,20 +67,26 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'external_info']
 
-    # @classmethod
-    # def _product_list(cls):
-    #     """
-    #     return a list containing the one product_id contained in the request URL,
-    #     or a query containing all valid product_ids if not id present in URL
-    #
-    #     used to limit the choice of foreign key object to those related to the current product
-    #     """
-    #     import ipdb; ipdb.set_trace()
-    #     id = threadlocals.get_current_product()
-    #     if id is not None:
-    #         return [id]
-    #     else:
-    #         return self.objects.all().values('pk').query
+    @staticmethod
+    def has_profile_program(user, program_code, profile_list):
+        """
+        - profile_list <tuple/list>: contains <str>
+        - ej: ('teacher', 'admin')
+        """
+        profile_id = 0
+        if type(profile_list) == int:
+            profile_id = profile_list
+        else:
+            for profile in Profile.ROLE_CHOICES:
+                if profile[1] in profile_list:
+                    profile_id = profile[0]
+
+        profile = UserProfilesProgram.objects.filter(
+            user=user,
+            program__code=program_code,
+            profiles=profile_id,
+        ).all()
+        return len(profile) > 0
 
 
 class UserProfilesProgram(models.Model):

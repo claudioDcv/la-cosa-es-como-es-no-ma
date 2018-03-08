@@ -142,23 +142,23 @@
   <div class="col-12">
     <div class="card">
       <h5 class="card-header text-dark bg-light">
-        FEDBACK
+        FEEDBACK
       </h5>
       <div class="card-body">
         <div class="timeline">
-          {% for fedback in fedback_list %}
+          {% for feedback in feedback_list %}
           <div class="card">
             <span class="arrow-left"></span>
             <div class="card-body">
-              <h6 class="card-title">{{ fedback.evaluator.first_name }} {{ fedback.evaluator.last_name }} ({{ fedback.evaluator.email }})</h6>
-              {{ fedback.message }}
+              <h6 class="card-title">{{ feedback.evaluator.first_name }} {{ feedback.evaluator.last_name }} ({{ feedback.evaluator.email }})</h6>
+              {{ feedback.message }}
             </div>
             <small class="card-footer text-muted">
               <div class="d-inline-block">
-                Creado: {{ fedback.created_ts|date:'Y-m-d H:i' }}
+                Creado: {{ feedback.created_ts|date:'Y-m-d H:i' }}
               </div> | 
               <div class="d-inline-block">
-                Actualizado: {{ fedback.updated_ts|date:'Y-m-d H:i' }}
+                Actualizado: {{ feedback.updated_ts|date:'Y-m-d H:i' }}
               </div>
             </small>
           </div>

@@ -174,51 +174,53 @@
   <div class="col-12">
     <div class="card">
       <h5 class="card-header text-dark bg-light">
-        FEDBACK
+        FEEDBACK
       </h5>
       <div class="card-body">
         <div class="timeline">
-          {% for fedback in fedback_list %}
+          {% for feedback in feedback_list %}
           <form
             method="post"
-            class="card fedback-list-update"
-            action="{% url 'fedback-list' %}"
+            class="card feedback-list-update"
+            action="{% url 'feedback-list' %}"
           >
             <span class="arrow-left"></span>
             <div class="card-body">
-              <h6 class="card-title">{{ fedback.evaluator.first_name }} {{ fedback.evaluator.last_name }} ({{ fedback.evaluator.email }})</h6>
+              <h6 class="card-title">{{ feedback.evaluator.first_name }} {{ feedback.evaluator.last_name }} ({{ feedback.evaluator.email }})</h6>
               {% csrf_token %}
-              <input type="hidden" data-type="int" name="pk" value="{{ fedback.id }}">
+              <input type="hidden" data-type="int" name="pk" value="{{ feedback.id }}">
               <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
               <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
               <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+              <input type="hidden" name="code" value="{{ code }}">
               <textarea
                 class="form-control"
                 name="message"
                 required
                 placeholder="Ingrese comentario"
-              >{{ fedback.message }}</textarea>
+              >{{ feedback.message }}</textarea>
             </div>
             <small class="card-footer text-muted">
               <div class="d-inline-block">
                 <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar</button>
                 <button
-                  data-pk="{{ fedback.id }}"
-                  data-url="{% url 'fedback-list' %}"
+                  data-code="{{ code }}"
+                  data-pk="{{ feedback.id }}"
+                  data-url="{% url 'feedback-list' %}"
                   data-csrfmiddlewaretoken="{{ csrf_token }}"
-                  class="btn-sm btn btn-link fedback-list-delete"
+                  class="btn-sm btn btn-link feedback-list-delete"
                 /><i class="fas fa-trash-alt text-danger"></i></button>
               </div>
               <div class="d-inline-block">
-                {{ fedback.updated_ts|date:'Y-m-d H:i' }}
+                {{ feedback.updated_ts|date:'Y-m-d H:i' }}
               </div>
             </small>
           </form>
           {% endfor %}
           <form
             method="post"
-            class="card fedback-list-create"
-            action="{% url 'fedback-list' %}"
+            class="card feedback-list-create"
+            action="{% url 'feedback-list' %}"
           >
             <span class="arrow-left"></span>
             <div class="card-body">
@@ -227,12 +229,13 @@
               <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
               <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
               <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+              <input type="hidden" name="code" value="{{ code }}">
               <textarea
                 class="form-control"
                 name="message"
                 required
                 placeholder="Ingrese comentario"
-              >{{ fedback.message }}</textarea>
+              >{{ feedback.message }}</textarea>
             </div>
             <small class="card-footer text-muted">
               <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Crear</button>
@@ -253,6 +256,6 @@ No posee permisos
 {% block scripts %}
 <script type="text/javascript">
   createFinalIndicatorEvaluation();
-  createFedback();
+  createFeedback();
 </script>
 {% endblock %}
