@@ -10,14 +10,22 @@
   <div class="col-md-4 mt-2">
     <div class="card">
       <div class="card-header">
-        {{ o.program.name }}
+        <i class="fas fa-graduation-cap"></i> {{ o.program.name }}
       </div>
       <ul class="list-group list-group-flush">
         {% for profile in o.profiles.all %}
           <li class="list-group-item">
-            <a href="{% url 'program-index' o.program.code profile.id %}">
-              Ingresar como {{ profile.name }}
-            </a>
+            <div>
+              <strong>{{ profile.name }}</strong>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <a class="btn btn-sm btn-link" href="{% url 'program-index' o.program.code profile.id %}">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+              <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.program.code profile.id %}">
+                <i class="fas fa-bolt"></i> Competencias
+              </a>
+            </div>
           </li>
         {% endfor %}
       </ul>

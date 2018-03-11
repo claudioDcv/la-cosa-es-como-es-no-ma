@@ -1,3 +1,5 @@
+import json
+
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -5,9 +7,11 @@ from apps.base.views import get_context_current_profile
 from django.http import Http404
 
 from apps.core.models import Program
-from apps.term.models import Course, Feedback
+from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User
 from apps.base.helpers import get_score, student_list_with_indicator, evaluated_with_indicator
+from apps.core.models import Skill, Indicator
+from apps.business.models import Survey
 
 
 def has_profile(current_profile, profile):
@@ -26,10 +30,126 @@ def get_id_profile_by_name(name):
     return prof_id
 
 
+class SkillGroupIndexView(LoginRequiredMixin, DetailView):
+
+    template_name = 'core/skill_group_index.html'
+
+    def get_object(self):
+        return Course.objects.filter(subject__subjects_group__program__code=self.kwargs['code'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['code'] = self.kwargs['code']
+        context['profile'] = self.kwargs['profile']
+        score = get_score()
+        context['score'] = score
+
+        context['program'] = Program.objects.get(code=self.kwargs['code'])
+        user = self.request.user
+
+        context = get_context_current_profile(context, self)
+
+        if context['current_profile']:
+            if has_profile(context['current_profile'], 'teacher'):
+                context['courses'] = self.get_object().filter(teachers=user)
+
+            if has_profile(context['current_profile'], 'student'):
+
+                # traer todos los cursos donde participa el estudiante
+                context['courses'] = self.get_object().filter(students=user)
+
+                # listado de ids de las encuestas de los cursos
+                survey_ids = [x.survey_id for x in context['courses']]
+
+                # lista de encuestas
+                survey_list = Survey.objects.filter(id__in=survey_ids)
+
+                indicator_ids = []
+                skill_ids = []
+                for survey in survey_list:
+                    for indicator in survey.indicator.all():
+                        skill_ids.append(indicator.skill_id)
+                        indicator_ids.append(indicator.id)
+
+                # ademas esta lista es unica
+                # listado de indicadores y skill que pertenecen a los ramos que tiene el estudiante
+                indicator_ids = list(set(indicator_ids))
+                skill_ids = list(set(skill_ids))
+
+                skill_list = Skill.objects.filter(id__in=skill_ids)
+
+                # procedimiento para aramar listado de indicadores evaluados
+                # construccion de objeto de competencias con estdiante evaluado
+                final_skill_list = []
+                for skill in skill_list:
+
+                    # traer todos los indicadores de la competencia
+                    indicator_list = skill.indicator_set.all()
+                    final_indicator_list = []
+                    skill_value = 0
+                    evaluated_at_least_once = False
+                    len_final_ind_eval_list = 0
+                    indicator_percent_sum = 0
+                    indicator_evaluated = 0
+
+                    for indicator in indicator_list:
+                        final_ind_eval_list = FinalIndicatorEvaluation.objects.filter(
+                            evaluated=user,
+                            indicator=indicator,
+                        ).all()
+
+                        indicator_value = 0
+                        is_evaluated = False
+                        len_final_ind_eval_list = len(final_ind_eval_list)
+                        if len_final_ind_eval_list > 0:
+                            is_evaluated = True
+                            indicator_evaluated = indicator_evaluated + 1
+                            evaluated_at_least_once = True
+                            for final_ind_eval in final_ind_eval_list:
+                                indicator_value = indicator_value + final_ind_eval.value
+                                skill_value = skill_value + final_ind_eval.value
+
+                        # creando dicionario para luego serializar como json
+                        indicator_percent = ((indicator_value / len_final_ind_eval_list) * 100) / score['max']
+                        indicator_percent_sum = indicator_percent_sum + indicator_percent
+                        final_indicator_list.append({
+                            'object': {
+                                'name': indicator.name,
+                                'description': indicator.description,
+                            },
+                            'value': indicator_value,
+                            'str_percent': (str(indicator_percent)[:4]) if len(str(indicator_percent)) > 4 else str(indicator_percent),
+                            'percent': indicator_percent,
+                            'is_evaluated': is_evaluated,
+                        })
+
+
+                    # creando dicionario para luego serializar como json
+                    final_skill_list.append({
+                        'object': {
+                            'name': skill.name,
+                            'description': skill.description,
+                        },
+                        'str_percent': (str(indicator_percent_sum / indicator_evaluated)[:4]) if len(str(indicator_percent_sum / indicator_evaluated)) > 4 else str(indicator_percent_sum / indicator_evaluated),
+                        'percent': indicator_percent_sum / indicator_evaluated,
+                        'value': skill_value,
+                        'indicator_list': final_indicator_list,
+                        'evaluated_at_least_once': evaluated_at_least_once,
+                    })
+
+                context['skill_list'] = final_skill_list
+                context['json_skill_list'] = json.dumps(final_skill_list)
+
+            if has_profile(context['current_profile'], 'admin'):
+                context['courses'] = self.get_object()
+
+        return context
+
+
 class ProgramIndexView(LoginRequiredMixin, DetailView):
     model = Program
     slug_field = 'code'
-    template_name = "core/program_index.html"
+    template_name = 'core/program_index.html'
 
     def get_object(self):
         program = get_object_or_404(Program, code=self.kwargs['code'])
@@ -60,9 +180,10 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
 class CourseView(LoginRequiredMixin, DetailView):
     model = Course
-    template_name = "core/course.html"
+    template_name = 'core/course.html'
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
@@ -82,7 +203,7 @@ class CourseView(LoginRequiredMixin, DetailView):
 
 class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
     model = User
-    template_name = "core/evaluated_evaluator_index.html"
+    template_name = 'core/evaluated_evaluator_index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,7 +225,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
 
 class EvaluatedIndexView(LoginRequiredMixin, DetailView):
     model = User
-    template_name = "core/evaluated_index.html"
+    template_name = 'core/evaluated_index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

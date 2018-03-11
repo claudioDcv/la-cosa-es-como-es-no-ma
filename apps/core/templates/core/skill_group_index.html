@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% load l10n %}
+{% load static %}
+{% load custom_tags %}
+
+{% block subheader %}
+  <div class="subnav">
+    {% include "subnav.html" %}
+  </div>
+{% endblock %}
+
+{% block title %}Curso ({{ course.name }}){% endblock %}
+
+{% block content %}
+{% if has_profile %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Competencias</li>
+  </ol>
+</nav>
+
+
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <h5 class="card-header txt-thin">
+        NIVEL DE LOGRO
+      </h5>
+      <div class="chart-container" style="overflow-x:auto">
+        <canvas
+          id="skill-graph"
+          width="400" height="200"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+<div class="col-12">
+  <div class="card mb-4">
+    <h5 class="card-header txt-thin">
+      LISTADO DE COMPETENCIAS
+    </h5>
+    <div class="card-body">
+      {% for skill in skill_list %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h6 class="card-title">
+            {{ skill.object.name }}
+            {% if skill.evaluated_at_least_once %}
+            {% else %}
+              <strong>Aun no evaluado</strong>
+            {% endif %}
+          </h6>
+          {{ skill.object.description }}
+        </div>
+        <div class="card-footer">
+          <p class="mb-2">INDICADORES</p>
+          <div>
+            {% for indicator in skill.indicator_list %}
+            <a href="#" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-genderless"></i> {{ indicator.object.name }}
+            </a>
+            {{ indicator.str_percent }}%
+            {% if indicator.is_evaluated %}
+            {% else %}
+              <strong>Aun no evaluado</strong>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+
+{% else %}
+No posee permisos
+{% endif %}
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  var data = {{ json_skill_list|safe }};
+  console.log(data);
+  var ctx = document.getElementById("skill-graph");
+  ctx.height = 100;
+  // ctx.width = (data.length > 0 ? data.length : 1) * 5000;
+
+  var backgroundColor = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+  ];
+  var borderColor = [
+      'rgba(255,99,132,1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+  ];
+
+  function randArrayValue(arr) {
+    var rand = arr[Math.floor(Math.random() * arr.length)];
+    return rand;
+  }
+
+  var option = {
+  	scales: {
+    	yAxes:[{
+      		stacked:true,
+          gridLines: {
+          	display:true,
+            color:"rgba(255,99,132,0.2)"
+          },
+          ticks: {
+            max: 100,
+            stepSize: 10,
+            min: 0,
+            callback: function(value) {
+               return value + "%"
+            }
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Porcentaje"
+          }
+      }],
+      xAxes:[{
+      		gridLines: {
+          	display:false
+          }
+      }]
+    }
+  };
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: data.filter(function(e) {
+          return e.evaluated_at_least_once;
+        }).map(function(e) {
+          return e.object.name;
+        }),
+        datasets: [{
+            label: 'Logro',
+            data: data.filter(function(e) {
+              return e.evaluated_at_least_once;
+            }).map(function(e) {
+              return parseInt(e.percent);
+            }),
+
+            backgroundColor: data.filter(function(e) {
+              return e.evaluated_at_least_once;
+            }).map(function(e) {
+              return randArrayValue(backgroundColor);
+            }),
+
+            borderWidth: 1
+        }],
+    },
+    options: option,
+});
+</script>
+{% endblock %}

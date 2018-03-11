@@ -26,7 +26,10 @@
 <div class="row">
   <div class="col-12">
     <div class="card mb-4">
-      <h5 class="card-header">Curso: {{ object.name }}</h5>
+      <h5 class="card-header">CURSO {{ object.name }}</h5>
+      <div class="card-body">
+        {{ object.description }}
+      </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Logro: {{ total_half_percent }}%</li>
         <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
@@ -72,7 +75,11 @@
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ student.half_percent|unlocalize }}%;height:20px" aria-valuenow="{{ student.half_percent|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.str_half_percent }}%</div>
                   </div>
                 </td>
-                <td><a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">Evaluar</a></td>
+                <td>
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-tasks"></i> Evaluar
+                  </a>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -94,7 +101,7 @@ No posee permisos
 {% block scripts %}
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#table-student').dynatable();
+  // $('#table-student').dynatable();
 } );
 </script>
 {% endblock %}
