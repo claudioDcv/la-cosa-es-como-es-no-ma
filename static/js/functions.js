@@ -82,9 +82,10 @@ window.createFeedback = function() {
     e.preventDefault();
     var url = e.target.dataset.url;
     var pk = e.target.dataset.pk;
+    var code = e.target.dataset.code;
 		XHRDelete({
 			url: url,
-			data: { pk: pk, csrfmiddlewaretoken: e.target.dataset.csrfmiddlewaretoken },
+			data: { code: code, pk: pk, csrfmiddlewaretoken: e.target.dataset.csrfmiddlewaretoken },
 			success: function(e) { console.log(e); window.location.reload(); },
 			error: function(e) { console.log(e); },
 		});

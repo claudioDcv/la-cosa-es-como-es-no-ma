@@ -1,5 +1,5 @@
 html, body {
-  background: #f7f7f7;
+  background: #ffffff;
 }
 .subnav {
   background: #f4f4f4;
@@ -159,4 +159,7 @@ body {
 
 .txt-thin {
   font-weight: 200;
+}
+.txt-right {
+  text-align: right;
 }

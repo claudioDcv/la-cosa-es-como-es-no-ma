@@ -12,17 +12,31 @@ from apps.term.api.serializers import FeedbackSerializer, FinalIndicatorEvaluati
 from apps.base.api_helpers import response_401
 
 
-class CreateUpdateDeleteTeacherAdmin(permissions.BasePermission):
+# permisos para feedback
+class FeedBackCreateUpdateDeleteTeacherAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:
-            if view.action in ('create', 'destroy', 'update'):
+            if view.action in ('create', 'update'):
                 return User.has_profile_program(
                     user=request.user,
                     program_code=request.data.get('code', ''),
                     profile_list=('teacher', 'admin'),
                 )
-            # import ipdb; ipdb.set_trace()
+            if view.action in ('destroy'):
+                is_admin = User.has_profile_program(
+                    user=request.user,
+                    program_code=False,
+                    profile_list=('admin'),
+                )
+                if is_admin:
+                    return True
+                is_teacher = view.queryset.get(
+                    pk=view.kwargs['pk'],
+                    course__teachers=request.user,
+                )
+                if is_teacher:
+                    return True
             return True
         else:
             return False
@@ -59,7 +73,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     filter_fields = ('course', 'course__subject__subjects_group__program__code')
     ordering_fields = ('id', 'score')
 
-    permission_classes = (CreateUpdateDeleteTeacherAdmin,)
+    permission_classes = (FeedBackCreateUpdateDeleteTeacherAdmin,)
 
 
     def list(self, request):

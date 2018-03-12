@@ -9,8 +9,9 @@ from apps.core.models import Program
 def get_context_current_profile(context, _self):
     context['has_profile'] = False
     try:
-        context['current_profile'] = Profile.objects.get(id=_self.kwargs['profile'])
-    except Profile.DoesNotExist as e:
+        context['current_profile'] = Profile.objects.get(
+            id=_self.kwargs['profile'])
+    except Profile.DoesNotExist:
         context['current_profile'] = False
     try:
         if context['current_profile']:
@@ -19,7 +20,7 @@ def get_context_current_profile(context, _self):
                 program=Program.objects.get(code=context['code']),
             )
             context['has_profile'] = True
-    except Profile.DoesNotExist as e:
+    except Profile.DoesNotExist:
         context['has_profile'] = False
     return context
 
@@ -37,9 +38,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     template_name = "base/user-detail.html"
 
     def get_context_data(self, **kwargs):
+        """
+        return context data
+        """
         context = super().get_context_data(**kwargs)
-        context['user_profiles_programs'] = UserProfilesProgram.objects.filter(user=self.request.user)
-
+        context['user_profiles_programs'] = UserProfilesProgram.objects.filter(
+            user=self.request.user)
         return context
 
 
@@ -49,6 +53,7 @@ class SelfUserDetailView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = User.objects.get(pk=self.request.user.pk)
-        context['user_profiles_programs'] = UserProfilesProgram.objects.filter(user=self.request.user)
+        context['user_profiles_programs'] = UserProfilesProgram.objects.filter(
+            user=self.request.user)
 
         return context

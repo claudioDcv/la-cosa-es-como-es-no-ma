@@ -30,3 +30,9 @@
   display: inline-block;
   height: 100%;
 }
+
+.card-header-custom {
+  background: #af2e2e;
+  color: white;
+  border-color: #af2f2f;
+}

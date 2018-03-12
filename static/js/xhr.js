@@ -146,6 +146,7 @@ window.XHRDelete = function(opts) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("DELETE", url + (data.id || data.pk) + '/', true);
 	xhr.setRequestHeader('X-CSRFToken', data.csrfmiddlewaretoken);
+	xhr.setRequestHeader('code', data.code);
 	xhr.onload = function () {
 		var model = { id: (data.id || data.pk) };
 		if (xhr.responseText) {

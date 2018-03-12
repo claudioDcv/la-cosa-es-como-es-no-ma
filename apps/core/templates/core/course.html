@@ -26,7 +26,7 @@
 <div class="row">
   <div class="col-12">
     <div class="card mb-4">
-      <h5 class="card-header">CURSO {{ object.name }}</h5>
+      <h5 class="card-header"><i class="fas fa-book"></i> CURSO {{ object.name }}</h5>
       <div class="card-body">
         {{ object.description }}
       </div>
@@ -56,7 +56,7 @@
                 <th scope="col">Email</th>
                 <th>Indicadores Evaluados</th>
                 <th scope="col">Logro</th>
-                <th scope="col">Acciones</th>
+                <th scope="col" class="txt-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -75,8 +75,8 @@
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ student.half_percent|unlocalize }}%;height:20px" aria-valuenow="{{ student.half_percent|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.str_half_percent }}%</div>
                   </div>
                 </td>
-                <td>
-                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-primary btn-sm">
+                <td class="txt-right">
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-light btn-sm">
                     <i class="fas fa-tasks"></i> Evaluar
                   </a>
                 </td>

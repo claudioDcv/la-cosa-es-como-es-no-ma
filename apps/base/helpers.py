@@ -27,7 +27,7 @@ def get_param(*args, **kwargs):
     return prefix + text
 
 
-def get_score ():
+def get_score():
     return json.loads(get_param(code='score'))
 
 
@@ -36,7 +36,8 @@ def evaluated_with_indicator(course_id, evaluated):
     course = Course.objects.get(pk=course_id)
     total_indicators = course.survey.indicator.all()
 
-    indicator_list = FinalIndicatorEvaluation.objects.filter(course=course, evaluated=evaluated).order_by(order_by).all()
+    indicator_list = FinalIndicatorEvaluation.objects.filter(
+        course=course, evaluated=evaluated).order_by(order_by).all()
     indicator_whitout_evaluated = course.survey.indicator.exclude(
         pk__in=[x.indicator_id for x in indicator_list],
     ).order_by(order_by)
@@ -62,9 +63,12 @@ def evaluated_with_indicator(course_id, evaluated):
         'total_achievement': total_achievement,
         'half': half,
         'half_percent': half_percent,
-        'str_half_percent': (str(half_percent)[:4]) if len(str(half_percent)) > 4 else str(half_percent),
+        'str_half_percent': (
+            str(half_percent)[:4]) if len(str(half_percent)
+                                          ) > 4 else str(half_percent),
         'total_indicators': len(total_indicators),
-        'indicator_evaluated': (len(indicator_list) * 100) / len(total_indicators),
+        'indicator_evaluated': (
+            len(indicator_list) * 100) / len(total_indicators),
         'indicator_whitout_evaluated': indicator_whitout_evaluated,
     }
 
@@ -81,7 +85,11 @@ def student_list_with_indicator(pk):
     students_with_evaluation = 0
 
     for student in students:
-        indicator_list = FinalIndicatorEvaluation.objects.filter(course=course, evaluated=student).order_by('-id').all()
+        indicator_list = FinalIndicatorEvaluation.objects.filter(
+            course=course,
+            evaluated=student,
+        ).order_by('-id').all()
+
         total_achievement = 0
         for indicator in indicator_list:
             total_achievement = total_achievement + indicator.value
@@ -101,8 +109,11 @@ def student_list_with_indicator(pk):
             'indicator_list': indicator_list,
             'half': half,
             'half_percent': half_percent,
-            'str_half_percent': (str(half_percent)[:4]) if len(str(half_percent)) > 4 else str(half_percent),
-            'indicator_evaluated': (len(indicator_list) * 100) / len(total_indicators),
+            'str_half_percent': (
+                str(half_percent)[:4]) if len(str(half_percent)) > 4 else str(
+                    half_percent),
+            'indicator_evaluated': (
+                len(indicator_list) * 100) / len(total_indicators),
         })
 
     if students_with_evaluation is not 0:

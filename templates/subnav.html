@@ -1,7 +1,7 @@
 {% load custom_tags %}
 
 <div class="description">
-  [{{ program.name }} / {{ current_profile.name }}]
+  <span class="txt-thin">Programa</span> {{ program.name }}
 </div>
 <div class="menu">
 {% if  current_profile|has_profile:'admin' %}

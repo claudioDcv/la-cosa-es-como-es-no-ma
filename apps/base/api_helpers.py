@@ -7,4 +7,4 @@ def response_401(message='No esta autorizado para realizar esta acción'):
         'status_code': 'HTTP_401_UNAUTHORIZED',
         'status': status.HTTP_401_UNAUTHORIZED,
         'message': message,
-    },status=status.HTTP_401_UNAUTHORIZED)
+    }, status=status.HTTP_401_UNAUTHORIZED)

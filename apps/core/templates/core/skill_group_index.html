@@ -27,7 +27,7 @@
   <div class="col-12">
     <div class="card mb-4">
       <h5 class="card-header txt-thin">
-        NIVEL DE LOGRO
+        <i class="fas fa-check-circle"></i> NIVEL DE LOGRO
       </h5>
       <div class="chart-container" style="overflow-x:auto">
         <canvas
@@ -43,7 +43,7 @@
 <div class="col-12">
   <div class="card mb-4">
     <h5 class="card-header txt-thin">
-      LISTADO DE COMPETENCIAS
+      <i class="fas fa-bolt"></i> LISTADO DE COMPETENCIAS
     </h5>
     <div class="card-body">
       {% for skill in skill_list %}
@@ -63,13 +63,13 @@
           <div>
             {% for indicator in skill.indicator_list %}
             <a href="#" class="btn btn-sm btn-outline-primary">
-              <i class="fas fa-genderless"></i> {{ indicator.object.name }}
+              <i class="fas fa-genderless"></i> {{ indicator.object.name }} |
+              {% if indicator.is_evaluated %}
+                {{ indicator.str_percent }}%
+              {% else %}
+                <i class="fas fa-ban"></i>
+              {% endif %}
             </a>
-            {{ indicator.str_percent }}%
-            {% if indicator.is_evaluated %}
-            {% else %}
-              <strong>Aun no evaluado</strong>
-            {% endif %}
             {% endfor %}
           </div>
         </div>

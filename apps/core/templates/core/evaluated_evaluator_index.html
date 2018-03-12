@@ -86,7 +86,7 @@
             <thead>
               <tr>
                 <th scope="col">Nombre</th>
-                <th scope="col">Nivel de Logro</th>
+                <th scope="col" class="txt-right">Nivel de Logro</th>
               </tr>
             </thead>
             <tbody>
@@ -95,7 +95,7 @@
                 <td style="max-width: 300px"><strong>{{ indicator.indicator.name }}</strong>
                   <br />{{ indicator.indicator.description }}
                 </td>
-                <td>
+                <td class="txt-right">
                   <form
                     class="finalindicatorevaluation-list-update d-inline-block"
                     style="width:100%"
@@ -138,7 +138,7 @@
                 <td style="max-width: 300px"><strong>{{ indicator.name }} (Pendiente de Evaluación)</strong><br />
                   {{ indicator.description }}
                 </td>
-                <td>
+                <td class="txt-right">
                   <form class="finalindicatorevaluation-list-create" action="{% url 'finalindicatorevaluation-list' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">

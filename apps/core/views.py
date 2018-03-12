@@ -9,7 +9,8 @@ from django.http import Http404
 from apps.core.models import Program
 from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User
-from apps.base.helpers import get_score, student_list_with_indicator, evaluated_with_indicator
+from apps.base.helpers import get_score, student_list_with_indicator,\
+    evaluated_with_indicator
 from apps.core.models import Skill, Indicator
 from apps.business.models import Survey
 
@@ -35,7 +36,9 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
     template_name = 'core/skill_group_index.html'
 
     def get_object(self):
-        return Course.objects.filter(subject__subjects_group__program__code=self.kwargs['code'])
+        return Course.objects.filter(
+            subject__subjects_group__program__code=self.kwargs['code']
+            ).only('survey_id', 'teachers', 'students')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,40 +53,38 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
         context = get_context_current_profile(context, self)
 
         if context['current_profile']:
+
             if has_profile(context['current_profile'], 'teacher'):
                 context['courses'] = self.get_object().filter(teachers=user)
 
-            if has_profile(context['current_profile'], 'student'):
+            elif has_profile(context['current_profile'], 'student'):
 
-                # traer todos los cursos donde participa el estudiante
+    #  traer todos los cursos donde participa el estudiante
                 context['courses'] = self.get_object().filter(students=user)
 
-                # listado de ids de las encuestas de los cursos
+    #  listado de ids de las encuestas de los cursos
                 survey_ids = [x.survey_id for x in context['courses']]
 
-                # lista de encuestas
+    #  lista de encuestas
                 survey_list = Survey.objects.filter(id__in=survey_ids)
 
-                indicator_ids = []
                 skill_ids = []
                 for survey in survey_list:
                     for indicator in survey.indicator.all():
                         skill_ids.append(indicator.skill_id)
-                        indicator_ids.append(indicator.id)
 
-                # ademas esta lista es unica
+    #  ademas esta lista es unica
                 # listado de indicadores y skill que pertenecen a los ramos que tiene el estudiante
-                indicator_ids = list(set(indicator_ids))
                 skill_ids = list(set(skill_ids))
 
                 skill_list = Skill.objects.filter(id__in=skill_ids)
 
-                # procedimiento para aramar listado de indicadores evaluados
+    #  procedimiento para aramar listado de indicadores evaluados
                 # construccion de objeto de competencias con estdiante evaluado
                 final_skill_list = []
                 for skill in skill_list:
 
-                    # traer todos los indicadores de la competencia
+    #  traer todos los indicadores de la competencia
                     indicator_list = skill.indicator_set.all()
                     final_indicator_list = []
                     skill_value = 0
@@ -96,7 +97,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                         final_ind_eval_list = FinalIndicatorEvaluation.objects.filter(
                             evaluated=user,
                             indicator=indicator,
-                        ).all()
+                        ).only('value').all()
 
                         indicator_value = 0
                         is_evaluated = False
@@ -109,8 +110,13 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                                 indicator_value = indicator_value + final_ind_eval.value
                                 skill_value = skill_value + final_ind_eval.value
 
-                        # creando dicionario para luego serializar como json
-                        indicator_percent = ((indicator_value / len_final_ind_eval_list) * 100) / score['max']
+    #  creando dicionario para luego serializar como json
+                        try:
+                            indicator_percent = (
+                                (indicator_value / len_final_ind_eval_list) * 100) / score['max']  #noqa
+                        except ZeroDivisionError:
+                            indicator_percent = 0
+
                         indicator_percent_sum = indicator_percent_sum + indicator_percent
                         final_indicator_list.append({
                             'object': {
@@ -124,14 +130,22 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                         })
 
 
-                    # creando dicionario para luego serializar como json
+    #  creando dicionario para luego serializar como json
+                    try:
+                        str_percent = (str(
+                            indicator_percent_sum / indicator_evaluated)[:4]) if len(str(indicator_percent_sum / indicator_evaluated)) > 4 else str(indicator_percent_sum / indicator_evaluated)  #noqa
+                        percent = indicator_percent_sum / indicator_evaluated
+                    except ZeroDivisionError:
+                        str_percent = 0
+                        percent = 0
+
                     final_skill_list.append({
                         'object': {
                             'name': skill.name,
                             'description': skill.description,
                         },
-                        'str_percent': (str(indicator_percent_sum / indicator_evaluated)[:4]) if len(str(indicator_percent_sum / indicator_evaluated)) > 4 else str(indicator_percent_sum / indicator_evaluated),
-                        'percent': indicator_percent_sum / indicator_evaluated,
+                        'str_percent': str_percent,
+                        'percent': percent,
                         'value': skill_value,
                         'indicator_list': final_indicator_list,
                         'evaluated_at_least_once': evaluated_at_least_once,
@@ -167,13 +181,18 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
         if context['current_profile']:
             if has_profile(context['current_profile'], 'teacher'):
-                context['courses'] = Course.objects.filter(teachers=user, subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    teachers=user,
+                    subject__subjects_group__program=self.get_object())
 
             if has_profile(context['current_profile'], 'student'):
-                context['courses'] = Course.objects.filter(students=user, subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    students=user,
+                    subject__subjects_group__program=self.get_object())
 
             if has_profile(context['current_profile'], 'admin'):
-                context['courses'] = Course.objects.filter(subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    subject__subjects_group__program=self.get_object())
 
         return context
 
@@ -196,7 +215,8 @@ class CourseView(LoginRequiredMixin, DetailView):
         students = student_list_with_indicator(self.kwargs['pk'])
         context['total_half_percent'] = students['total_half_percent']
         context['total_indicators'] = students['total_indicators']
-        context['students_with_indicator'] = students['students_with_indicator']
+        context['students_with_indicator'] = students[
+            'students_with_indicator']
 
         return context
 
@@ -212,7 +232,8 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
         context['program'] = Program.objects.get(code=self.kwargs['code'])
         context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
         context['score'] = get_score()
-        context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
+        context['evaluated'] = evaluated_with_indicator(
+            self.kwargs['course_id'], self.get_object())
         context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.get_object().pk,
@@ -234,7 +255,8 @@ class EvaluatedIndexView(LoginRequiredMixin, DetailView):
         context['program'] = Program.objects.get(code=self.kwargs['code'])
         context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
         context['score'] = get_score()
-        context['evaluated'] = evaluated_with_indicator(self.kwargs['course_id'], self.get_object())
+        context['evaluated'] = evaluated_with_indicator(
+            self.kwargs['course_id'], self.get_object())
         context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.request.user.id,

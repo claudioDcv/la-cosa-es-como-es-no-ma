@@ -81,11 +81,17 @@ class User(AbstractUser):
                 if profile[1] in profile_list:
                     profile_id = profile[0]
 
-        profile = UserProfilesProgram.objects.filter(
-            user=user,
-            program__code=program_code,
-            profiles=profile_id,
-        ).all()
+        if program_code:
+            profile = UserProfilesProgram.objects.filter(
+                user=user,
+                program__code=program_code,
+                profiles=profile_id,
+            ).all()
+        else:
+            profile = UserProfilesProgram.objects.filter(
+                user=user,
+                profiles=profile_id,
+            ).all()
         return len(profile) > 0
 
 
