@@ -10,6 +10,11 @@
   <div class="col-md-4 mt-2">
     <div class="card">
       <div class="card-header card-header-custom">
+        {% if request.user.is_superuser %}
+        <a href="/admin/core/program/{{ o.program.id }}/change/">
+          <i class="fas fa-pen-square"></i>
+        </a>
+        {% endif %}{{ student.user.id }}
         <i class="fas fa-graduation-cap"></i> {{ o.program.name }}
       </div>
       <ul class="list-group list-group-flush">

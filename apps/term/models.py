@@ -12,16 +12,25 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     teachers = models.ManyToManyField(
         User,
         related_name='teachers',
+        blank=True,
         # limit_choices_to={
         #     'id__in':User._product_list,
         # },
     )
-    students = models.ManyToManyField(User, related_name='students')
+    students = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='students',
+    )
 
     period = models.ForeignKey(Period, on_delete=models.CASCADE,)
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE,)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE,)
+
+    class Meta:
+        verbose_name = 'curso'
+        verbose_name_plural = 'cursos'
 
 
 class Feedback(SoftDeleteTSModel):
@@ -48,6 +57,10 @@ class FinalScoreEvaluation(SoftDeleteTSModel):
     evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='note_evaluated')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,)
 
+    class Meta:
+        verbose_name = 'nota final (estudiante - curso)'
+        verbose_name_plural = 'notas finales (estudiante - curso)'
+
 
 class TempScoreEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
@@ -60,13 +73,29 @@ class TempScoreEvaluation(SoftDeleteTSModel):
 class FinalIndicatorEvaluation(SoftDeleteTSModel):
     value = models.FloatField()
 
-    evaluator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluator')
-    evaluated = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evalueted')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE,)
-    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE,)
+    evaluator = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='evaluator',
+    )
+    evaluated = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='evalueted',
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+    )
+    indicator = models.ForeignKey(
+        Indicator,
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         unique_together = (('indicator', 'course', 'evaluated'),)
+        verbose_name = 'puntaje de indicador (estudiante - curso)'
+        verbose_name_plural = 'puntajes de indicadores (estudiante - curso)'
 
 
 class TempFinalIndicatorEvaluation(SoftDeleteTSModel):

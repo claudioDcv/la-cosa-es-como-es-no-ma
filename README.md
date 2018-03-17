@@ -3,3 +3,7 @@ la-cosa-es-como-es-no-ma
 
 
 - program/arq/2/course/1/evaluated/2: `programa/<program_slug>/<profile_id>/course/<course_id>/evaluated/<user_id>`
+
+
+# Problemas
+- aberiguar si seccion debe ser algo mas que un string en Course

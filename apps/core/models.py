@@ -10,7 +10,7 @@ class Program(SoftDeleteTSModel, DescriptiveModel):
     )
 
     class Meta:
-         verbose_name = 'programa'
+        verbose_name = 'programa'
 
 
 class SkillsGroup(SoftDeleteTSModel, DescriptiveModel):
@@ -20,6 +20,10 @@ class SkillsGroup(SoftDeleteTSModel, DescriptiveModel):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        verbose_name = 'grupo de competencias'
+        verbose_name_plural = 'grupos de competencias'
+
 
 class Skill(SoftDeleteTSModel, DescriptiveModel):
     checksum = models.CharField(blank=True, max_length=100)
@@ -28,6 +32,9 @@ class Skill(SoftDeleteTSModel, DescriptiveModel):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        verbose_name = 'competencia'
+
 
 class SubjectsGroup(SoftDeleteTSModel, DescriptiveModel):
     checksum = models.CharField(blank=True, max_length=100)
@@ -35,6 +42,10 @@ class SubjectsGroup(SoftDeleteTSModel, DescriptiveModel):
         Program,
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        verbose_name = 'grupo de asignaturas'
+        verbose_name_plural = 'grupos de asignaturas'
 
 
 class Level(SoftDeleteTSModel, DescriptiveModel):
@@ -46,8 +57,8 @@ class Level(SoftDeleteTSModel, DescriptiveModel):
     )
 
     class Meta:
-         verbose_name = 'nivel'
-         verbose_name_plural = 'niveles'
+        verbose_name = 'nivel'
+        verbose_name_plural = 'niveles'
 
 
 class Subject(SoftDeleteTSModel, DescriptiveModel):
@@ -60,6 +71,9 @@ class Subject(SoftDeleteTSModel, DescriptiveModel):
         Level,
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        verbose_name = 'asignatura'
 
 
 class Indicator(SoftDeleteTSModel, DescriptiveModel):
@@ -74,5 +88,20 @@ class Indicator(SoftDeleteTSModel, DescriptiveModel):
     )
 
     class Meta:
-         verbose_name = 'indicador'
-         verbose_name_plural = 'indicadores'
+        verbose_name = 'indicador'
+        verbose_name_plural = 'indicadores'
+
+
+class SkillLevelDescription(SoftDeleteTSModel, DescriptiveModel):
+    level = models.ForeignKey(
+        Level,
+        on_delete=models.CASCADE,
+    )
+    skill = models.ForeignKey(
+        Skill,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = 'descripción competencia y nivel'
+        verbose_name_plural = 'descripciones competencias y niveles'

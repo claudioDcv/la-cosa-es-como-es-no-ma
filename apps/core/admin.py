@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Indicator, Subject, Level, SubjectsGroup, Skill, SkillsGroup, Program
+from .models import Indicator, Subject, Level, SubjectsGroup,\
+    Skill, SkillsGroup, Program, SkillLevelDescription
 
 
 @admin.register(Indicator)
@@ -46,6 +47,13 @@ class SkillsGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Program)
 class ProgramAdmin(admin.ModelAdmin):
+
+    list_display = ('id', 'code', 'name')
+    search_fields = ('name',)
+
+
+@admin.register(SkillLevelDescription)
+class SkillLevelDescriptionAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'name',)
     search_fields = ('name',)

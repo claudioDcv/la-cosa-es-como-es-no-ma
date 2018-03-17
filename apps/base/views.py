@@ -20,7 +20,7 @@ def get_context_current_profile(context, _self):
                 program=Program.objects.get(code=context['code']),
             )
             context['has_profile'] = True
-    except Profile.DoesNotExist:
+    except Exception:
         context['has_profile'] = False
     return context
 
@@ -31,6 +31,11 @@ class IndexView(TemplateView):
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "base/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):

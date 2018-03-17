@@ -92,7 +92,13 @@
             <tbody>
               {% for indicator in evaluated.indicator_list %}
               <tr id="indicator-{{ indicator.indicator_id }}">
-                <td style="max-width: 300px"><strong>{{ indicator.indicator.name }}</strong>
+                <td style="max-width: 300px">
+                  {% if request.user.is_superuser %}
+                  <a href="/admin/core/indicator/{{ indicator.indicator.id }}/change/">
+                    <i class="fas fa-pen-square"></i>
+                  </a>
+                  {% endif %}
+                  <strong>{{ indicator.indicator.name }}</strong>
                   <br />{{ indicator.indicator.description }}
                 </td>
                 <td class="txt-right">

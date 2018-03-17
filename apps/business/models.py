@@ -7,6 +7,9 @@ class Survey(SoftDeleteTSModel, DescriptiveModel):
     checksum = models.CharField(blank=True, max_length=100)
     indicator = models.ManyToManyField(Indicator)
 
+    class Meta:
+        verbose_name = 'encuesta'
+
 
 class Period(SoftDeleteTSModel, DescriptiveModel):
     checksum = models.CharField(blank=True, max_length=100)
@@ -14,6 +17,13 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
     end_date = models.DateField()
     program = models.ForeignKey(Program, on_delete=models.CASCADE,)
 
+    class Meta:
+        verbose_name = 'periodo'
+
 
 class Campus(SoftDeleteTSModel, DescriptiveModel):
     program = models.ManyToManyField(Program)
+
+    class Meta:
+        verbose_name = 'campus'
+        verbose_name_plural = 'campus'

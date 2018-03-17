@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
+from django.utils import timezone
 
 
 class DescriptiveModel(models.Model):
@@ -14,7 +15,7 @@ class DescriptiveModel(models.Model):
     class Meta:
         abstract = True
 
-    def __str__ (self):
+    def __str__(self):
         return '{0} {1}'.format(self.name, self.code)
 
 
@@ -36,27 +37,30 @@ class SoftDeleteTSModel(models.Model):
 
 
 class Profile(SoftDeleteTSModel, DescriptiveModel):
-  """
-  The Role entries are managed by the system,
-  automatically created via a Django data migration.
-  """
-  STUDENT = 1
-  TEACHER = 2
-  SECRETARY = 3
-  SUPERVISOR = 4
-  ADMIN = 5
-  ROLE_CHOICES = (
+    """
+    The Role entries are managed by the system,
+    automatically created via a Django data migration.
+    """
+    STUDENT = 1
+    TEACHER = 2
+    SECRETARY = 3
+    SUPERVISOR = 4
+    ADMIN = 5
+    ROLE_CHOICES = (
       (STUDENT, 'student'),
       (TEACHER, 'teacher'),
       (SECRETARY, 'secretary'),
       (SUPERVISOR, 'supervisor'),
       (ADMIN, 'admin'),
-  )
+    )
 
-  id = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
+    id = models.PositiveSmallIntegerField(
+        choices=ROLE_CHOICES,
+        primary_key=True,
+    )
 
-  def __str__(self):
-      return self.get_id_display()
+    def __str__(self):
+        return self.get_id_display()
 
 
 class User(AbstractUser):
@@ -124,7 +128,7 @@ class Parameter(SoftDeleteTSModel, models.Model):
     class Meta:
         abstract = True
 
-    def __str__ (self):
+    def __str__(self):
         return '{0} {1}'.format(self.name, self.code)
 
     class Meta:

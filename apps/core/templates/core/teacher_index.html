@@ -8,6 +8,7 @@
             <thead>
               <tr>
                 <th scope="col">#</th>
+                <th scope="col">Sección</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Progreso</th>
                 <th scope="col" class="txt-right">Acciones</th>
@@ -16,7 +17,12 @@
             <tbody>
               {% for course in courses %}
               <tr>
-                <th scope="row">{{ course.id }}</th>
+                <th scope="row">
+                  <a href="{% url 'course-index' code profile course.id %}" class="btn btn-link">
+                    {{ course.id }} ({{ course.code }})
+                  </a>
+                </th>
+                <td>{{ course.section }}</td>
                 <td>{{ course.name }}</td>
                 <td>
                   <div class="progress">

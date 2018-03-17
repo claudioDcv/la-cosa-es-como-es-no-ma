@@ -90,7 +90,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                     skill_value = 0
                     evaluated_at_least_once = False
                     len_final_ind_eval_list = 0
-                    indicator_percent_sum = 0
+                    ind_percent_sum = 0
                     indicator_evaluated = 0
 
                     for indicator in indicator_list:
@@ -99,7 +99,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                             indicator=indicator,
                         ).only('value').all()
 
-                        indicator_value = 0
+                        ind_value = 0
                         is_evaluated = False
                         len_final_ind_eval_list = len(final_ind_eval_list)
                         if len_final_ind_eval_list > 0:
@@ -107,25 +107,31 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                             indicator_evaluated = indicator_evaluated + 1
                             evaluated_at_least_once = True
                             for final_ind_eval in final_ind_eval_list:
-                                indicator_value = indicator_value + final_ind_eval.value
+                                ind_value = ind_value + final_ind_eval.value
                                 skill_value = skill_value + final_ind_eval.value
 
     #  creando dicionario para luego serializar como json
                         try:
-                            indicator_percent = (
-                                (indicator_value / len_final_ind_eval_list) * 100) / score['max']  #noqa
+                            ind_percent = (
+                                (ind_value / len_final_ind_eval_list) * 100) / score['max']  #noqa
                         except ZeroDivisionError:
-                            indicator_percent = 0
+                            ind_percent = 0
 
-                        indicator_percent_sum = indicator_percent_sum + indicator_percent
+                        ind_percent_sum = ind_percent_sum + ind_percent
+                        str_percent = str(
+                            ind_percent
+                            )[:4] if len(str(
+                                ind_percent
+                                )) > 4 else str(ind_percent)
+
                         final_indicator_list.append({
                             'object': {
                                 'name': indicator.name,
                                 'description': indicator.description,
                             },
-                            'value': indicator_value,
-                            'str_percent': (str(indicator_percent)[:4]) if len(str(indicator_percent)) > 4 else str(indicator_percent),
-                            'percent': indicator_percent,
+                            'value': ind_value,
+                            'str_percent': str_percent,
+                            'percent': ind_percent,
                             'is_evaluated': is_evaluated,
                         })
 
@@ -133,8 +139,8 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
     #  creando dicionario para luego serializar como json
                     try:
                         str_percent = (str(
-                            indicator_percent_sum / indicator_evaluated)[:4]) if len(str(indicator_percent_sum / indicator_evaluated)) > 4 else str(indicator_percent_sum / indicator_evaluated)  #noqa
-                        percent = indicator_percent_sum / indicator_evaluated
+                            ind_percent_sum / indicator_evaluated)[:4]) if len(str(ind_percent_sum / indicator_evaluated)) > 4 else str(ind_percent_sum / indicator_evaluated)  #noqa
+                        percent = ind_percent_sum / indicator_evaluated
                     except ZeroDivisionError:
                         str_percent = 0
                         percent = 0
