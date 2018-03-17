@@ -7,3 +7,8 @@ la-cosa-es-como-es-no-ma
 
 # Problemas
 - aberiguar si seccion debe ser algo mas que un string en Course
+
+
+initial_data
+    load_student_to_system
+    load_students_to_courses
