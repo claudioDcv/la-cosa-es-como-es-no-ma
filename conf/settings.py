@@ -2,9 +2,9 @@ import os
 import sys
 import dj_database_url
 
-IS_DEBUG = False
-if len(sys.argv) > 1:
-    IS_DEBUG = (sys.argv[1] == 'runserver')
+# IS_DEBUG = False
+# if len(sys.argv) > 1:
+#     IS_DEBUG = (sys.argv[1] == 'runserver')
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,9 +20,9 @@ PROJECT_DIR = BASE_DIR
 SECRET_KEY = 'pwh@p6fuw1$)-w!d6nare@@e9)e(pyalz_5%z@ltbnq)dz-)ou'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = IS_DEBUG
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'damp-eyrie-42510.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition
