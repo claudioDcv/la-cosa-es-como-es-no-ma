@@ -8,6 +8,12 @@ la-cosa-es-como-es-no-ma
 # Problemas
 - aberiguar si seccion debe ser algo mas que un string en Course
 
+- esta bien el indicador vinculado a la carrera?
+
+
+./manage.py loaddata testadata.json
+./manage.py load_student_to_system
+./manage.py load_students_to_courses
 
 initial_data
     load_student_to_system
