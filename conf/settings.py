@@ -22,7 +22,7 @@ SECRET_KEY = 'pwh@p6fuw1$)-w!d6nare@@e9)e(pyalz_5%z@ltbnq)dz-)ou'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = IS_DEBUG
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'damp-eyrie-42510.herokuapp.com']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition
