@@ -77,6 +77,7 @@ class Subject(SoftDeleteTSModel, DescriptiveModel):
 
 
 class Indicator(SoftDeleteTSModel, DescriptiveModel):
+    name = models.CharField(blank=True, max_length=1000)
     checksum = models.CharField(blank=True, max_length=100)
     subject = models.ForeignKey(
         Subject,

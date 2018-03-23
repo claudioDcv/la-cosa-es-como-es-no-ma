@@ -41,11 +41,11 @@ class Profile(SoftDeleteTSModel, DescriptiveModel):
     The Role entries are managed by the system,
     automatically created via a Django data migration.
     """
-    STUDENT = 1
-    TEACHER = 2
-    SECRETARY = 3
-    SUPERVISOR = 4
-    ADMIN = 5
+    STUDENT = 'student'
+    TEACHER = 'teacher'
+    SECRETARY = 'secretary'
+    SUPERVISOR = 'supervisor'
+    ADMIN = 'admin'
     ROLE_CHOICES = (
       (STUDENT, 'student'),
       (TEACHER, 'teacher'),
@@ -54,13 +54,16 @@ class Profile(SoftDeleteTSModel, DescriptiveModel):
       (ADMIN, 'admin'),
     )
 
-    id = models.PositiveSmallIntegerField(
+    code = models.CharField(
+        max_length=10,
         choices=ROLE_CHOICES,
+        default='student',
         primary_key=True,
     )
 
+
     def __str__(self):
-        return self.get_id_display()
+        return '{0} {1}'.format(self.name, self.code)
 
 
 class User(AbstractUser):

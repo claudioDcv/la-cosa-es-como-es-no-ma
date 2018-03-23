@@ -75,10 +75,21 @@ def evaluated_with_indicator(course_id, evaluated):
 
 def student_list_with_indicator(pk):
     context = {}
-    course = Course.objects.get(pk=pk)
+    course = Course.objects.defer(
+        'period',
+        'section',
+        'description',
+        'feedback',
+    ).get(pk=pk)
 
     total_indicators = course.survey.indicator.all()
-    students = course.students.all()
+    students = course.students.values(
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        ).all()
 
     total_half_percent = 0
     students_with_indicator = []
@@ -86,9 +97,9 @@ def student_list_with_indicator(pk):
 
     for student in students:
         indicator_list = FinalIndicatorEvaluation.objects.filter(
-            course=course,
-            evaluated=student,
-        ).order_by('-id').all()
+            course_id=course.id,
+            evaluated=student['id'],
+        ).defer('tempfinalindicatorevaluation', 'created_ts', 'evaluator').order_by('-id').all()
 
         total_achievement = 0
         for indicator in indicator_list:

@@ -8,11 +8,6 @@ from .models import User, Profile, UserProfilesProgram, Parameter
 @admin.register(User)
 class UserAdmin(UserAdmin):
 
-    # def get_roles(self, instane):
-    #     return [a for a in instane.roles.all()]
-    #
-    # get_roles.short_description = 'Roles'
-
     list_display = (
         'username',
         'external_info',
@@ -33,12 +28,18 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('name', 'code',)
 
 
 @admin.register(UserProfilesProgram)
 class UserProfilesProgramAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'program')
+    list_display = ('id', 'user', 'get_products', 'program')
+
+    def get_products(self, obj):
+        if obj.profiles.all():
+            return "\n".join([p.name for p in obj.profiles.all()])
+        else:
+            return ''
 
 
 @admin.register(Parameter)

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
 
     'django_extensions',
 
+    'django_tables2',
+
     'rest_framework',
     'django_filters',
 

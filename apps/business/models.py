@@ -20,6 +20,9 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
     class Meta:
         verbose_name = 'periodo'
 
+    def __str__(self):
+        return '{0} {1}'.format(self.name, self.program)
+
 
 class Campus(SoftDeleteTSModel, DescriptiveModel):
     program = models.ManyToManyField(Program)
