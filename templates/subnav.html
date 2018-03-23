@@ -4,15 +4,15 @@
   <span class="txt-thin">Programa</span> {{ program.name }}
 </div>
 <div class="menu">
-{% if  current_profile|has_profile:'admin' %}
+{% if  current_profile.code == 'admin' %}
   {% include "subnavs/admin.html" %}
 {% endif %}
 
-{% if  current_profile|has_profile:'teacher' %}
+{% if  current_profile.code == 'teacher' %}
   {% include "subnavs/teacher.html" %}
 {% endif %}
 
-{% if  current_profile|has_profile:'student' %}
+{% if  current_profile.code == 'student' %}
   {% include "subnavs/student.html" %}
 {% endif %}
 

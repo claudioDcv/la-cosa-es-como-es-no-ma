@@ -24,10 +24,10 @@
               <strong>{{ profile.name }}</strong>
             </div>
             <div class="btn-group" role="group" aria-label="Basic example">
-              <a class="btn btn-sm btn-link" href="{% url 'program-index' o.program.code profile.id %}">
+              <a class="btn btn-sm btn-link" href="{% url 'program-index' o.program.code profile.code %}">
                 <i class="fas fa-book"></i> Cursos
               </a>
-              <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.program.code profile.id %}">
+              <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.program.code profile.code %}">
                 <i class="fas fa-bolt"></i> Competencias
               </a>
             </div>

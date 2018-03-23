@@ -60,18 +60,18 @@
         </div>
         <div class="card-footer">
           <p class="mb-2">INDICADORES</p>
-          <div>
+          <ul class="list-group">
             {% for indicator in skill.indicator_list %}
-            <a href="#" class="btn btn-sm btn-outline-primary">
-              <i class="fas fa-genderless"></i> {{ indicator.object.name }} |
-              {% if indicator.is_evaluated %}
-                {{ indicator.str_percent }}%
-              {% else %}
-                <i class="fas fa-ban"></i>
-              {% endif %}
-            </a>
+              <a href="#" class="list-group-item">
+                <i class="fas fa-genderless"></i> {{ indicator.object.name }} |
+                {% if indicator.is_evaluated %}
+                  {{ indicator.str_percent }}%
+                {% else %}
+                  <i class="fas fa-ban"></i>
+                {% endif %}
+              </a>
             {% endfor %}
-          </div>
+          </ul>
         </div>
       </div>
       {% endfor %}

@@ -22,24 +22,24 @@
 </nav>
 
   {% if courses|length > 0 %}
-    {% if  current_profile|has_profile:'admin' %}
+    {% if  current_profile.code == 'admin' %}
       {% include "core/admin_index.html" %}
     {% endif %}
 
-    {% if  current_profile|has_profile:'teacher' %}
+    {% if  current_profile.code == 'teacher' %}
       {% include "core/teacher_index.html" %}
     {% endif %}
 
-    {% if  current_profile|has_profile:'student' %}
+    {% if  current_profile.code == 'student' %}
       {% include "core/student_index.html" %}
     {% endif %}
 
   {% else %}
-    No existen elementos
+    No existen elementos.
   {% endif %}
 
 {% else %}
-No posee permisos
+No posee permisos.
 {% endif %}
 
 

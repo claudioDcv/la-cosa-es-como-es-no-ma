@@ -19,14 +19,6 @@ def calc_percentage(x, total):
     return (x * 100) / total
 
 
-def has_profile(current_profile, profile):
-    current_profile_name = ''
-    for prof in current_profile.ROLE_CHOICES:
-        if prof[0] == current_profile.id:
-            current_profile_name = prof[1]
-    return current_profile_name == profile
-
-
 def get_id_profile_by_name(name):
     prof_id = 0
     for prof in Profile.ROLE_CHOICES:
@@ -60,12 +52,13 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
 
         if context['current_profile']:
 
-            if has_profile(context['current_profile'], 'teacher'):
+            if context['current_profile'].code == 'teacher':
                 obj = self.get_object()
                 context['courses'] = obj.filter(teachers=user)
 
-            elif has_profile(context['current_profile'], 'student'):
+            elif context['current_profile'].code == 'student':
 
+                obj = self.get_object()
                 #  traer todos los cursos donde participa el estudiante
                 context['courses'] = obj.filter(students=user)
 
@@ -104,10 +97,11 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                     indicator_evaluated = 0
 
                     for indicator in indicator_list:
+
                         final_ind_eval_list = FinalIndicatorEvaluation.\
                             objects.filter(
                                 evaluated=user,
-                                indicator=indicator,
+                                indicator_id=indicator.get('id'),
                             ).only('value').all()
 
                         ind_value = 0
@@ -122,6 +116,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                                 skill_value = skill_value + final_ind_eval.value
 
                         #  creando dicionario para luego serializar como json
+                        
                         try:
                             ind_percent = calc_percentage(
                                 ind_value,
@@ -137,10 +132,11 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                                 ind_percent
                                 )) > 4 else str(ind_percent)
 
+
                         final_indicator_list.append({
                             'object': {
-                                'name': indicator.name,
-                                'description': indicator.description,
+                                'name': indicator.get('name'),
+                                'description': indicator.get('description'),
                             },
                             'value': ind_value,
                             'str_percent': str_percent,
@@ -172,9 +168,8 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                 context['skill_list'] = final_skill_list
                 context['json_skill_list'] = json.dumps(final_skill_list)
 
-            if has_profile(context['current_profile'], 'admin'):
+            if context['current_profile'].code == 'admin':
                 context['courses'] = obj
-
         return context
 
 
@@ -201,20 +196,21 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         context = get_context_current_profile(context, self)
 
         if context['current_profile']:
-            if has_profile(context['current_profile'], 'teacher'):
+            if context['current_profile'].code == 'teacher':
                 context['courses'] = Course.objects.filter(
                     teachers=user,
                     subject__subjects_group__program=self.get_object())
 
-            if has_profile(context['current_profile'], 'student'):
+            if context['current_profile'].code == 'student':
                 context['courses'] = Course.objects.filter(
                     students=user,
                     subject__subjects_group__program=self.get_object())
 
-            if has_profile(context['current_profile'], 'admin'):
+            if context['current_profile'].code == 'admin':
                 context['courses'] = Course.objects.filter(
                     subject__subjects_group__program=self.get_object())
 
+        context['courser_len'] = len(context['courses'])
         return context
 
 

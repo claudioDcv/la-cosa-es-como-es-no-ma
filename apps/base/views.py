@@ -10,13 +10,14 @@ def get_context_current_profile(context, _self):
     context['has_profile'] = False
     try:
         context['current_profile'] = Profile.objects.get(
-            id=_self.kwargs['profile'])
+            code=_self.kwargs['profile'])
     except Profile.DoesNotExist:
         context['current_profile'] = False
     try:
         if context['current_profile']:
+            
             _self.request.user.user_profiles_program.get(
-                profiles=context['current_profile'].id,
+                profiles=context['current_profile'].code,
                 program=Program.objects.get(code=context['code']),
             )
             context['has_profile'] = True
