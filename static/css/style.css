@@ -163,3 +163,18 @@ body {
 .txt-right {
   text-align: right;
 }
+
+/* .skills-graph {
+  
+} */
+
+.skills-graph > div > div > div {
+  outline: solid 1px #00000033; 
+}
+/* .skills-graph > div > div > div:hover {
+  outline: solid 1px #00000087;
+} */
+
+.skills-graph > div > div > div > div:first-child {
+  width: 100%;
+}

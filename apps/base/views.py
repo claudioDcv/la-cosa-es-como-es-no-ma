@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import DetailView
+from django.shortcuts import redirect
 
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.core.models import Program
@@ -32,6 +33,22 @@ class IndexView(TemplateView):
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "base/home.html"
+
+    def get(self, request, **kwargs):
+        student_profile = User.objects.filter(
+            id=self.request.user.id,
+            user_profiles_program__profiles='student',
+        )
+
+        if len(student_profile) == 1:
+            prof = student_profile.first()
+            programs = prof.user_profiles_program.all()
+            if len(programs) == 1:
+                program = programs.first()
+                code = program.program.code
+                return redirect('/program/{0}/student/skill-list'.format(code))
+        
+        return super(HomeView, self).get(request, kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

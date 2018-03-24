@@ -1,14 +1,17 @@
 <ul class="nav">
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link active" href="#">Active</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#">Evaluaciones</a>
+  </li> -->
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'program-index' program.code 'student' %}">Cursos</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Cursos</a>
+    <a class="nav-link" href="{% url 'skill-index' program.code 'student' %}">Competencias</a>
   </li>
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link disabled" href="#">Disabled</a>
-  </li>
+  </li> -->
 </ul>

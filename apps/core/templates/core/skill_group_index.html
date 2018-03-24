@@ -29,11 +29,12 @@
       <h5 class="card-header txt-thin">
         <i class="fas fa-check-circle"></i> NIVEL DE LOGRO
       </h5>
+      <div id="skills" class="skills-graph"></div>
       <div class="chart-container" style="overflow-x:auto">
-        <canvas
+        <!-- <canvas
           id="skill-graph"
           width="400" height="200"
-        ></canvas>
+        ></canvas> -->
       </div>
     </div>
   </div>
@@ -58,20 +59,29 @@
           </h6>
           {{ skill.object.description }}
         </div>
-        <div class="card-footer">
-          <p class="mb-2">INDICADORES</p>
-          <ul class="list-group">
+        <div class="card-footer px-0">
+          <p class="mb-2 mx-3">INDICADORES</p>
+          <div class="row mx-0">
             {% for indicator in skill.indicator_list %}
-              <a href="#" class="list-group-item">
-                <i class="fas fa-genderless"></i> {{ indicator.object.name }} |
-                {% if indicator.is_evaluated %}
-                  {{ indicator.str_percent }}%
-                {% else %}
-                  <i class="fas fa-ban"></i>
-                {% endif %}
-              </a>
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <a href="#" class="card mb-2">
+                  <div class="card-body">
+                    {% if indicator.is_evaluated %}
+                  <div class="c100 p{{ indicator.str_percent|floatformat:"0" }} xs">
+                      <span>{{ indicator.str_percent }}%</span>
+                      <div class="slice">
+                          <div class="bar"></div>
+                          <div class="fill"></div>
+                      </div>
+                  </div>{{ indicator.object.name }} 
+                  {% else %}
+                  {{ indicator.object.name }} | Aun no se ha evaluado
+                  {% endif %}
+                  </div>
+                </a>
+              </div>
             {% endfor %}
-          </ul>
+            </div>
         </div>
       </div>
       {% endfor %}
@@ -90,88 +100,166 @@ No posee permisos
 {% block scripts %}
 <script type="text/javascript">
   var data = {{ json_skill_list|safe }};
-  console.log(data);
-  var ctx = document.getElementById("skill-graph");
-  ctx.height = 100;
-  // ctx.width = (data.length > 0 ? data.length : 1) * 5000;
+  
+  function startSkills(data) {
+    var w = 200;
+    var h = 200;
+    var elm = document.getElementById('skills');
+    var skillMargin = 15;
 
-  var backgroundColor = [
+    var backgroundColor = [
       'rgba(255, 99, 132, 0.2)',
       'rgba(54, 162, 235, 0.2)',
       'rgba(255, 206, 86, 0.2)',
       'rgba(75, 192, 192, 0.2)',
       'rgba(153, 102, 255, 0.2)',
       'rgba(255, 159, 64, 0.2)'
-  ];
-  var borderColor = [
-      'rgba(255,99,132,1)',
-      'rgba(54, 162, 235, 1)',
-      'rgba(255, 206, 86, 1)',
-      'rgba(75, 192, 192, 1)',
-      'rgba(153, 102, 255, 1)',
-      'rgba(255, 159, 64, 1)'
-  ];
-
-  function randArrayValue(arr) {
-    var rand = arr[Math.floor(Math.random() * arr.length)];
-    return rand;
-  }
-
-  var option = {
-  	scales: {
-    	yAxes:[{
-      		stacked:true,
-          gridLines: {
-          	display:true,
-            color:"rgba(255,99,132,0.2)"
-          },
-          ticks: {
-            max: 100,
-            stepSize: 10,
-            min: 0,
-            callback: function(value) {
-               return value + "%"
-            }
-          },
-          scaleLabel: {
-            display: true,
-            labelString: "Porcentaje"
-          }
-      }],
-      xAxes:[{
-      		gridLines: {
-          	display:false
-          }
-      }]
+    ];
+    var borderColor = [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ];
+    function randArrayValue(arr) {
+      var rand = arr[Math.floor(Math.random() * arr.length)];
+      return rand;
     }
+
+    elm.style.height = h + 'px';
+    elm.style.border = '1px solid #dfdfdf';
+    elm.style.overflowX = 'auto';
+
+    elm.style.margin = '15px';
+    elm.style.borderRadius = '5px';
+    elm.style.overflowY= 'hidden';
+    elm.style.textAlign = 'center';
+    elm.style.backgroundImage = 'repeating-linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255) 19px, #dfdfdf 0px, #dfdfdf 20px)';
+
+    var cont = document.createElement('div');
+    cont.style.width = (data.length * w + (skillMargin * (data.length - 1))) + 'px';
+    cont.style.height = '100%';
+    cont.style.display = 'inline-block';
+
+    // create skills container
+    data.forEach(function (element, index){
+      var skill = document.createElement('div');
+      var skillPercent = document.createElement('div');
+
+      var containerPercentText = document.createElement('div');
+      
+      // containerPercentText.style.position = 'absolute';
+      // containerPercentText.style.bottom = 0;
+      // containerPercentText.style.left = 0;
+
+      var percentText = document.createTextNode(
+        (Math.floor(element.percent * 10) / 10) + '%'
+      );
+      
+      var containerDescriptionText = document.createElement('div');
+
+      containerDescriptionText.style.position = 'absolute';
+      containerDescriptionText.style.bottom = 0;
+      containerDescriptionText.style.left = 0;
+
+      var descriptionText = document.createTextNode(element.object.name);
+
+      skillPercent.style.width = w + 'px';
+      skillPercent.style.height = element.percent + '%';
+      
+      skillPercent.style.position = 'absolute';
+      skillPercent.style.bottom = 0;
+      skillPercent.style.left = 0;
+      
+      skillPercent.style.backgroundColor = randArrayValue(backgroundColor);
+      skill.style.width = w + 'px';
+      skill.style.height = '100%';
+      skill.style.float = 'left';
+      skill.style.position = 'relative';
+
+      if (index < data.length - 1) {
+        skill.style.marginRight = skillMargin + 'px';
+      }
+
+      containerDescriptionText.appendChild(descriptionText);
+      skillPercent.appendChild(containerDescriptionText);
+
+      containerPercentText.appendChild(percentText);
+      skillPercent.appendChild(containerPercentText);
+
+      skill.appendChild(skillPercent);
+
+      cont.appendChild(skill);
+    });
+
+    elm.appendChild(cont);
   };
 
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: data.filter(function(e) {
-          return e.evaluated_at_least_once;
-        }).map(function(e) {
-          return e.object.name;
-        }),
-        datasets: [{
-            label: 'Logro',
-            data: data.filter(function(e) {
-              return e.evaluated_at_least_once;
-            }).map(function(e) {
-              return parseInt(e.percent);
-            }),
+  startSkills(data);
 
-            backgroundColor: data.filter(function(e) {
-              return e.evaluated_at_least_once;
-            }).map(function(e) {
-              return randArrayValue(backgroundColor);
-            }),
+//   console.log(data);
+//   var ctx = document.getElementById("skill-graph");
+//   ctx.height = 100;
+//   // ctx.width = (data.length > 0 ? data.length : 1) * 5000;
 
-            borderWidth: 1
-        }],
-    },
-    options: option,
-});
+
+//   var option = {
+//   	scales: {
+//     	yAxes:[{
+//       		stacked:true,
+//           gridLines: {
+//           	display:true,
+//             color:"rgba(255,99,132,0.2)"
+//           },
+//           ticks: {
+//             max: 100,
+//             stepSize: 10,
+//             min: 0,
+//             callback: function(value) {
+//                return value + "%"
+//             }
+//           },
+//           scaleLabel: {
+//             display: true,
+//             labelString: "Porcentaje"
+//           }
+//       }],
+//       xAxes:[{
+//       		gridLines: {
+//           	display:false
+//           }
+//       }]
+//     }
+//   };
+
+// var myChart = new Chart(ctx, {
+//     type: 'bar',
+//     data: {
+//         labels: data.filter(function(e) {
+//           return e.evaluated_at_least_once;
+//         }).map(function(e) {
+//           return e.object.name;
+//         }),
+//         datasets: [{
+//             label: 'Logro',
+//             data: data.filter(function(e) {
+//               return e.evaluated_at_least_once;
+//             }).map(function(e) {
+//               return parseInt(e.percent);
+//             }),
+
+//             backgroundColor: data.filter(function(e) {
+//               return e.evaluated_at_least_once;
+//             }).map(function(e) {
+//               return randArrayValue(backgroundColor);
+//             }),
+
+//             borderWidth: 1
+//         }],
+//     },
+//     options: option,
+// });
 </script>
 {% endblock %}
