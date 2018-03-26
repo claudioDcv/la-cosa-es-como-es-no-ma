@@ -131,7 +131,9 @@ def student_list_with_indicator(pk):
         total_half_percent = total_half_percent / students_with_evaluation
     else:
         total_half_percent = 0
+    
     context['total_half_percent'] = total_half_percent
+    context['str_total_half_percent'] = (str(total_half_percent)[:4]) if len(str(total_half_percent)) > 4 else str(total_half_percent)
     context['total_indicators'] = len(total_indicators)
     context['students_with_indicator'] = students_with_indicator
 

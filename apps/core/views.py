@@ -155,6 +155,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
 
                     final_skill_list.append({
                         'object': {
+                            'id': skill.id,
                             'name': skill.name,
                             'description': skill.description,
                         },
@@ -201,6 +202,16 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                     teachers=user,
                     subject__subjects_group__program=self.get_object())
 
+                courses_with_percent = []
+
+                for course in context['courses']:
+                    students = student_list_with_indicator(course.id)
+                    courses_with_percent.append({
+                        'course': course,
+                        'students': students,
+                    })
+                context['courses'] = courses_with_percent
+
             if context['current_profile'].code == 'student':
                 context['courses'] = Course.objects.filter(
                     students=user,
@@ -209,6 +220,16 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
             if context['current_profile'].code == 'admin':
                 context['courses'] = Course.objects.filter(
                     subject__subjects_group__program=self.get_object())
+                
+                courses_with_percent = []
+
+                for course in context['courses']:
+                    students = student_list_with_indicator(course.id)
+                    courses_with_percent.append({
+                        'course': course,
+                        'students': students,
+                    })
+                context['courses'] = courses_with_percent
 
         context['courser_len'] = len(context['courses'])
         return context
@@ -231,6 +252,8 @@ class CourseView(LoginRequiredMixin, DetailView):
         context['program'] = Program.objects.get(code=self.kwargs['code'])
 
         students = student_list_with_indicator(self.kwargs['pk'])
+        
+        context['str_total_half_percent'] = students['str_total_half_percent']
         context['total_half_percent'] = students['total_half_percent']
         context['total_indicators'] = students['total_indicators']
         context['students_with_indicator'] = students[

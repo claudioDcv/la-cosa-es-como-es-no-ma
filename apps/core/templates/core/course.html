@@ -36,7 +36,7 @@
         {{ object.description }}
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Logro: {{ total_half_percent }}%</li>
+        <li class="list-group-item">Logro: {{ str_total_half_percent }}%</li>
         <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
         <li class="list-group-item">
           Valores:
@@ -56,7 +56,6 @@
           <table id="table-student" class="table table-hover mb-0">
             <thead>
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Email</th>
                 <th>Indicadores Evaluados</th>
@@ -72,9 +71,11 @@
                   <a href="/admin/base/user/{{ student.user.id }}/change/">
                     <i class="fas fa-pen-square"></i>
                   </a>
-                  {% endif %}{{ student.user.id }}
+                  {% endif %}
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}">
+                      {{ student.user.id }} {{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.username }})
+                  </a>
                 </th>
-                <td>{{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.username }})</td>
                 <td>{{ student.user.email }}</td>
                 <td>
                   <div class="progress" style="height:20px">

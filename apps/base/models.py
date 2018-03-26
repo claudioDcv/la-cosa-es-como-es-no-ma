@@ -73,32 +73,29 @@ class User(AbstractUser):
     AUTH_USER_EMAIL_UNIQUE = True
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'external_info']
-
+    
     @staticmethod
     def has_profile_program(user, program_code, profile_list):
         """
         - profile_list <tuple/list>: contains <str>
         - ej: ('teacher', 'admin')
         """
-        profile_id = 0
-        if type(profile_list) == int:
-            profile_id = profile_list
-        else:
-            for profile in Profile.ROLE_CHOICES:
-                if profile[1] in profile_list:
-                    profile_id = profile[0]
+        if type(profile_list) != tuple:
+            profile_list = (profile_list,)
 
+        profiles = Profile.objects.filter(code__in=profile_list).all()
         if program_code:
             profile = UserProfilesProgram.objects.filter(
                 user=user,
                 program__code=program_code,
-                profiles=profile_id,
+                profiles__in=profiles,
             ).all()
         else:
             profile = UserProfilesProgram.objects.filter(
                 user=user,
-                profiles=profile_id,
+                profiles__in=profiles,
             ).all()
+
         return len(profile) > 0
 
 

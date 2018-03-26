@@ -48,7 +48,7 @@
     </h5>
     <div class="card-body">
       {% for skill in skill_list %}
-      <div class="card mb-4">
+      <div class="card mb-4" id="skill-{{ skill.object.id }}">
         <div class="card-body">
           <h6 class="card-title">
             {{ skill.object.name }}
@@ -158,7 +158,11 @@ No posee permisos
         (Math.floor(element.percent * 10) / 10) + '%'
       );
       
-      var containerDescriptionText = document.createElement('div');
+      var containerDescriptionText = document.createElement('a');
+      
+      containerDescriptionText.href = '#skill-' + element.object.id;
+
+      containerDescriptionText.className = 'btn btn-link d-block w-100';
 
       containerDescriptionText.style.position = 'absolute';
       containerDescriptionText.style.bottom = 0;

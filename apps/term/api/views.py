@@ -23,11 +23,11 @@ class FeedBackCreateUpdateDeleteTeacherAdmin(permissions.BasePermission):
                     program_code=request.data.get('code', ''),
                     profile_list=('teacher', 'admin'),
                 )
-            if view.action in ('destroy'):
+            if view.action in ('destroy',):
                 is_admin = User.has_profile_program(
                     user=request.user,
                     program_code=False,
-                    profile_list=('admin'),
+                    profile_list=('admin',),
                 )
                 if is_admin:
                     return True

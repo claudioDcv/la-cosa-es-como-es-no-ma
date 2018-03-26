@@ -169,7 +169,23 @@ body {
 } */
 
 .skills-graph > div > div > div {
-  outline: solid 1px #00000033; 
+  outline: solid 1px #00000033;
+  transition: .2s all ease;
+  border-radius: 0;
+}
+.skills-graph > div > div > div > a {
+  text-decoration: none;
+}
+.skills-graph > div > div > div > a:hover {
+  text-decoration: none;
+  transition: .2s all ease;
+  transform: scaleY(.95) scaleX(.95);
+  border-radius: 5px;
+  overflow: hidden;
+  outline: none;
+  background: #307abb;
+  color: white;
+  border: none;
 }
 /* .skills-graph > div > div > div:hover {
   outline: solid 1px #00000087;
