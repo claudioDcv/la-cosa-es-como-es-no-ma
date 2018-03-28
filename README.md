@@ -6,7 +6,6 @@ la-cosa-es-como-es-no-ma
 
 - Cursos
     - String del curso: 1400S-AAC111-2018_1-1
-    
     - String explicado: Programa-Asignatura-Periodo-Sección
 
 
