@@ -55,11 +55,11 @@
 			$.alerts._overlay('show');
 			
 			$("BODY").append(
-			  '<div id="popup_container">' +
+			  '<div id="main-popup_cont"><div id="popup_container">' +
 			    '<div id="popup_content">' +
 			      '<div id="popup_message"></div>' +
 				'</div>' +
-			  '</div>');
+			  '</div></div>');
 			
 			if( $.alerts.dialogClass ) $("#popup_container").addClass($.alerts.dialogClass);
 			
@@ -73,7 +73,7 @@
 				margin: 0
 			});
 
-			$("#popup_content").addClass(type);
+			$("#popup_message").addClass(type);
 			$("#popup_message").text(msg);
 			$("#popup_message").html( $("#popup_message").text().replace(/\n/g, '<br />') );
 			

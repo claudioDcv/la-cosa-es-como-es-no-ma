@@ -130,6 +130,7 @@ window.XHRUpdate = function(opts) {
 	xhr.setRequestHeader('X-CSRFToken', data.csrfmiddlewaretoken);
 	xhr.onload = function () {
 		var model = JSON.parse(xhr.responseText);
+		model.data = data;
 		if (xhr.readyState == 4 && xhr.status == "200") {
 			opts.success(model)
 		} else {
