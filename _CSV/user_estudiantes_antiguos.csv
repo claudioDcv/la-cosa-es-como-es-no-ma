@@ -1,0 +1,55 @@
+username;first_name;last_name;email;password;external_info
+23514253-8;Juan Carlos;De Los Rios;jdelosriosr@udd.cl;23514253;{'materno':'Ruiz', 'promocion':'2016', 'matricula':'201611400S001', 'comentario':''}
+19648991-6;Constanza Andrea;Gomez;cogomezi@udd.cl;19648991;{'materno':'Irribarra', 'promocion':'2016', 'matricula':'201611400S049', 'comentario':''}
+19137852-0;Cristobal Humberto;Walker;cwalkera@udd.cl;19137852;{'materno':'Andrade', 'promocion':'2016', 'matricula':'201611400S100', 'comentario':''}
+19711879-2;Javiera Paz;Zevallos;jzevallosb@udd.cl;19711879;{'materno':'Bolado', 'promocion':'2016', 'matricula':'201611400S114', 'comentario':''}
+18019050-3;Valentina Paz;Sepulveda;vsepulvedac@udd.cl;18019050;{'materno':'Cubillos', 'promocion':'2016', 'matricula':'201611400S133', 'comentario':''}
+21502708-2;Ana Cristina;Vasconez;avasconezo@udd.cl;21502708;{'materno':'Ochoa', 'promocion':'2016', 'matricula':'201621400S001', 'comentario':''}
+19347965-0;Gianpier;Bertolla;gbertollad@udd.cl;19347965;{'materno':'Depetris', 'promocion':'2016', 'matricula':'201621400S003', 'comentario':''}
+19688493-9;Maria Victoria;Ugarte;maugartem@udd.cl;19688493;{'materno':'Mc Intyre', 'promocion':'2016', 'matricula':'201621400S008', 'comentario':''}
+19246973-2;Kai Jacques;Gildemeister;kgildemeisterd@udd.cl;19246973;{'materno':'Ducaud', 'promocion':'2016', 'matricula':'201621400S012', 'comentario':''}
+18569951-K;Agustin Ignacio;Sepulveda;agsepulvedam@udd.cl;18569951;{'materno':'Millan', 'promocion':'2017', 'matricula':'201711400S005', 'comentario':''}
+19526109-1;Angelica De Maria;Durand;adurandf@udd.cl;19526109;{'materno':'Fuentes', 'promocion':'2017', 'matricula':'201711400S008', 'comentario':''}
+20039048-2;Agustin;Saa;asaaf@udd.cl;20039048;{'materno':'Fernandez', 'promocion':'2017', 'matricula':'201711400S009', 'comentario':''}
+19310080-5;Patricio Ignacio;Miranda;pmirandao@udd.cl;19310080;{'materno':'Osorio', 'promocion':'2017', 'matricula':'201711400S011', 'comentario':''}
+19155499-K;Jorge Roman;Zamarreño;jzamarrenop@udd.cl;19155499;{'materno':'Pinto', 'promocion':'2017', 'matricula':'201711400S013', 'comentario':''}
+19606765-5;Nicolas Rodrigo;Mena;nmenak@udd.cl;19606765;{'materno':'Krog', 'promocion':'2017', 'matricula':'201711400S016', 'comentario':''}
+19864236-3;Isidora;Alvarez;ialvarezm@udd.cl;19864236;{'materno':'Mittifogo', 'promocion':'2017', 'matricula':'201711400S017', 'comentario':''}
+19891782-6;Pablo Jose;Izurieta;pizurietah@udd.cl;19891782;{'materno':'Huerta', 'promocion':'2017', 'matricula':'201711400S030', 'comentario':''}
+19679467-0;Tomas Alejandro;Yavar;tyavars@udd.cl;19679467;{'materno':'Silva', 'promocion':'2017', 'matricula':'201711400S038', 'comentario':''}
+19687114-4;Alvaro Manuel;Cabieses;acabiesess@udd.cl;19687114;{'materno':'Saitua', 'promocion':'2017', 'matricula':'201711400S044', 'comentario':''}
+19690073-K;Moises Jorge Enrique;Jadue;mjaduea@udd.cl;19690073;{'materno':'Abuawad', 'promocion':'2017', 'matricula':'201711400S065', 'comentario':''}
+19840297-4;Jose Luis;Montero;jomonteroo@udd.cl;19840297;{'materno':'Olivares', 'promocion':'2017', 'matricula':'201711400S071', 'comentario':''}
+19889475-3;Luis Ignacio;Prado;luipradob@udd.cl;19889475;{'materno':'Baldor', 'promocion':'2017', 'matricula':'201711400S079', 'comentario':''}
+19842283-5;Margarita Ignacia;Bravo;mbravoz@udd.cl;19842283;{'materno':'Zbinden', 'promocion':'2017', 'matricula':'201711400S084', 'comentario':''}
+19932275-3;Manuela Almendra;Celis;mcelisn@udd.cl;19932275;{'materno':'Nadales', 'promocion':'2017', 'matricula':'201711400S086', 'comentario':''}
+20119063-0;Julio Ignacia;Oporto;joportov@udd.cl;20119063;{'materno':'Villarroel', 'promocion':'2017', 'matricula':'201711400S088', 'comentario':''}
+18922880-5;Renato Hernan;Barraza;rbarrazad@udd.cl;18922880;{'materno':'Dubo', 'promocion':'2017', 'matricula':'201711400S092', 'comentario':''}
+19892158-0;Nicolas Alejandro;Cominetti;ncominettia@udd.cl;19892158;{'materno':'Allard', 'promocion':'2017', 'matricula':'201711400S095', 'comentario':''}
+19718363-2;Luciano Alberto;Villarreal;lvillarrealv@udd.cl;19718363;{'materno':'Valdes', 'promocion':'2017', 'matricula':'201711400S099', 'comentario':''}
+19686828-3;Hector;Castro;hecastroj@udd.cl;19686828;{'materno':'Julio', 'promocion':'2017', 'matricula':'201711400S109', 'comentario':''}
+19772095-6;Rocio Del Pilar;Velasquez;rvelasquezn@udd.cl;19772095;{'materno':'Navea', 'promocion':'2017', 'matricula':'201711400S112', 'comentario':''}
+19840740-2;Sebastian Ignacio;Soto;sesotor@udd.cl;19840740;{'materno':'Rios', 'promocion':'2017', 'matricula':'201711400S113', 'comentario':''}
+19955516-2;Gonzalo Daniel;Mora;gmorad@udd.cl;19955516;{'materno':'Dabancens', 'promocion':'2017', 'matricula':'201711400S115', 'comentario':''}
+19996279-5;Carolina Victoria;Rivera;cariveraa@udd.cl;19996279;{'materno':'Arcos', 'promocion':'2017', 'matricula':'201711400S120', 'comentario':''}
+20344198-3;Luana Nahir;Narbona;lnarbonad@udd.cl;20344198;{'materno':'Delvalle', 'promocion':'2017', 'matricula':'201711400S125', 'comentario':''}
+19893406-2;Akio Mauricio;Kodama;akodamam@udd.cl;19893406;{'materno':'Miura', 'promocion':'2017', 'matricula':'201711400S128', 'comentario':''}
+20062926-4;Cecilia Noemi;Arias;cariass@udd.cl;20062926;{'materno':'Salinas', 'promocion':'2017', 'matricula':'201711400S132', 'comentario':''}
+19637838-3;Benjamin Ignacio Eduardo;Schulz;bschulzg@udd.cl;19637838;{'materno':'Gomez', 'promocion':'2017', 'matricula':'201711400S136', 'comentario':''}
+20072490-9;Nicole Camille;Mallouhi;nmallouhis@udd.cl;20072490;{'materno':'Camille', 'promocion':'2017', 'matricula':'201711400S138', 'comentario':''}
+18123874-7;Joaquin Ignacio;Echeverria;jechevarriab@udd.cl;18123874;{'materno':'Bravo', 'promocion':'2017', 'matricula':'201711400S139', 'comentario':''}
+18522877-0;Constanza Belen;Zepeda;czepedat@udd.cl;18522877;{'materno':'Tello', 'promocion':'2017', 'matricula':'201711400S140', 'comentario':''}
+19686809-7;Juan Pablo;Gonzalez;jugonzalezg@udd.cl;19686809;{'materno':'Garcia', 'promocion':'2017', 'matricula':'201711400S144', 'comentario':''}
+19523277-6;Constanza Macarena;Gonzalez;cogonzalezr@udd.cl;19523277;{'materno':'Rios', 'promocion':'2017', 'matricula':'201711400S145', 'comentario':''}
+19401336-1;Carlos Alfredo;Vial;cavialp@udd.cl;19401336;{'materno':'Prieto', 'promocion':'2017', 'matricula':'201721400S001', 'comentario':''}
+25897154-k;Maria Fernanda;Rapaccioli;mrapaccioli@udd.cl;25897154;{'materno':'.', 'promocion':'2017', 'matricula':'201721400S003', 'comentario':''}
+19831409-9;Sebastian Javier;Alarcon;salarcong@udd.cl;19831409;{'materno':'Garrido', 'promocion':'2017', 'matricula':'201721400S004', 'comentario':''}
+19635758-0;Matias;Cox;mcoxr@udd.cl;19635758;{'materno':'Rojas', 'promocion':'2017', 'matricula':'201721400S005', 'comentario':'NO CONTINÚA'}
+19635835-8;Agustina Sofia;Mendoza;amendozac@udd.cl;19635835;{'materno':'Collard', 'promocion':'2017', 'matricula':'201721400S006', 'comentario':''}
+19690124-8;Ivan Bozidar;Zambelli;izambellis@udd.cl;19690124;{'materno':'Spralja', 'promocion':'2017', 'matricula':'201721400S008', 'comentario':''}
+19961046-5;Constanza Patricia;Allendes;callendest@udd.cl;19961046;{'materno':'Torrealba', 'promocion':'2017', 'matricula':'201721400S009', 'comentario':''}
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;

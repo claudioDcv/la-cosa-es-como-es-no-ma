@@ -5,6 +5,7 @@ from apps.business.models import Campus, Period, Survey
 
 
 class Course(SoftDeleteTSModel, DescriptiveModel):
+    code = models.CharField(max_length=100)
     section = models.CharField(max_length=250, verbose_name='Sección')
 
     checksum = models.CharField(blank=True, max_length=100)
@@ -29,6 +30,7 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE,)
 
     class Meta:
+        unique_together = (('code', 'section'),)
         verbose_name = 'curso'
         verbose_name_plural = 'cursos'
 

@@ -5,8 +5,8 @@ from apps.base.models import User
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name',)
-    search_fields = ('name',)
+    list_display = ('id', 'name', 'code', 'section')
+    search_fields = ('id', 'name', 'code', 'section')
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == 'teachers':

@@ -80,7 +80,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
 
                 skill_list = Skill.objects.filter(id__in=skill_ids)
 
-                #  procedimiento para aramar listado de indicadores evaluados
+                #  procedimiento para armar listado de indicadores evaluados
                 # construccion de objeto de competencias con estdiante evaluado
                 final_skill_list = []
                 for skill in skill_list:

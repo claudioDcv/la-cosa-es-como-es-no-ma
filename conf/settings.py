@@ -22,6 +22,13 @@ SECRET_KEY = 'pwh@p6fuw1$)-w!d6nare@@e9)e(pyalz_5%z@ltbnq)dz-)ou'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    os.environ['DATABASE_NAME'] = 'skills_evaluation'
+    os.environ['DATABASE_USER'] = 'postgres'
+    os.environ['DATABASE_PASSWORD'] = '1234567890'
+    os.environ['DATABASE_HOST'] = '127.0.0.1'
+    os.environ['DATABASE_PORT'] = '5432'
+
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ['127.0.0.1']
 
@@ -93,14 +100,15 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DATABASE_NAME', 'skills_evaluation'),
-        'USER': os.getenv('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', '1234567890'),
-        'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DATABASE_PORT', '5432'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
     }
 }
+
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)

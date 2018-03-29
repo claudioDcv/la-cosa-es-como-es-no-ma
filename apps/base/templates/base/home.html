@@ -27,9 +27,11 @@
               <a class="btn btn-sm btn-link" href="{% url 'program-index' o.program.code profile.code %}">
                 <i class="fas fa-book"></i> Cursos
               </a>
+              {% if profile.code == 'student' %}
               <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.program.code profile.code %}">
                 <i class="fas fa-bolt"></i> Competencias
               </a>
+              {% endif %}
             </div>
           </li>
         {% endfor %}
