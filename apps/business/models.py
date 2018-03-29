@@ -1,11 +1,12 @@
 from django.db import models
 from apps.base.models import SoftDeleteTSModel, DescriptiveModel
-from apps.core.models import Indicator, Program
+from apps.core.models import Indicator, Program, Subject
 
 
 class Survey(SoftDeleteTSModel, DescriptiveModel):
     checksum = models.CharField(blank=True, max_length=100)
     indicator = models.ManyToManyField(Indicator)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE,)
 
     class Meta:
         verbose_name = 'encuesta'

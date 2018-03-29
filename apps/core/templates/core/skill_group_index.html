@@ -64,7 +64,7 @@
           <div class="row mx-0">
             {% for indicator in skill.indicator_list %}
               <div class="col-md-4 col-sm-6 col-xs-12">
-                <a href="#" class="card mb-2">
+                <div class="card mb-2">
                   <div class="card-body">
                     {% if indicator.is_evaluated %}
                   <div class="c100 p{{ indicator.str_percent|floatformat:"0" }} xs">
@@ -78,7 +78,7 @@
                   {{ indicator.object.name }} | Aun no se ha evaluado
                   {% endif %}
                   </div>
-                </a>
+                </div>
               </div>
             {% endfor %}
             </div>
