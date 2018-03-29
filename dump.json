@@ -217,6 +217,7 @@
             "created_ts": "2018-03-22T17:37:31.862Z",
             "updated_ts": "2018-03-22T18:41:46.472Z",
             "checksum": "",
+            "subject": 1,
             "indicator": [
                 1,
                 2,
@@ -236,6 +237,7 @@
             "created_ts": "2018-03-22T18:43:21.105Z",
             "updated_ts": "2018-03-22T18:43:21.105Z",
             "checksum": "",
+            "subject": 1,
             "indicator": [
                 5,
                 6,
@@ -262,6 +264,7 @@
             "created_ts": "2018-03-22T18:44:07.951Z",
             "updated_ts": "2018-03-22T18:44:07.951Z",
             "checksum": "",
+            "subject": 1,
             "indicator": [
                 16,
                 17,
@@ -281,6 +284,7 @@
             "created_ts": "2018-03-22T18:45:31.762Z",
             "updated_ts": "2018-03-22T18:45:31.762Z",
             "checksum": "",
+            "subject": 1,
             "indicator": [
                 20,
                 21
@@ -298,6 +302,7 @@
             "created_ts": "2018-03-22T18:46:11.769Z",
             "updated_ts": "2018-03-22T18:46:11.769Z",
             "checksum": "",
+            "subject": 1,
             "indicator": [
                 22,
                 23,
