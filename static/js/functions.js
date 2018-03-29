@@ -115,16 +115,19 @@ window.evaluatedEvaluatorIndex = function() {
       };
       var update = function() {
         var data = toJSONString(form);
+        var oldValue = data.value;
         data.value = value;
+        data.oldValue = oldValue;
+        var success = function(e) {
+          jAlert(
+            'Guardado Exitosamente el cambio de puntaje de: ',
+            e.data.oldValue + ' a ' + e.value,
+            function() { window.location.reload(); }, 500);
+        };
         XHRUpdate({
           url: action,
           data: data,
-          success: function(e) {
-            jAlert('What is the response?', 42, function(){
-              console.log(e); window.location.reload();
-             }, 500);
-            
-          },
+          success: success.bind(value),
           error: function(e) { console.log(e); },
         });
       };
