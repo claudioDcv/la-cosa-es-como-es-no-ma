@@ -8,7 +8,7 @@ class DescriptiveModel(models.Model):
     """
     - implement field: name, code, description and overwrite to string method
     """
-    name = models.CharField(max_length=50, verbose_name='nombre')
+    name = models.CharField(max_length=250, verbose_name='nombre')
     code = models.CharField(max_length=100, verbose_name='código', unique=True, blank=False, null=False,)
     description = models.TextField(blank=True, verbose_name='descripción')
 

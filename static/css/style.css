@@ -194,3 +194,7 @@ body {
 .skills-graph > div > div > div > div:first-child {
   width: 100%;
 }
+
+.save-button-hidden {
+  display: none;
+}

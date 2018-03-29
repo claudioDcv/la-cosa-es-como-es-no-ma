@@ -30,6 +30,8 @@ def get_context_current_profile(context, _self):
 class IndexView(TemplateView):
     template_name = "base/index.html"
 
+    def render_to_response(self, context, **response_kwargs):
+        return redirect('login')
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "base/home.html"

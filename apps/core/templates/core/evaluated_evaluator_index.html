@@ -103,6 +103,7 @@
                 </td>
                 <td class="txt-right">
                   <form
+                    data-method="update"
                     class="finalindicatorevaluation-list-update d-inline-block"
                     style="width:100%"
                     action="{% url 'finalindicatorevaluation-list' %}"
@@ -119,12 +120,19 @@
                       <div class="">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                           {% for sc in score.values %}
-                          <label class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
-                            <input type="radio" data-type="float" {% if sc == indicator.value %}checked{% endif %} name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
+                          <label data-score-indicator="{{ indicator.indicator_id }}" class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
+                            <input
+                              type="radio"
+                              data-type="float"
+                              {% if sc == indicator.value %}checked{% endif %}
+                              name="value"
+                              id="option{{ sc }}"
+                              autocomplete="off"
+                              value="{{ sc }}"> {{sc}}
                           </label>
                           {% endfor %}
                         </div>
-                        <button type="submit" class="btn-sm btn btn-success">
+                        <button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
                           <i class="fas fa-save"></i>
                         </button>
                         <button
@@ -145,7 +153,11 @@
                   {{ indicator.description }}
                 </td>
                 <td class="txt-right">
-                  <form class="finalindicatorevaluation-list-create" action="{% url 'finalindicatorevaluation-list' %}" method="post">
+                  <form
+                    data-method="create"
+                    class="finalindicatorevaluation-list-create"
+                    action="{% url 'finalindicatorevaluation-list' %}"
+                    method="post">
                     {% csrf_token %}
                     <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
                     <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
@@ -156,12 +168,12 @@
                       <div class="">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                           {% for sc in score.values %}
-                          <label class="btn btn-outline-success btn-sm">
+                          <label class="btn btn-outline-success btn-sm" data-score-indicator="{{ indicator.indicator_id }}">
                             <input data-type="float" type="radio" name="value" id="option{{ sc }}" required autocomplete="off" value="{{ sc }}"> {{sc}}
                           </label>
                           {% endfor %}
                         </div>
-                        <button type="submit" class="btn-sm btn btn-success">
+                        <button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
                           <i class="fas fa-save"></i>
                         </button>
                       </div>
@@ -264,7 +276,8 @@ No posee permisos.
 
 {% block scripts %}
 <script type="text/javascript">
-  createFinalIndicatorEvaluation();
-  createFeedback();
+  // createFinalIndicatorEvaluation();
+  createFeedback();  
+  evaluatedEvaluatorIndex();
 </script>
 {% endblock %}
