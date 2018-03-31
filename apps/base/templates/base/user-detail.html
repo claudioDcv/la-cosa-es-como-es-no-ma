@@ -8,7 +8,7 @@
           </div> -->
             <div class="row user-detail">
                 <div class="col-lg-12 col-sm-12 col-12">
-                    {% if object.upload.name %}
+                    {% if object.upload.name and object.upload.name != '1' %}
                     <img src="{{ object.upload.url }}" class="rounded-circle img-thumbnail"> {% endif %}
                     <h5  class="text-light">{{ object.email }}</h5>
 
