@@ -1,57 +1,52 @@
-{% extends 'base.html' %}
-
-{% load static %}
-
-{% block title %}Home{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}Home{% endblock %} {% block content %}
 
 <div class="container">
     <div class="row">
-      <div class="offset-lg-4 col-lg-4 col-sm-6 col-12 main-section text-center">
-          <!-- <div class="row mt-0">
+        <div class="offset-lg-4 col-lg-4 col-sm-6 col-12 main-section text-center bg-dark">
+            <!-- <div class="row mt-0">
               <div class="col-lg-12 col-sm-12 col-12 profile-header"></div>
           </div> -->
-          <div class="row user-detail">
-              <div class="col-lg-12 col-sm-12 col-12">
-                    {% if object.upload.url %}
-                    <img src="{{ object.upload.url }}" class="rounded-circle img-thumbnail">
-                    {% endif %}
-                  <h5>{{ object.email }}</h5>
+            <div class="row user-detail">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    {% if object.upload.name %}
+                    <img src="{{ object.upload.url }}" class="rounded-circle img-thumbnail"> {% endif %}
+                    <h5  class="text-light">{{ object.email }}</h5>
 
-                <ul class="list-group text-left">
-                    <li class="list-group-item">
-                        Usuario <strong>{{ object.username }}</strong>
-                    </li>
-                    <li class="list-group-item">
-                        Nombre <strong>{{ object.first_name }}</strong>
-                    </li>
-                    <li class="list-group-item">
-                        Apellido <strong>{{ object.last_name }}</strong>
-                    </li>
-                </ul>
+                    <ul class="list-group text-left text-light">
+                        <li class="list-group-item bg-dark">
+                            Usuario
+                            <strong>{{ object.username }}</strong>
+                        </li>
+                        <li class="list-group-item bg-dark">
+                            Nombre
+                            <strong>{{ object.first_name }}</strong>
+                        </li>
+                        <li class="list-group-item bg-dark">
+                            Apellido
+                            <strong>{{ object.last_name }}</strong>
+                        </li>
+                    </ul>
 
-                  <div class="text-left bg-light user-profile-permision-box">
-                    <h5>Permisos</h5>
-                    <hr>
-                    {% for user_profiles_program in user_profiles_programs%}
-                      <h6 class="mt-2">{{ user_profiles_program.program.name }}</h6>
-                      <ul class="list-group">
-                        {% for profile in user_profiles_program.profiles.all %}
-                          <li class="list-group-item">{{ profile.name }}</li>
+                    <div class="text-left bg-secondary user-profile-permision-box text-light">
+                        <h5 class="text-light">Permisos</h5>
+                        <hr> {% for user_profiles_program in user_profiles_programs%}
+                        <h6 class="mt-2">{{ user_profiles_program.program.name }}</h6>
+                        <ul class="list-group text-light">
+                            {% for profile in user_profiles_program.profiles.all %}
+                            <li class="list-group-item bg-dark">{{ profile.name }}</li>
+                            {% endfor %}
+                        </ul>
                         {% endfor %}
-                      </ul>
-                    {% endfor %}
-                  </div>
-              </div>
-          </div>
-          <!-- <div class="row user-social-detail">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row user-social-detail">
               <div class="col-lg-12 col-sm-12 col-12">
                   <a href="#" class="btn btn-success btn-sm">Editar</a>
               </div>
           </div> -->
-      </div>
+        </div>
     </div>
-  </div>
+</div>
 
 {% endblock %}
