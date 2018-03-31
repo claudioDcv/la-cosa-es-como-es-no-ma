@@ -36,8 +36,12 @@
         {{ object.description }}
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Logro: {{ str_total_half_percent }}%</li>
-        <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
+        <li class="list-group-item">Nivel de Logro
+            <div class="progress" style="height:20px">
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ str_total_half_percent }}%;height:20px" aria-valuenow="{{ str_total_half_percent }}" aria-valuemin="0" aria-valuemax="100"> {{ str_total_half_percent }}%</div>
+            </div>
+        </li>
+        <li class="list-group-item">Indicadores {{ total_indicators }}</li>
         <li class="list-group-item">
           Valores:
             min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
@@ -59,7 +63,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Email</th>
                 <th>Indicadores Evaluados</th>
-                <th scope="col">Logro</th>
+                <th scope="col">Nivel de Logro</th>
                 <th scope="col" class="txt-right">Acciones</th>
               </tr>
             </thead>

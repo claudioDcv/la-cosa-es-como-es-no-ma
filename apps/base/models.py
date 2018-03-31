@@ -66,8 +66,13 @@ class Profile(SoftDeleteTSModel, DescriptiveModel):
         return '{0} {1}'.format(self.name, self.code)
 
 
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.id, filename)
+
 class User(AbstractUser):
 
+    upload = models.FileField(upload_to=user_directory_path, blank=True, null=True)
     email = models.EmailField(max_length=70, blank=False, null=False, unique=True)
     external_info = JSONField()
     AUTH_USER_EMAIL_UNIQUE = True

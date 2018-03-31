@@ -1,11 +1,12 @@
 #main-popup_cont {
-	position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    background: #000000ab;
+    background: #ffffff00;
     z-index: 99;
+    pointer-events: none;
 }
 #popup_container {
 	box-shadow: 0px 0px 15px #0000007d;
@@ -19,6 +20,14 @@
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+
+    position: fixed;
+    z-index: 99999;
+    padding: 0px;
+    margin: 0px;
+    /* top: 10px !important;
+    left: auto !important;
+    right: 10px !important; */
 }
 
 #popup_content {

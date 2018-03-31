@@ -188,7 +188,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = '{}{}'.format(PROJECT_DIR, '/media')
 
 
-
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',

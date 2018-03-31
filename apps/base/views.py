@@ -31,6 +31,8 @@ class IndexView(TemplateView):
     template_name = "base/index.html"
 
     def render_to_response(self, context, **response_kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('home')
         return redirect('login')
 
 class HomeView(LoginRequiredMixin, TemplateView):

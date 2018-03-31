@@ -11,6 +11,7 @@
 // Visit http://github.com/aurels/jquery.alerts
 // Visit http://abeautifulsite.net/notebook/87 for more information
 //
+
 (function($) {
 	
 	$.alerts = {

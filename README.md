@@ -22,3 +22,9 @@ la-cosa-es-como-es-no-ma
 initial_data
     load_student_to_system
     load_students_to_courses
+
+
+Course
+
+unique
+    code-section-sede-period

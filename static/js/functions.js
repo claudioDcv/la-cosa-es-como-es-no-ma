@@ -120,8 +120,8 @@ window.evaluatedEvaluatorIndex = function() {
         data.oldValue = oldValue;
         var success = function(e) {
           jAlert(
-            'Guardado Exitosamente el cambio de puntaje de: ',
-            e.data.oldValue + ' a ' + e.value,
+            'Guardado',
+            'Cambio puntaje de ' + e.data.oldValue + ' a ' + e.value,
             function() { window.location.reload(); }, 500);
         };
         XHRUpdate({
