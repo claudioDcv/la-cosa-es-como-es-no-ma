@@ -74,6 +74,7 @@ class User(AbstractUser):
 
     upload = models.FileField(upload_to=user_directory_path, blank=True, null=True)
     email = models.EmailField(max_length=70, blank=False, null=False, unique=True)
+    code = models.CharField(max_length=100, blank=True, null=True, unique=True)
     external_info = JSONField()
     AUTH_USER_EMAIL_UNIQUE = True
     USERNAME_FIELD = 'email'

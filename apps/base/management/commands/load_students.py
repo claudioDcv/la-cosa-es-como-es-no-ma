@@ -56,6 +56,7 @@ class Command(BaseCommand):
                             last_name=line['last_name'],
                             password=line['username'] + line['email'],
                             external_info=line['external_info'],
+                            code=line['internal_code'],
                         )
                         create_us_pr_pr = True
                     except Exception as e:

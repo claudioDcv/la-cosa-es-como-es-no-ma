@@ -1,6 +1,10 @@
 # la-cosa-es-como-es-no-ma
 la-cosa-es-como-es-no-ma
 
+- export data
+```bash
+./manage.py dumpdata --exclude auth.permission --exclude contenttypes > db.json
+```
 
 - program/arq/2/course/1/evaluated/2: `programa/<program_slug>/<profile_id>/course/<course_id>/evaluated/<user_id>`
 
@@ -28,3 +32,16 @@ Course
 
 unique
     code-section-sede-period
+
+Buscar y reemplazar
+- 'matricula':'([0-9a-z-A-Z]+)', 'comentario':''}"
+
+- recordar que los estudiantes se deberian asignar por rut no por codigo interno
+- se agrego code para usuarios para codigos internos
+
+
+
+# ERRORES
+- Cursos que no existen
+    - ARDCP11
+    - ARDCP12

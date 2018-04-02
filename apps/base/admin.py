@@ -17,12 +17,12 @@ class UserAdmin(UserAdmin):
         'is_superuser',
     )
     fieldsets = UserAdmin.fieldsets + (
-            ('Parametros adicionales', {'fields': ('external_info', 'upload')}),
+            ('Parametros adicionales', {'fields': ('external_info', 'upload', 'code')}),
     )
 
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('email',)}),
-        ('Parametros adicionales', {'fields': ('external_info', 'upload')}),
+        ('Parametros adicionales', {'fields': ('external_info', 'upload', 'code')}),
     )
 
 

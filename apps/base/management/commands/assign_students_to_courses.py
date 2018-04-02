@@ -39,35 +39,32 @@ class Command(BaseCommand):
         # period__program__code=1400S
         # code=AAC111
         # section=8
+
+        print('USER is CODE')
         location = options['location']
+        # program_code = input('insert <program_code>:')
         delimiter = input('insert delimiter:')
-        program_code = input('insert <program_code>:')
 
-        if location and program_code:
-            print(program_code)
-            loc = location.split(':')
-            if len(loc) == 2:
-                path = loc[1]
-                reader = csv_dict_reader(path, delimiter)
+        loc = location.split(':')
+        if len(loc) == 2:
+            path = loc[1]
+            reader = csv_dict_reader(path, delimiter)
+            
+            for el in reader:
 
-                for el in reader:
-                    period__program__code = el['period']
-                    code = el['code']
-                    import ipdb; ipdb.set_trace()
-                    user = User.objects.get(username=el['username'])
+                try:
+                    course = Course.objects.get(
+                        period__code=el['period'],
+                        period__program__code=el['program'],
+                        subject__code=el['subject'],
+                        section=el['section'],
+                    )
+                    # USER IS CODE
+                    user = User.objects.get(code=el['username'])
+                    course.students.add(user)
+                except Exception as e:
                     
-                    profiles = user.user_profiles_program.all()
-                    
-                    import ipdb; ipdb.set_trace()
-
-                program_code = input('insert <program_code>:')
-                program_code = input('insert <program_code>:')
-                program_code = input('insert <program_code>:')
-
-
-                location = options['location']
-                program_code = input('insert <program_code>:')
-                delimiter = input('insert delimiter:')
-                profile_code = Profile.STUDENT
-
-        print(1)
+                    self.stdout.write(self.style.ERROR(
+                            'ERROR {0}'.format(e)))
+                
+                print(el)
