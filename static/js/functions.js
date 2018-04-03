@@ -151,19 +151,11 @@ window.evaluatedEvaluatorIndex = function() {
       var value = parseInt(event.target.children[0].value);
       var create = function(event) {
         var data = toJSONString(form);
-        var oldValue = data.value;
         data.value = value;
-        data.oldValue = oldValue;
-        var success = function(e) {
-          jAlert(
-            'Guardado',
-            'Cambio puntaje de ' + e.data.oldValue + ' a ' + e.value,
-            function() { window.location.reload(); }, 500);
-        };
         XHRCreate({
           url: action,
           data: data,
-          success: success.bind(value),
+          success: function(e) { console.log(e); window.location.reload(); },
           error: function(e) { console.log(e); },
         });
       };
