@@ -1,3 +1,4 @@
+var TIME_SHOW_ALERT = 300;
 var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
   '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
   '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', 
@@ -152,10 +153,18 @@ window.evaluatedEvaluatorIndex = function() {
       var create = function(event) {
         var data = toJSONString(form);
         data.value = value;
+
+        var success = function(e) {
+          jAlert(
+            'Guardado',
+            'Asignando puntaje a ' + e.value,
+            function() { window.location.reload(); }, TIME_SHOW_ALERT);
+        };
+
         XHRCreate({
           url: action,
           data: data,
-          success: function(e) { console.log(e); window.location.reload(); },
+          success: success.bind(value),
           error: function(e) { console.log(e); },
         });
       };
@@ -168,7 +177,7 @@ window.evaluatedEvaluatorIndex = function() {
           jAlert(
             'Guardado',
             'Cambio puntaje de ' + e.data.oldValue + ' a ' + e.value,
-            function() { window.location.reload(); }, 500);
+            function() { window.location.reload(); }, TIME_SHOW_ALERT);
         };
         XHRUpdate({
           url: action,
@@ -258,3 +267,14 @@ window.startSkills = function(data) {
     cont.appendChild(skill);
   });
 };
+
+
+
+var changePercent = function() {
+  var percent = document.querySelectorAll('.progress-bar');
+  percent.forEach(function(e) {
+    var text = parseInt(e.innerText.replace('%', ''));
+    e.innerText = text + '%';
+  });
+};
+changePercent();

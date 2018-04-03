@@ -1,5 +1,6 @@
 import json
 
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -8,7 +9,7 @@ from django.http import Http404
 
 from apps.core.models import Program
 from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
-from apps.base.models import Profile, User
+from apps.base.models import Profile, User, UserProfilesProgram
 from apps.base.helpers import get_score, student_list_with_indicator,\
     evaluated_with_indicator
 from apps.core.models import Skill, Indicator
@@ -197,6 +198,28 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         context = get_context_current_profile(context, self)
 
         if context['current_profile']:
+            has_admin = UserProfilesProgram.objects.filter(
+                user=user,
+                profiles__code=Profile.ADMIN,
+                program__code=context['program'],
+            ).count() > 0
+
+            if context['current_profile'].code == 'admin' and has_admin:
+                context['courses'] = Course.objects.filter(
+                    subject__subjects_group__program=self.get_object())
+                
+                courses_with_percent = []
+
+                for course in context['courses']:
+                    # students = student_list_with_indicator(course.id)
+                    courses_with_percent.append({
+                        'course': course,
+                    })
+                context['courses'] = courses_with_percent
+
+                context['courser_len'] = len(context['courses'])
+                return context
+
             if context['current_profile'].code == 'teacher':
                 context['courses'] = Course.objects.filter(
                     teachers=user,
@@ -212,26 +235,16 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                     })
                 context['courses'] = courses_with_percent
 
+                context['courser_len'] = len(context['courses'])
+                return context
+
             if context['current_profile'].code == 'student':
                 context['courses'] = Course.objects.filter(
                     students=user,
                     subject__subjects_group__program=self.get_object())
-
-            if context['current_profile'].code == 'admin':
-                context['courses'] = Course.objects.filter(
-                    subject__subjects_group__program=self.get_object())
-                
-                courses_with_percent = []
-
-                for course in context['courses']:
-                    students = student_list_with_indicator(course.id)
-                    courses_with_percent.append({
-                        'course': course,
-                        'students': students,
-                    })
-                context['courses'] = courses_with_percent
-
-        context['courser_len'] = len(context['courses'])
+                context['courser_len'] = len(context['courses'])
+                return context
+        
         return context
 
 
@@ -269,25 +282,34 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         """Get ctx."""
         context = super().get_context_data(**kwargs)
-        context['code'] = self.kwargs['code']
-        context['profile'] = self.kwargs['profile']
-        context['program'] = Program.objects.get(code=self.kwargs['code'])
-        context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
-        context['score'] = get_score()
-        context['evaluated'] = evaluated_with_indicator(
-            self.kwargs['course_id'], self.get_object())
-        context['feedback_list'] = Feedback.objects.filter(
-            course=context['course'],
-            evaluated=self.get_object().pk,
-        ).all()
+
+        has_admin = UserProfilesProgram.objects.filter(
+            user=self.request.user,
+            profiles__code=Profile.TEACHER,
+            program__code=self.kwargs['code'],
+        ).count() > 0
+
+        if has_admin:
+            context['code'] = self.kwargs['code']
+            context['profile'] = self.kwargs['profile']
+            context['program'] = Program.objects.get(code=self.kwargs['code'])
+            context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+            context['score'] = get_score()
+            context['evaluated'] = evaluated_with_indicator(
+                self.kwargs['course_id'], self.get_object())
+            context['feedback_list'] = Feedback.objects.filter(
+                course=context['course'],
+                evaluated=self.get_object().pk,
+            ).all()
+        else:
+            raise Http404("Does not exist")
 
         context = get_context_current_profile(context, self)
 
         return context
 
 
-class EvaluatedIndexView(LoginRequiredMixin, DetailView):
-    model = User
+class EvaluatedIndexView(LoginRequiredMixin, TemplateView):
     template_name = 'core/evaluated_index.html'
 
     def get_context_data(self, **kwargs):
@@ -295,10 +317,18 @@ class EvaluatedIndexView(LoginRequiredMixin, DetailView):
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
         context['program'] = Program.objects.get(code=self.kwargs['code'])
-        context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+        
+        context['course'] = Course.objects.filter(
+            pk=self.kwargs['course_id'],
+            students=self.request.user,
+        ).first()
+
+        if context['course'] == None:
+            raise Http404("Does not exist")
+
         context['score'] = get_score()
         context['evaluated'] = evaluated_with_indicator(
-            self.kwargs['course_id'], self.get_object())
+            self.kwargs['course_id'], self.request.user)
         context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.request.user.id,
