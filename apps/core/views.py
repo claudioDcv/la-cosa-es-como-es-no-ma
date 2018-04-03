@@ -299,7 +299,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
             context['code'] = self.kwargs['code']
             context['profile'] = self.kwargs['profile']
             context['program'] = Program.objects.get(code=self.kwargs['code'])
-            context['course'] = Course.objects.filter(pk=self.kwargs['course_id'])
+            context['course'] = Course.objects.filter(pk=self.kwargs['course_id']).first()
             context['score'] = get_score()
             context['evaluated'] = evaluated_with_indicator(
                 self.kwargs['course_id'], self.get_object())
@@ -313,13 +313,13 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
             context['code'] = self.kwargs['code']
             context['profile'] = self.kwargs['profile']
             context['program'] = Program.objects.get(code=self.kwargs['code'])
-            context['course'] = Course.objects.filter(pk=self.kwargs['course_id'])
+            context['course'] = Course.objects.filter(pk=self.kwargs['course_id']).first()
             context['score'] = get_score()
             context['evaluated'] = evaluated_with_indicator(
                 self.kwargs['course_id'], self.get_object())
             context['feedback_list'] = Feedback.objects.filter(
                 course=context['course'],
-            ).first()
+            ).all()
 
             context = get_context_current_profile(context, self)
             return context
