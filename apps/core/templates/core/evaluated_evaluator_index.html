@@ -13,7 +13,7 @@
 {% block title %}Evaluado ({{ object.first_name }} {{ object.last_name }}){% endblock %}
 
 {% block content %}
-{% if has_profile and course %}
+{% if has_profile and course.id %}
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
