@@ -201,7 +201,7 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
             has_admin = UserProfilesProgram.objects.filter(
                 user=user,
                 profiles__code=Profile.ADMIN,
-                program__code=context['program'],
+                program=context['program'],
             ).count() > 0
 
             if context['current_profile'].code == 'admin' and has_admin:
@@ -293,7 +293,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
             context['code'] = self.kwargs['code']
             context['profile'] = self.kwargs['profile']
             context['program'] = Program.objects.get(code=self.kwargs['code'])
-            context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+            context['course'] = Course.objects.filter(pk=self.kwargs['course_id'])
             context['score'] = get_score()
             context['evaluated'] = evaluated_with_indicator(
                 self.kwargs['course_id'], self.get_object())
