@@ -307,6 +307,8 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
                 course=context['course'],
                 evaluated=self.get_object().pk,
             ).all()
+            context = get_context_current_profile(context, self)
+            return context
         elif has_admin:
             context['code'] = self.kwargs['code']
             context['profile'] = self.kwargs['profile']
@@ -318,6 +320,9 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
             context['feedback_list'] = Feedback.objects.filter(
                 course=context['course'],
             ).all()
+
+            context = get_context_current_profile(context, self)
+            return context
         else:
             raise Http404("Does not exist")
 
