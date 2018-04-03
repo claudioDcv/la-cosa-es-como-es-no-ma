@@ -306,7 +306,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
             context['feedback_list'] = Feedback.objects.filter(
                 course=context['course'],
                 evaluated=self.get_object().pk,
-            ).first()
+            ).all()
             context = get_context_current_profile(context, self)
             return context
         elif has_admin:
