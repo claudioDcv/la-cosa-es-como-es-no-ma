@@ -27,7 +27,7 @@
                 <td>{{ course.course.section }}</td>
                 <td>{{ course.course.name }}</td>
                 <td>
-                  {% for teacher in course.teachers %}
+                  {% for teacher in course.course.teachers %}
                     <span>teacher.first_name teacher.last_name</span>
                   {% endfor %}
                 </td>
