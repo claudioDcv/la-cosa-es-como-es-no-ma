@@ -25,7 +25,7 @@ DEBUG = True
 if DEBUG:
     os.environ['DATABASE_NAME'] = 'skills_evaluation'
     os.environ['DATABASE_USER'] = 'postgres'
-    os.environ['DATABASE_PASSWORD'] = '1234567890'
+    os.environ['DATABASE_PASSWORD'] = 'admin'
     os.environ['DATABASE_HOST'] = '127.0.0.1'
     os.environ['DATABASE_PORT'] = '5432'
 
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'apps.log',
     'apps.term',
     'apps.topology',
+    'apps.report',
 ]
 
 MIDDLEWARE = [
