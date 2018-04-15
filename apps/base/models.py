@@ -4,6 +4,39 @@ from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 
+#Add to a form containing a FileField and change the field names accordingly.
+# from django.template.defaultfilters import filesizeformat
+# from django.utils.translation import ugettext_lazy as _
+# from django.conf import settings
+
+# # Add to your settings file
+# # CONTENT_TYPES = ['image', 'video']
+# CONTENT_TYPES = ['image']
+# # 2.5MB - 2621440
+# # 4MB - 4194304
+# # 5MB - 5242880
+# # 10MB - 10485760
+# # 20MB - 20971520
+# # 50MB - 5242880
+# # 100MB 104857600
+# # 250MB - 214958080
+# # 500MB - 429916160
+# MAX_UPLOAD_SIZE = "4194304"
+
+
+# def validate_file_type(upload):
+#     import ipdb; ipdb.set_trace()
+#     content = self.cleaned_data['content']
+#     content_type = content.content_type.split('/')[0]
+#     if content_type in settings.CONTENT_TYPES:
+#         if content._size > settings.MAX_UPLOAD_SIZE:
+#             raise forms.ValidationError(_('Please keep filesize under %s. Current filesize %s') % (filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+#     else:
+#         raise forms.ValidationError(_('File type is not supported'))
+#     return content
+    
+
+
 class DescriptiveModel(models.Model):
     """
     - implement field: name, code, description and overwrite to string method
@@ -70,9 +103,10 @@ def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.id, filename)
 
+
 class User(AbstractUser):
 
-    upload = models.FileField(upload_to=user_directory_path, blank=True, null=True)
+    image_profile = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
     email = models.EmailField(max_length=70, blank=False, null=False, unique=True)
     code = models.CharField(max_length=100, blank=True, null=True, unique=True)
     external_info = JSONField()
@@ -80,6 +114,21 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'external_info']
     
+    def save(self, *args, **kwargs):
+
+        if self.image_profile:
+            if self.image_profile.file.content_type in ['image/jpg', 'image/png', 'image/jpeg']:
+                if self.image_profile.size <= 4194304:
+                    return super().save(*args, **kwargs)
+        else:
+            return super().save(*args, **kwargs)
+        raise 'File not supported'
+
+        # if getattr(self, '_image_changed', True):
+        #     small=rescale_image(self.image,width=100,height=100)
+        #     self.image_small=SimpleUploadedFile(name,small_pic)
+        
+
     @staticmethod
     def has_profile_program(user, program_code, profile_list):
         """

@@ -89,6 +89,7 @@ def student_list_with_indicator(pk):
         'last_name',
         'email',
         'username',
+        'image_profile',
         ).all()
 
     total_half_percent = 0

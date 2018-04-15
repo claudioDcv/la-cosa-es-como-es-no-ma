@@ -2,28 +2,45 @@
 
 <div class="container">
     <div class="row">
-        <div class="offset-lg-4 col-lg-4 col-sm-6 col-12 main-section text-center bg-dark">
+        <div class="offset-lg-3 col-lg-6 col-sm-6 col-12 main-section text-center bg-dark">
             <!-- <div class="row mt-0">
               <div class="col-lg-12 col-sm-12 col-12 profile-header"></div>
           </div> -->
             <div class="row user-detail">
                 <div class="col-lg-12 col-sm-12 col-12">
-                    {% if object.upload.name and object.upload.name != '1' %}
-                    <img src="{{ object.upload.url }}" class="rounded-circle img-thumbnail"> {% endif %}
-                    <h5  class="text-light">{{ object.email }}</h5>
+                    {% if object.image_profile.name and object.image_profile.name != '1' %}
+                        {% if messages %}
+
+                        {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span {% if message.tags %} class="{{ message.tags }}"{% endif %} aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        <img src="{{ object.image_profile.url }}" class="rounded-circle img-thumbnail" id="preview">
+                    {% endif %}
+                    
+                    <form class="mt-4" id="form1" style="font-size: 0" action="{% url 'self-user-detail-form' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="file-upload d-inline-block">
+                            <label for="upload" class="btn btn-outline-primary btn-inline-block">Seleccione Imágen</label>
+                            <input id="imgInp" name="image_profile" class="file-upload__input" type="file">
+                        </div>
+                        <input type="submit" id="save-file" disabled class="file-upload-input btn btn-outline-primary btn-inline-block" value="Guardar">
+                    </form>
+
+                    <a
+                        href="{% url 'change-password' %}"
+                        class="btn btn-outline-primary btn-inline-block my-4"
+                    >Cambiar contraseña</a>
 
                     <ul class="list-group text-left text-light">
+                        <li  class="list-group-item bg-dark">Email <strong>{{ object.email }}</strong></li>
                         <li class="list-group-item bg-dark">
                             Usuario
-                            <strong>{{ object.username }}</strong>
-                        </li>
-                        <li class="list-group-item bg-dark">
-                            Nombre
-                            <strong>{{ object.first_name }}</strong>
-                        </li>
-                        <li class="list-group-item bg-dark">
-                            Apellido
-                            <strong>{{ object.last_name }}</strong>
+                            <strong>{{ object.first_name }} {{ object.last_name }} ({{ object.username }})</strong>
                         </li>
                     </ul>
 
@@ -40,13 +57,53 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="row user-social-detail">
-              <div class="col-lg-12 col-sm-12 col-12">
-                  <a href="#" class="btn btn-success btn-sm">Editar</a>
-              </div>
-          </div> -->
         </div>
     </div>
 </div>
+<script>
+    var start = function() {
+        var inputElement = document.getElementById('imgInp');
+        var imageElement = document.getElementById('preview');
+        var button = document.getElementById('save-file');
+        function readURL(input) {
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                var file = input.files[0];
+                var fsize = file.size;
+                var ftype = file.type;
+                var fname = file.name;
+                
+                var fileTypeSupported = [
+                    'image/png',
+                    'image/jpeg',
+                    'image/jpg',
+                ];
 
+                if (fsize > 4194304) {
+                    alert('Imágen muy grande, exede los 4mb');
+                    return false;
+                }
+
+                if (!fileTypeSupported.find(function(e) { return e === ftype;})) {
+                    alert('Imágen solo puede ser jpg o png');
+                    return false;
+                }
+
+                reader.onload = function(e) {
+                    button.disabled = false;
+                    imageElement.src = e.target.result;
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        inputElement.addEventListener('change', function() {
+            readURL(this);
+        });
+    }
+    start();
+</script>
 {% endblock %}

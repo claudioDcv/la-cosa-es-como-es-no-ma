@@ -338,3 +338,87 @@ h4 {
   margin: auto !important;
   float: none !important;
 }
+
+
+/*****************************************
+  upload button styles
+******************************************/
+.file-upload {
+	position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.file-upload label {
+  margin: 0;
+  border-radius: 5px 0 0 5px;
+}
+.file-upload-input {
+  border-radius: 0 5px 5px 0;
+  border-left: none;
+}
+
+.file-upload:hover label {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.file-upload__label {
+  display: block;
+  padding: 1em 2em;
+  color: #fff;
+  background: #222;
+  border-radius: .4em;
+}
+    
+.file-upload__input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 1;
+    width:100%;
+    height: 100%;
+    opacity: 0;
+}
+
+
+.helptext {
+
+}
+
+.helptext ul {
+  border: solid 1px #1565C0;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin: 15px auto;
+  background: #dbeaff;
+  border-radius: 5px;
+  color: #1565C0;
+}
+
+.helptext ul li {
+  margin: 0;
+  padding: 2px 0;
+  display: block;
+  border-bottom: solid 1px #d9dadb;
+}
+
+.image-td {
+  padding-right: 5px !important;
+}
+.profile-min-image {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  border-radius: 50%;
+  border: solid 2px #ffffff;
+  box-shadow: 0px 0px 0px 2px #d8d8d8;
+  display: inline-block;
+}
+
+td, th {
+  vertical-align: middle !important;
+}

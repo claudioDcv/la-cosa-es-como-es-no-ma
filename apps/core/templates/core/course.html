@@ -60,7 +60,7 @@
           <table id="table-student" class="table table-hover mb-0">
             <thead>
               <tr>
-                <th scope="col">Nombre</th>
+                <th scope="col" colspan="2">Nombre</th>
                 <th scope="col">Email</th>
                 <th>Indicadores Evaluados</th>
                 <th scope="col">Nivel de Logro</th>
@@ -70,6 +70,13 @@
             <tbody>
               {% for student in students_with_indicator %}
               <tr>
+                <td class="image-td">
+                  {% if student.user.image_profile and student.user.image_profile != '1' %}
+                    <div class="profile-min-image" style="background-image: url({% get_media_prefix %}{{ student.user.image_profile }})"></div>
+                  {% else %}
+                    <div class="profile-min-image" style="background-image: url({% static 'img/profile-default.png' %})"></div>
+                  {% endif %}
+                </td>
                 <th scope="row">
                   {% if request.user.is_superuser %}
                   <a href="/admin/base/user/{{ student.user.id }}/change/">

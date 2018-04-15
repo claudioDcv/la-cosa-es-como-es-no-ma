@@ -119,6 +119,8 @@ No posee permisos
   var data = {{ json_skill_list|safe }};
   
   var totalPercentValue = Math.floor(data.reduce(function(temp, curr) { return curr.evaluated_at_least_once ? temp + curr.percent : temp; }, 0) / data.filter(function(e) { return e.evaluated_at_least_once; }).length);
+  totalPercentValue = isNaN(totalPercentValue) ? 0 : totalPercentValue;
+
   var totalPercent = document.getElementById('total_percent');
   totalPercent.className = totalPercent.className + ' p' + totalPercentValue;
   totalPercent.children[0].innerText = totalPercentValue + '%';
