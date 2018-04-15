@@ -27,8 +27,12 @@
                 <td>{{ course.course.section }}</td>
                 <td>{{ course.course.name }}</td>
                 <td>
-                  {% for teacher in course.course.teachers.all %}
+                  {% for teacher in course.course.teachers.all %}  
+                    {% if forloop.last %}
                     <span>{{ teacher.first_name }} {{ teacher.last_name }}</span>
+                    {% else %}
+                    <span>{{ teacher.first_name }} {{ teacher.last_name }}</span>,
+                    {% endif %}
                   {% endfor %}
                 </td>
                 <td class="txt-right">
