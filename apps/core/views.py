@@ -285,15 +285,22 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
 
         has_admin = UserProfilesProgram.objects.filter(
             user=self.request.user,
+            profiles__code=Profile.ADMIN,
+            program__code=self.kwargs['code'],
+        ).count() > 0
+
+        has_teacher = UserProfilesProgram.objects.filter(
+            user=self.request.user,
             profiles__code=Profile.TEACHER,
             program__code=self.kwargs['code'],
         ).count() > 0
 
-        if has_admin:
+        if has_teacher:
             context['code'] = self.kwargs['code']
             context['profile'] = self.kwargs['profile']
             context['program'] = Program.objects.get(code=self.kwargs['code'])
-            context['course'] = Course.objects.get(pk=self.kwargs['course_id'])
+            context['course'] = Course.objects.filter(pk=self.kwargs['course_id']).first()
+
             context['score'] = get_score()
             context['evaluated'] = evaluated_with_indicator(
                 self.kwargs['course_id'], self.get_object())
@@ -301,6 +308,22 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
                 course=context['course'],
                 evaluated=self.get_object().pk,
             ).all()
+            context = get_context_current_profile(context, self)
+            return context
+        elif has_admin:
+            context['code'] = self.kwargs['code']
+            context['profile'] = self.kwargs['profile']
+            context['program'] = Program.objects.get(code=self.kwargs['code'])
+            context['course'] = Course.objects.filter(pk=self.kwargs['course_id']).first()
+            context['score'] = get_score()
+            context['evaluated'] = evaluated_with_indicator(
+                self.kwargs['course_id'], self.get_object())
+            context['feedback_list'] = Feedback.objects.filter(
+                course=context['course'],
+            ).all()
+
+            context = get_context_current_profile(context, self)
+            return context
         else:
             raise Http404("Does not exist")
 
