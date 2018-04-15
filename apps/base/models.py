@@ -117,12 +117,14 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
 
         if self.image_profile:
-            if self.image_profile.file.content_type in ['image/jpg', 'image/png', 'image/jpeg']:
-                if self.image_profile.size <= 4194304:
-                    return super().save(*args, **kwargs)
-        else:
-            return super().save(*args, **kwargs)
-        raise 'File not supported'
+            try:
+                if self.image_profile.file.content_type in ['image/jpg', 'image/png', 'image/jpeg']:
+                    if self.image_profile.size <= 4194304:
+                        return super().save(*args, **kwargs)
+            except Exception as _:
+                pass
+            
+        return super().save(*args, **kwargs)
 
         # if getattr(self, '_image_changed', True):
         #     small=rescale_image(self.image,width=100,height=100)
