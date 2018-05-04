@@ -17,66 +17,135 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Curso ({{ course.name }})</li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">{{ program.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">{{ course.name }}, sec.{{course.section}}</a></li>
   </ol>
 </nav>
 
 <div class="row">
   <div class="col-12">
     <div class="card mb-4">
-      <h5 class="card-header">
+      <div class="card-header">
+        <h5>
         {% if request.user.is_superuser %}
-        <a href="/admin/term/course/{{ object.id }}/change/"><i class="fas fa-pen-square"></i></a>
+        <a href="/admin/term/course/{{ object.id }}/change/" style="display: inline-block;float: right;"><i class="fas fa-pen-square"></i></a>
         {% endif %}
-        <i class="fas fa-book"></i> CURSO {{ object.name }}
-      </h5>
-      <div class="card-body">
-        {{ object.description }}
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">Logro: {{ str_total_half_percent }}%</li>
-        <li class="list-group-item">Indicadores: {{ total_indicators }}</li>
-        <li class="list-group-item">
-          Valores:
-            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
-              {{ sc }}
-        {% endfor %}]</li>
-      </ul>
+        
+        <span class="txt-thin">CURSO</span> {{ object.name }} sec.{{ object.section }}</h5>
+        <div class="row">
+          {% for sc in course.teachers.all %}
+            <div class="col-md-6">
+              Prof. {{ sc.first_name }} {{ sc.last_name }}<br>
+                  <small><a href="mailto:{{ sc.email }}?SUBJECT=Evaluación de Competencias curso {{ object.name }} s.{{ object.section }}" title="Enviar un mail al docente">{{ sc.email }}</a></small>
+                  <p> </p>
+            </div>
+            {% endfor %}
+        </div>  
+        
+        
+
+        </div>
+
+        {% if object.description %}
+        <div class="card-body">
+          {{ object.description }}
+        </div>
+        {% endif %}
+
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div class="row">
+
+              <div class="col-md-6">
+                <strong>Progreso de Evaluación del curso</strong>
+                <div class="progress" style="height:20px">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ evaluated.indicator_evaluated|unlocalize }}%;height:20px"
+                    aria-valuenow="{{ evaluated.indicator_evaluated|unlocalize }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  > {{ evaluated.indicator_evaluated }}%</div>
+                </div>
+              </div>
+
+                <div class="col-md-6">
+                  <strong>Nivel de Logro del curso</strong>
+                  <div class="progress" style="height:20px">
+                    <div 
+                      class="progress-bar bg-success" 
+                      role="progressbar" 
+                      style="width: {{ str_total_half_percent }}%;height:20px" 
+                      aria-valuenow="{{ str_total_half_percent }}" 
+                      aria-valuemin="0" 
+                      aria-valuemax="100"> {{ str_total_half_percent }}%
+                    </div>
+              </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+
     </div>
   </div>
+</div>
+
+
+<div class="row">
   <div class="col-12">
     <div class="card">
       <h5 class="card-header">
-        LISTADO DE ESTUDIANTES
+        <span class="txt-thin">ESTUDIANTES</span> {{ object.first_name }} {{ object.last_name }}
       </h5>
-      <div>
+      <div class="">
         <div class="table-responsive">
           <table id="table-student" class="table table-hover mb-0">
             <thead>
               <tr>
                 <th scope="col">Nombre</th>
-                <th scope="col">Email</th>
-                <th>Indicadores Evaluados</th>
+                <th scope="col"></th>
+                <th scope="col">Progreso</th>
                 <th scope="col">Logro</th>
+                <th scope="col">Comentarios</th>
                 <th scope="col" class="txt-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {% for student in students_with_indicator %}
               <tr>
+
+                <td class="image-td">
+                  {% if student.user.image_profile and student.user.image_profile != '1' %}
+                    <div class="profile-min-image" style="background-image: url({% get_media_prefix %}{{ student.user.image_profile }})">
+                      <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" title="Evaluar a {{ student.user.first_name }} {{ student.user.last_name }}">
+                        <img src="{% get_media_prefix %}{{ student.user.image_profile }}" alt="" width="75" height="75">
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="profile-min-image" style="background-image: url({% static 'img/profile-default.png' %})">
+                        <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" title="Evaluar a {{ student.user.first_name }} {{ student.user.last_name }}">
+                          <img src="{% static 'img/profile-default.png' %}" alt="" width="75" height="75">
+                        </a>
+                    </div>
+                  {% endif %}
+                </td>
                 <th scope="row">
                   {% if request.user.is_superuser %}
                   <a href="/admin/base/user/{{ student.user.id }}/change/">
                     <i class="fas fa-pen-square"></i>
                   </a>
                   {% endif %}
-                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}">
-                      {{ student.user.id }} {{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.username }})
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" title="Evaluar a {{ student.user.first_name }} {{ student.user.last_name }}">
+                  <strong>{{ student.user.last_name }}</strong>, {{ student.user.first_name }} </a>
+                  <br>
+                  <a href="mailto:{{ student.user.email }}?SUBJECT={{ course.name }}, sec.{{course.section}}">
+                    <span class="small">{{ student.user.email }} </span>
                   </a>
+                  <br><span class="small"> student.user.external_info.matricula - RUT {{ student.user.username }}</span>
                 </th>
-                <td>{{ student.user.email }}</td>
+                
                 <td>
                   <div class="progress" style="height:20px">
                     <div class="progress-bar" role="progressbar" style="width: {{ student.indicator_evaluated|unlocalize }}%;height:20px" aria-valuenow="{{ student.indicator_evaluated|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.indicator_evaluated }}%</div>
@@ -87,6 +156,9 @@
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ student.half_percent|unlocalize }}%;height:20px" aria-valuenow="{{ student.half_percent|unlocalize }}" aria-valuemin="0" aria-valuemax="100"> {{ student.str_half_percent }}%</div>
                   </div>
                 </td>
+
+                <td class="text-center">s/c</td>
+                
                 <td class="txt-right">
                   <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-light btn-sm">
                     <i class="fas fa-tasks"></i> Evaluar
