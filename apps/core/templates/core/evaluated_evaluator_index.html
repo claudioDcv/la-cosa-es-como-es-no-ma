@@ -13,28 +13,40 @@
 {% block title %}Evaluado ({{ object.first_name }} {{ object.last_name }}){% endblock %}
 
 {% block content %}
-{% if has_profile %}
+{% if has_profile and course.id %}
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">Curso ({{ course.name }})</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Evaluado ({{ object.first_name }} {{ object.last_name }})</li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">{{ program.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">{{ course.name }}, sec.{{course.section}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.first_name }} {{ object.last_name }}</li>
   </ol>
 </nav>
 
 <div class="row">
   <div class="col-12">
-    <div class="card mb-4">
-      <h5 class="card-header">
-        <span class="txt-thin"><i class="fas fa-tasks"></i> EVALUADO</span> {{ object.first_name }} {{ object.last_name }}</h5>
+    <div class="card mb-2">
+      <div class="card-header">
+        
+        <div class="profile-min-image float-right" style="background-image: url({% get_media_prefix %}{{ student.user.image_profile }})">
+          <img src="{% get_media_prefix %}{{ student.user.image_profile }}" alt="" width="75" height="75">
+        </div>
+
+        <h5>
+        {% if request.user.is_superuser %}
+        <a href="/admin/term/course/{{ object.id }}/change/" style="display: inline-block;float: right;"><i class="fas fa-pen-square"></i></a>
+        {% endif %}
+        <span class="txt-thin">ESTUDIANTE</span><br>{{ object.first_name }} {{ object.last_name }}</h5>
+
+      </div>
+        
       <ul class="list-group list-group-flush">
 
         <li class="list-group-item">
           <div class="row">
             <div class="col-md-6">
-              Indicadores Evaluados (totales {{ evaluated.total_indicators }})
+              Progreso de Evaluación ({{ evaluated.total_indicators }} indicadores)
               <div class="progress" style="height:20px">
                 <div
                   class="progress-bar"
@@ -63,12 +75,7 @@
           </div>
         </li>
 
-        <li class="list-group-item">Indicadores: {{ evaluated.total_indicators }}</li>
-        <li class="list-group-item">
-          Valores:
-            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
-              {{ sc }}
-        {% endfor %}]</li>
+        
       </ul>
     </div>
   </div>
@@ -77,16 +84,25 @@
 <div class="row">
   <div class="col-12">
     <div class="card">
-      <h5 class="card-header">
-        <span class="txt-thin"><i class="fas fa-genderless"></i> INDICADORES</span>
-      </h5>
+      <div class="card-header">
+        <h5 class=" text-dark bg-light">
+          <span class="txt-thin"><!-- <i class="fas fa-comment"></i> -->EVALUACIÓN</span>
+        </h5>
+        <p class="small">Evalúe la <strong>frecuencia con la que el estudiante demuestra adquirir y desarrollar las competencias</strong> propias de este curso, específicamente a aprtir de los siguientes resultados de aprendizaje:</p>
+      </div>
+
       <div class="">
         <div class="table-responsive">
           <table class="table table-hover mb-0">
             <thead>
               <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col" class="txt-right">Nivel de Logro</th>
+                <th scope="col">Indicador</th>
+                <th scope="col" class="txt-right">
+                  Nivel de Logro 
+                  {% for sc in score.values %}
+                        - <a class="small" data-toggle="tooltip" data-placement="top" title="" data-original-title="Nombre del Nivel de logro">{{ sc }}</a>
+                  {% endfor %}
+            </th>
               </tr>
             </thead>
             <tbody>
@@ -98,11 +114,13 @@
                     <i class="fas fa-pen-square"></i>
                   </a>
                   {% endif %}
-                  <strong>{{ indicator.indicator.name }}</strong>
-                  <br />{{ indicator.indicator.description }}
+                  <!-- <strong>{{ indicator.indicator.name }}</strong> -->
+                  <br />{{ indicator.indicator.description }}<br>
+                  <span class="small"><em>Competencia: {skill} </em></span>
                 </td>
                 <td class="txt-right">
                   <form
+                    data-method="update"
                     class="finalindicatorevaluation-list-update d-inline-block"
                     style="width:100%"
                     action="{% url 'finalindicatorevaluation-list' %}"
@@ -119,20 +137,27 @@
                       <div class="">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                           {% for sc in score.values %}
-                          <label class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
-                            <input type="radio" data-type="float" {% if sc == indicator.value %}checked{% endif %} name="value" id="option{{ sc }}" autocomplete="off" value="{{ sc }}"> {{sc}}
+                          <label data-score-indicator="{{ indicator.indicator_id }}" class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
+                            <input
+                              type="radio"
+                              data-type="float"
+                              {% if sc == indicator.value %}checked{% endif %}
+                              name="value"
+                              id="option{{ sc }}"
+                              autocomplete="off"
+                              value="{{ sc }}"> {{sc}}
                           </label>
                           {% endfor %}
                         </div>
-                        <button type="submit" class="btn-sm btn btn-success">
+                        <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
                           <i class="fas fa-save"></i>
-                        </button>
-                        <button
+                        </button>-->
+                        <!--button
                           data-pk="{{ indicator.id }}"
                           data-url="{% url 'finalindicatorevaluation-list' %}"
                           data-csrfmiddlewaretoken="{{ csrf_token }}"
                           class="btn-sm btn btn-link finalindicatorevaluation-list-delete"
-                        /><i class="fas fa-trash-alt text-danger"></i></button>
+                        /><i class="fas fa-trash-alt text-danger"></i></button-->
                       </div>
                     </div>
                   </form>
@@ -141,11 +166,16 @@
               {% endfor %}
               {% for indicator in evaluated.indicator_whitout_evaluated %}
               <tr id="indicator-{{ indicator.id }}">
-                <td style="max-width: 300px"><strong>{{ indicator.name }} (Pendiente de Evaluación)</strong><br />
-                  {{ indicator.description }}
+                <td style="max-width: 300px">
+                  {{ indicator.description }}<br>
+                  <span class="small"><em>Competencia: {skill} </em></span>
                 </td>
                 <td class="txt-right">
-                  <form class="finalindicatorevaluation-list-create" action="{% url 'finalindicatorevaluation-list' %}" method="post">
+                  <form
+                    data-method="create"
+                    class="finalindicatorevaluation-list-create"
+                    action="{% url 'finalindicatorevaluation-list' %}"
+                    method="post">
                     {% csrf_token %}
                     <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
                     <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
@@ -156,14 +186,14 @@
                       <div class="">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                           {% for sc in score.values %}
-                          <label class="btn btn-outline-success btn-sm">
+                          <label class="btn btn-outline-success btn-sm" data-score-indicator="{{ indicator.indicator_id }}">
                             <input data-type="float" type="radio" name="value" id="option{{ sc }}" required autocomplete="off" value="{{ sc }}"> {{sc}}
                           </label>
                           {% endfor %}
                         </div>
-                        <button type="submit" class="btn-sm btn btn-success">
+                        <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
                           <i class="fas fa-save"></i>
-                        </button>
+                        </button>-->
                       </div>
                     </div>
                   </form>
@@ -182,9 +212,12 @@
 <div class="row mt-4">
   <div class="col-12">
     <div class="card">
-      <h5 class="card-header text-dark bg-light">
-        <span class="txt-thin"><i class="fas fa-comment"></i> FEEDBACK</span>
-      </h5>
+      <div class="card-header">
+        <h5 class=" text-dark bg-light">
+          <span class="txt-thin"><!-- <i class="fas fa-comment"></i> -->FEEDBACK</span>
+        </h5>
+        <p class="small">Entregue <strong>comentarios y retroalimentación constructiva</strong> para este estudiante. Puede ingresar comentarios tantas veces como desee, los que se despleharán ordenados cronológicamente. El estudiante verá tu nombre junto al comentario.</p>
+      </div>
       <div class="card-body">
         <div class="timeline">
           {% for feedback in feedback_list %}
@@ -195,7 +228,7 @@
           >
             <span class="arrow-left"></span>
             <div class="card-body">
-              <h6 class="card-title">{{ feedback.evaluator.first_name }} {{ feedback.evaluator.last_name }} ({{ feedback.evaluator.email }})</h6>
+             <!--  <h6 class="card-title">Prof. {{ feedback.evaluator.first_name }} {{ feedback.evaluator.last_name }} ({{ feedback.evaluator.email }}) </h6> -->
               {% csrf_token %}
               <input type="hidden" data-type="int" name="pk" value="{{ feedback.id }}">
               <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
@@ -207,33 +240,37 @@
                 name="message"
                 required
                 placeholder="Ingrese comentario"
+                style="border:none;"
               >{{ feedback.message }}</textarea>
             </div>
-            <small class="card-footer text-muted">
-              <div class="d-inline-block">
-                <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar</button>
-                <button
+            <div class="card-footer text-muted text-right">
+               <div class="text-left small" style="float:left">
+                <em>guardado el {{ feedback.updated_ts|date:'d/M/Y/H:i' }} por Prof. {{ feedback.evaluator.first_name }} {{ feedback.evaluator.last_name }}</em>
+              </div>
+              
+               
+                <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Actualizar</button>
+                <!--button
                   data-code="{{ code }}"
                   data-pk="{{ feedback.id }}"
                   data-url="{% url 'feedback-list' %}"
                   data-csrfmiddlewaretoken="{{ csrf_token }}"
                   class="btn-sm btn btn-link feedback-list-delete"
-                /><i class="fas fa-trash-alt text-danger"></i></button>
-              </div>
-              <div class="d-inline-block">
-                {{ feedback.updated_ts|date:'Y-m-d H:i' }}
-              </div>
-            </small>
+                /><i class="fas fa-trash-alt text-danger"></i></button-->
+
+              
+            </div>
           </form>
           {% endfor %}
           <form
             method="post"
             class="card feedback-list-create"
             action="{% url 'feedback-list' %}"
+            style="background-color:#f3ffe9;"
           >
             <span class="arrow-left"></span>
             <div class="card-body">
-              <h6 class="card-title"><small>Nuevo</small><br>{{ request.user.first_name }} {{ request.user.last_name }} ({{ request.user.email }})</h6>
+              <h6 class="card-title"><small>Deja un nuevo comentario</small><br>{{ request.user.first_name }} {{ request.user.last_name }} ({{ request.user.email }})</h6>
               {% csrf_token %}
               <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
               <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
@@ -246,8 +283,8 @@
                 placeholder="Ingrese comentario"
               >{{ feedback.message }}</textarea>
             </div>
-            <small class="card-footer text-muted">
-              <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Crear</button>
+            <small class="card-footer text-muted text-right">
+              <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar nuevo</button>
             </small>
           </form>
         </div>
@@ -264,7 +301,8 @@ No posee permisos.
 
 {% block scripts %}
 <script type="text/javascript">
-  createFinalIndicatorEvaluation();
-  createFeedback();
+  // createFinalIndicatorEvaluation();
+  createFeedback();  
+  evaluatedEvaluatorIndex();
 </script>
 {% endblock %}
