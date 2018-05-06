@@ -112,16 +112,16 @@ def get_data_from_period(period):
         sum_total_evaluated_values = sum(total_evaluated_values)
         max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-        total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+        total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
         total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
         print("""
             course : {course}
-            total_evaluated_percentage : {total_evaluated_percentage}
+            total_progress_level_percentage : {total_progress_level_percentage}
             total_goal_level_percentage : {total_goal_level_percentage}
         """.format(
             course=course.name,
-            total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+            total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
             total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
         ))
 
@@ -135,16 +135,16 @@ def get_data_from_period(period):
         sum_total_evaluated_values = sum(total_evaluated_values)
         max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-        total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+        total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
         total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
         print("""
             student : {student}
-            total_evaluated_percentage : {total_evaluated_percentage}
+            total_progress_level_percentage : {total_progress_level_percentage}
             total_goal_level_percentage : {total_goal_level_percentage}
         """.format(
             student=student.email,
-            total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+            total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
             total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
         ))
 
@@ -158,16 +158,16 @@ def get_data_from_period(period):
         sum_total_evaluated_values = sum(total_evaluated_values)
         max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-        total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+        total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
         total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
         print("""
             teacher : {teacher}
-            total_evaluated_percentage : {total_evaluated_percentage}
+            total_progress_level_percentage : {total_progress_level_percentage}
             total_goal_level_percentage : {total_goal_level_percentage}
         """.format(
             teacher=teacher.email,
-            total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+            total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
             total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
         ))
 
@@ -181,16 +181,16 @@ def get_data_from_period(period):
         sum_total_evaluated_values = sum(total_evaluated_values)
         max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-        total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+        total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
         total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
         print("""
             skill : {skill}
-            total_evaluated_percentage : {total_evaluated_percentage}
+            total_progress_level_percentage : {total_progress_level_percentage}
             total_goal_level_percentage : {total_goal_level_percentage}
         """.format(
             skill=skill.name,
-            total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+            total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
             total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
         ))
 
@@ -206,18 +206,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 course : {course}
                 student : {student}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 course=course.name,
                 student=student.email,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
@@ -233,18 +233,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 course : {course}
                 teacher : {teacher}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 course=course.name,
                 teacher=teacher.email,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
@@ -260,18 +260,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 course : {course}
                 skill : {skill}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 course=course.name,
                 skill=skill.name,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
@@ -287,18 +287,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 student : {student}
                 teacher : {teacher}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 student=student.email,
                 teacher=teacher.email,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
@@ -314,18 +314,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 student : {student}
                 skill : {skill}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 student=student.email,
                 skill=skill.name,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
@@ -341,18 +341,18 @@ def get_data_from_period(period):
             sum_total_evaluated_values = sum(total_evaluated_values)
             max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
 
-            total_evaluated_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
+            total_progress_level_percentage = round(float((len_total_evaluated_values) * 100)/len_total_values,0) if len_total_values > 0 else None
             total_goal_level_percentage = round(float((sum_total_evaluated_values) * 100)/max_total_evaluated_values,0) if max_total_evaluated_values > 0 else None
 
             print("""
                 teacher : {teacher}
                 skill : {skill}
-                total_evaluated_percentage : {total_evaluated_percentage}
+                total_progress_level_percentage : {total_progress_level_percentage}
                 total_goal_level_percentage : {total_goal_level_percentage}
             """.format(
                 teacher=teacher.email,
                 skill=skill.name,
-                total_evaluated_percentage='{v:.0f}%'.format(v=total_evaluated_percentage) if total_evaluated_percentage is not None else None,
+                total_progress_level_percentage='{v:.0f}%'.format(v=total_progress_level_percentage) if total_progress_level_percentage is not None else None,
                 total_goal_level_percentage='{v:.0f}%'.format(v=total_goal_level_percentage) if total_goal_level_percentage is not None else None,
             ))
 
