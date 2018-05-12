@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
+import PIL
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.six import StringIO
 
 #Add to a form containing a FileField and change the field names accordingly.
 # from django.template.defaultfilters import filesizeformat
@@ -117,14 +121,32 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
 
         if self.image_profile:
+
             try:
                 if self.image_profile.file.content_type in ['image/jpg', 'image/png', 'image/jpeg']:
                     if self.image_profile.size <= 4194304:
-                        return super().save(*args, **kwargs)
+
+                        super().save(*args, **kwargs)
+
+                        # READ IMAGE AND RESIZE
+                        size = 120, 120
+                        im = Image.open(self.image_profile)
+                        im.thumbnail(size, Image.ANTIALIAS)
+                        im.save(self.image_profile.path, "JPEG")
+
+                        '''
+                        image = Image.open(self.image_profile)
+                        # cropped_image = image.crop((x, y, w+x, h+y))
+                        resized_image = image.thumbnail((150, 150), Image.ANTIALIAS)
+                        resized_image.save(self.image_profile.path)
+                        '''
+
+                        return
+
             except Exception as _:
                 pass
             
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         # if getattr(self, '_image_changed', True):
         #     small=rescale_image(self.image,width=100,height=100)

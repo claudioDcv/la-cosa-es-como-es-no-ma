@@ -76,6 +76,7 @@ def evaluated_with_indicator(course_id, evaluated):
 
 def student_list_with_indicator(pk):
     context = {}
+
     course = Course.objects.defer(
         'period',
         'section',
@@ -97,26 +98,50 @@ def student_list_with_indicator(pk):
     students_with_indicator = []
     students_with_evaluation = 0
 
+    student_count = course.students.count()
+
+    # FEEDBACK QUERY
     feedbacks = Feedback.objects.filter(
         course_id=course.id).values('evaluated_id').annotate(total=Count('id'))
-    
     feedbacks_obj = {}
     for feed in feedbacks:
         feedbacks_obj[feed['evaluated_id']] = feed['total']
+    #FINALINDICATOREVALUATION QUERY
+    final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
+            course_id=course.id,
+        ).defer(
+            'tempfinalindicatorevaluation',
+            'created_ts',
+            'evaluator',
+            'evaluated',
+        ).all()
+
+    fie_obj = {}
+    for fie in final_indicator_evaluation:
+        evaluated_id = fie.evaluated_id
+
+        if fie_obj.get(evaluated_id, False) == False:
+            fie_obj[evaluated_id] = []
+        
+        if fie_obj.get(evaluated_id) is not None:
+            fie_obj.get(evaluated_id).append({
+                'id': fie.id,
+                'value': fie.value,
+            })
 
     for student in students:
-        indicator_list = FinalIndicatorEvaluation.objects.filter(
-            course_id=course.id,
-            evaluated=student['id'],
-        ).defer('tempfinalindicatorevaluation', 'created_ts', 'evaluator').order_by('-id').all()
 
+        indicator_list = fie_obj.get(student.get('id'), [])
+    
         total_achievement = 0
         for indicator in indicator_list:
-            total_achievement = total_achievement + indicator.value
+            total_achievement = total_achievement + indicator.get('value')
 
         if len(indicator_list) is not 0:
             students_with_evaluation = students_with_evaluation + 1
             half = total_achievement / len(indicator_list)
+
+            
         else:
             half = 0
 
@@ -146,6 +171,8 @@ def student_list_with_indicator(pk):
     context['str_total_half_percent'] = (str(total_half_percent)[:4]) if len(str(total_half_percent)) > 4 else str(total_half_percent)
     context['total_indicators'] = len(total_indicators)
     context['students_with_indicator'] = students_with_indicator
+    context['course_evaluation_progress'] = int((len(fie_obj) * 100 ) / student_count)
+    context['course_evaluation_include_indicator_progress'] = int((len(fie_obj) * 100 ) / (student_count * len(total_indicators)))
 
     return context
 

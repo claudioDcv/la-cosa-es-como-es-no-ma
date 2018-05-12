@@ -271,6 +271,10 @@ class CourseView(LoginRequiredMixin, DetailView):
         context['total_indicators'] = students['total_indicators']
         context['students_with_indicator'] = students[
             'students_with_indicator']
+        context['course_evaluation_progress'] = students[
+            'course_evaluation_progress']
+        context['course_evaluation_include_indicator_progress'] = students[
+            'course_evaluation_include_indicator_progress']
 
         return context
 

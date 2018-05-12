@@ -20,7 +20,7 @@
     <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
     <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">Curso ({{ course.name }})</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Evaluado ({{ object.first_name }} {{ object.last_name }})</li>
+    <li class="breadcrumb-item active" aria-current="page">Evaluando a ({{ object.first_name }} {{ object.last_name }})</li>
   </ol>
 </nav>
 
@@ -28,7 +28,33 @@
   <div class="col-12">
     <div class="card mb-4">
       <h5 class="card-header">
-        <span class="txt-thin"><i class="fas fa-tasks"></i> EVALUADO</span> {{ object.first_name }} {{ object.last_name }}</h5>
+        <span class="txt-thin"><i class="fas fa-tasks"></i> EVALUANDO A</span></h5>
+      
+        <div class="card-body">
+        <table>
+          <tr>
+            <td class="image-td">
+              {% if object.image_profile and object.image_profile != '1' %}
+                <div class="profile-min-image" style="background-image: url({% get_media_prefix %}{{ object.image_profile }})"></div>
+              {% else %}
+                <div class="profile-min-image" style="background-image: url({% static 'img/profile-default.png' %})"></div>
+              {% endif %}
+            </td>
+            <th scope="row">
+              {% if request.user.is_superuser %}
+              <a href="/admin/base/user/{{ object.id }}/change/">
+                <i class="fas fa-pen-square"></i>
+              </a>
+              {% endif %}
+              <div>{{ object.last_name}} <span class="txt-thin">{{ object.first_name }}</span></div>
+              <a href="{% url 'evaluated-evaluator-index' code profile object.id object.id %}">
+                  {{ object.email }}
+              </a>
+            </th>
+          </tr>
+        </table>
+        </div>
+
       <ul class="list-group list-group-flush">
 
         <li class="list-group-item">
