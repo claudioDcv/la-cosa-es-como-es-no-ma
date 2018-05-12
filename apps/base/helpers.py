@@ -2,7 +2,8 @@ import json
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from apps.base.models import Profile, Parameter
-from apps.term.models import Course, FinalIndicatorEvaluation
+from apps.term.models import Course, FinalIndicatorEvaluation, Feedback
+from django.db.models import Count
 
 
 def get_param(*args, **kwargs):
@@ -96,6 +97,13 @@ def student_list_with_indicator(pk):
     students_with_indicator = []
     students_with_evaluation = 0
 
+    feedbacks = Feedback.objects.filter(
+        course_id=course.id).values('evaluated_id').annotate(total=Count('id'))
+    
+    feedbacks_obj = {}
+    for feed in feedbacks:
+        feedbacks_obj[feed['evaluated_id']] = feed['total']
+
     for student in students:
         indicator_list = FinalIndicatorEvaluation.objects.filter(
             course_id=course.id,
@@ -126,6 +134,7 @@ def student_list_with_indicator(pk):
                     half_percent),
             'indicator_evaluated': (
                 len(indicator_list) * 100) / len(total_indicators),
+            'feedback_count': feedbacks_obj.get(student['id'], 0),
         })
 
     if students_with_evaluation is not 0:

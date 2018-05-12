@@ -34,7 +34,7 @@
         <li class="list-group-item">
           <div class="row">
             <div class="col-md-6">
-              Indicadores Evaluados (totales {{ evaluated.total_indicators }})
+              Progreso de evaluación ({{ evaluated.total_indicators }} Indicadores)
               <div class="progress" style="height:20px">
                 <div
                   class="progress-bar"
@@ -62,14 +62,15 @@
             </div>
           </div>
         </li>
-
-        <li class="list-group-item">Indicadores: {{ evaluated.total_indicators }}</li>
-        <li class="list-group-item">
-          Valores:
-            min({{ score.min }}) max({{ score.max }}) posibles:[{% for sc in score.values %}
-              {{ sc }}
-        {% endfor %}]</li>
       </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <h5 class="card-header"></h5>
     </div>
   </div>
 </div>
@@ -86,7 +87,9 @@
             <thead>
               <tr>
                 <th scope="col">Nombre</th>
-                <th scope="col" class="txt-right">Nivel de Logro</th>
+                <th scope="col" class="txt-right">Nivel de Logro
+                  <span class="txt-thin">[{% for sc in score.values %}{% if forloop.last %}{{ sc }}{% else %}{{ sc }}-{% endif %}{% endfor %}]</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -223,7 +226,7 @@
             </div>
             <small class="card-footer text-muted">
               <div class="d-inline-block">
-                <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar</button>
+                <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Actualizar</button>
                 <button
                   data-code="{{ code }}"
                   data-pk="{{ feedback.id }}"
@@ -259,7 +262,7 @@
               >{{ feedback.message }}</textarea>
             </div>
             <small class="card-footer text-muted">
-              <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Crear</button>
+              <button class="btn btn-success btn-sm" type="submit" name="button"><i class="fas fa-save"></i> Guardar nuevo</button>
             </small>
           </form>
         </div>
