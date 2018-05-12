@@ -12,28 +12,6 @@ MIN_INDICATOR_VALUE = 0
 MAX_INDICATOR_VALUE = 3
 
 
-levels = defaultdict(dict)
-
-def create_levels(obj):
-    students = obj.students.all()
-    indicators = obj.survey.indicator.all()
-    teachers = obj.teachers.all()
-
-    len_total_values = len(students) * len(indicators) * len(teachers)
-
-    total_evaluated_values = FinalIndicatorEvaluation.objects.filter(
-        course=obj,
-    ).values_list('value', flat=True)
-
-    len_total_evaluated_values = len(total_evaluated_values)
-
-    sum_total_evaluated_values = sum(total_evaluated_values)
-    max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
-
-    levels[obj]['progress_level'] = float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
-    levels[obj]['goal_level'] = float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
-
-
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -95,14 +73,31 @@ class CourseSerializer(serializers.ModelSerializer):
         return start_date <= now <= end_date
 
     def get_progress_level(self, obj):
-        if levels[obj] == {}:
-            create_levels(obj)
-        return levels[obj]['progress_level']
+        students = obj.students.all()
+        indicators = obj.survey.indicator.all()
+        teachers = obj.teachers.all()
+
+        len_total_values = len(students) * len(indicators) * len(teachers)
+
+        total_evaluated_values = FinalIndicatorEvaluation.objects.filter(
+            course=obj,
+        ).values_list('value', flat=True)
+
+        len_total_evaluated_values = len(total_evaluated_values)
+
+        return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
 
     def get_goal_level(self, obj):
-        if levels[obj] == {}:
-            create_levels(obj)
-        return levels[obj]['goal_level']
+        total_evaluated_values = FinalIndicatorEvaluation.objects.filter(
+            course=obj,
+        ).values_list('value', flat=True)
+
+        len_total_evaluated_values = len(total_evaluated_values)
+        sum_total_evaluated_values = sum(total_evaluated_values)
+
+        max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
+
+        return float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

@@ -1,4 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import CharFilter
+from django_filters import FilterSet
 from rest_framework import filters
 from rest_framework import permissions
 from rest_framework import viewsets
@@ -8,6 +10,7 @@ from apps.base.models import User
 from apps.term.api.serializers import CourseSerializer
 from apps.term.api.serializers import FeedbackSerializer
 from apps.term.api.serializers import FinalIndicatorEvaluationSerializer
+from apps.core.models import Program
 from apps.term.models import Course
 from apps.term.models import Feedback
 from apps.term.models import FinalIndicatorEvaluation
@@ -128,5 +131,53 @@ class CourseViewSet(viewsets.ModelViewSet):
             - example = 1
 
     """
+
+    filter_ordering = (
+        'id',
+        'section',
+        'period',
+        'campus',
+        'subject',
+        'survey',
+        'period__program',
+        'teachers',
+        'students',
+        # 'active',
+        # 'progress_level',
+        # 'goal_level',
+    )
+
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
+
+    filter_fields = filter_ordering
+    ordering_fields = filter_ordering
+
+
+"""
+class MyFilter(django_filters.FilterSet):
+    surname = django_filters.CharFilter(name="model_field_name_2")
+
+    order_by_field = 'ordering'
+    ordering = OrderingFilter(
+        # fields(('model field name', 'parameter name'),)
+        fields=(
+            ('model_field_name_1', 'name'),
+            ('model_field_name_2', 'surname'),
+            ('model_field_name_3', 'email'),
+        )
+    )
+
+    class Meta:
+        model = MyList
+        fields = ['model_field_name_2',]
+
+class MyListViewSet(viewsets.ModelViewSet):
+    serializer_class = MyListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = MyFilter
+
+    def get_queryset(self):
+        return MyList.objects.all()
+"""
