@@ -111,7 +111,7 @@ def upload_pic(request):
                 if os.path.isfile(path):
                     os.remove(path)
 
-            messages.info(request, 'Imágen guadada con exito!')
+            messages.info(request, 'Imagen guadada con exito!')
             return redirect('self-user-detail')
     return HttpResponseForbidden('allowed only via POST')
 

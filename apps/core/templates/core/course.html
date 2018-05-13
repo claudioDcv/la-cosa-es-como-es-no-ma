@@ -23,7 +23,7 @@
   </ol>
 </nav>
 
-<div class="row">
+<div class="row mb-4">
   <div class="col-12">
     <div class="card mb-4">
       <h5 class="card-header">
@@ -65,7 +65,7 @@
       </ul>
     </div>
   </div>
-  <div class="col-12">
+  <div class="col-12 mb-4">
     <div class="card">
       <h5 class="card-header txt-thin">
         ESTUDIANTES
@@ -75,16 +75,18 @@
           <table id="table-student" class="table table-hover mb-0">
             <thead>
               <tr>
-                <th scope="col" colspan="2">Nombre</th>
+                <th scope="col" colspan="2">Nombre
+                    <input type="text" id="search-input" placeholder="Buscar por apellido y nombre" class="form-control d-inline">
+                </th>
                 <th>Progreso</th>
                 <th scope="col">Logro</th>
                 <th scope="col">Comentarios</th>
                 <th scope="col" class="txt-right">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="search-target">
               {% for student in students_with_indicator %}
-              <tr>
+              <tr data-searcheable="{{ student.user.last_name}} {{ student.user.first_name}}">
                 <td class="image-td">
                   {% if student.user.image_profile and student.user.image_profile != '1' %}
                     <div class="profile-min-image" style="background-image: url({% get_media_prefix %}{{ student.user.image_profile }})"></div>
@@ -148,5 +150,34 @@ No posee permisos.
 $(document).ready(function() {
   // $('#table-student').dynatable();
 } );
+
+var tableSearch = function() {
+  var input = document.getElementById('search-input');
+  var body = document.getElementById('search-target');
+  var trs = body.getElementsByTagName('tr');
+
+  input.addEventListener('input', function(event) {
+    var text = event.target.value.trim();
+    for (let index = 0; index < trs.length; index++) {
+    var element = trs[index];
+    var t = element.dataset.searcheable;
+    if(t.toLocaleLowerCase().search(text.toLocaleLowerCase()) > -1) {
+      element.style.display = 'table-row';
+    } else {
+      element.style.display = 'none';
+    }
+    if(text === "") {
+      element.style.display = 'table-row';
+    }
+  }
+
+  },false);
+
+  
+
+
+};
+
+tableSearch();
 </script>
 {% endblock %}

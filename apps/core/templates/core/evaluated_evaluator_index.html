@@ -93,19 +93,15 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-12">
-    <div class="card mb-4">
-      <h5 class="card-header"></h5>
-    </div>
-  </div>
-</div>
+
+
 
 <div class="row">
   <div class="col-12">
     <div class="card">
       <h5 class="card-header">
-        <span class="txt-thin"><i class="fas fa-genderless"></i> INDICADORES</span>
+        <span class="txt-thin">
+          <i class="fas fa-genderless"></i> INDICADORES</span>
       </h5>
       <div class="">
         <div class="table-responsive">
@@ -119,104 +115,105 @@
               </tr>
             </thead>
             <tbody>
-              {% for indicator in evaluated.indicator_list %}
-              <tr id="indicator-{{ indicator.indicator_id }}">
-                <td style="max-width: 300px">
-                  {% if request.user.is_superuser %}
-                  <a href="/admin/core/indicator/{{ indicator.indicator.id }}/change/">
-                    <i class="fas fa-pen-square"></i>
-                  </a>
-                  {% endif %}
-                  <strong>{{ indicator.indicator.name }}</strong>
-                  <br />{{ indicator.indicator.description }}
-                </td>
-                <td class="txt-right">
-                  <form
-                    data-method="update"
-                    class="finalindicatorevaluation-list-update d-inline-block"
-                    style="width:100%"
-                    action="{% url 'finalindicatorevaluation-list' %}"
-                    method="post"
-                  >
-                    {% csrf_token %}
-                    <input type="hidden" data-type="int" name="pk" value="{{ indicator.id }}">
-                    <input type="hidden" data-type="int" name="indicator" value="{{ indicator.indicator.id }}">
-                    <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
-                    <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
-                    <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
 
-                    <div class="form-group">
-                      <div class="">
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                          {% for sc in score.values %}
-                          <label data-score-indicator="{{ indicator.indicator_id }}" class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
-                            <input
-                              type="radio"
-                              data-type="float"
-                              {% if sc == indicator.value %}checked{% endif %}
-                              name="value"
-                              id="option{{ sc }}"
-                              autocomplete="off"
-                              value="{{ sc }}"> {{sc}}
-                          </label>
-                          {% endfor %}
-                        </div>
-                        <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
-                          <i class="fas fa-save"></i>
-                        </button>-->
-                        <button
-                          data-pk="{{ indicator.id }}"
-                          data-url="{% url 'finalindicatorevaluation-list' %}"
-                          data-csrfmiddlewaretoken="{{ csrf_token }}"
-                          class="btn-sm btn btn-link finalindicatorevaluation-list-delete"
-                        /><i class="fas fa-trash-alt text-danger"></i></button>
-                      </div>
-                    </div>
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-              {% for indicator in evaluated.indicator_whitout_evaluated %}
-              <tr id="indicator-{{ indicator.id }}">
-                <td style="max-width: 300px"><strong>{{ indicator.name }} (Pendiente de Evaluación)</strong><br />
-                  {{ indicator.description }}
-                </td>
-                <td class="txt-right">
-                  <form
-                    data-method="create"
-                    class="finalindicatorevaluation-list-create"
-                    action="{% url 'finalindicatorevaluation-list' %}"
-                    method="post">
-                    {% csrf_token %}
-                    <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
-                    <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
-                    <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
-                    <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+                {% for indicator in evaluated.indicator_merge_values %}
+                <tr id="indicator-{{ indicator.id_eval }}">
+                    <td style="max-width: 300px">
+                      {% if request.user.is_superuser %}
+                      <a href="/admin/core/indicator/{{ indicator.id_eval }}/change/">
+                        <i class="fas fa-pen-square"></i>
+                      </a>
+                      {% endif %}
+                      <strong>{{ indicator.name }}</strong>
+                      <br />{{ indicator.description }}
+                    </td>
 
-                    <div class="form-group">
-                      <div class="">
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                          {% for sc in score.values %}
-                          <label class="btn btn-outline-success btn-sm" data-score-indicator="{{ indicator.indicator_id }}">
-                            <input data-type="float" type="radio" name="value" id="option{{ sc }}" required autocomplete="off" value="{{ sc }}"> {{sc}}
-                          </label>
-                          {% endfor %}
+                 </td>
+                 <td class="txt-right">
+
+                    {% if indicator.is_eval %}
+                    <form
+                        data-method="update"
+                        class="finalindicatorevaluation-list-update d-inline-block"
+                        style="width:100%"
+                        action="{% url 'finalindicatorevaluation-list' %}"
+                        method="post"
+                      >
+                        {% csrf_token %}
+                        <input type="hidden" data-type="int" name="pk" value="{{ indicator.id_eval }}">
+                        <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
+                        <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+                        <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+                        <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+    
+                        <div class="form-group">
+                          <div class="">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                              {% for sc in score.values %}
+                              <label data-score-indicator="{{ indicator.indicator_id }}" class="btn btn-outline-success btn-sm{% if sc == indicator.value %} active{% endif %}">
+                                <input
+                                  type="radio"
+                                  data-type="float"
+                                  {% if sc == indicator.value %}checked{% endif %}
+                                  name="value"
+                                  id="option{{ sc }}"
+                                  autocomplete="off"
+                                  value="{{ sc }}"> {{sc}}
+                              </label>
+                              {% endfor %}
+                            </div>
+                            <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
+                              <i class="fas fa-save"></i>
+                            </button>-->
+                            <button
+                              data-pk="{{ indicator.id_eval }}"
+                              data-url="{% url 'finalindicatorevaluation-list' %}"
+                              data-csrfmiddlewaretoken="{{ csrf_token }}"
+                              class="btn-sm btn btn-link finalindicatorevaluation-list-delete"
+                            /><i class="fas fa-trash-alt text-danger"></i></button>
+                          </div>
                         </div>
-                        <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
-                          <i class="fas fa-save"></i>
-                        </button>-->
-                      </div>
-                    </div>
-                  </form>
-                </td>
-              </tr>
+                      </form>
+                      {% else %}
+                      <form
+                        data-method="create"
+                        class="finalindicatorevaluation-list-create"
+                        action="{% url 'finalindicatorevaluation-list' %}"
+                        method="post">
+                        {% csrf_token %}
+                        <input type="hidden" data-type="int" name="indicator" value="{{ indicator.id }}">
+                        <input type="hidden" data-type="int" name="course" value="{{ course.id }}">
+                        <input type="hidden" data-type="int" name="evaluated" value="{{ object.id }}">
+                        <input type="hidden" data-type="int" name="evaluator" value="{{ request.user.id }}">
+    
+                        <div class="form-group">
+                          <div class="">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                              {% for sc in score.values %}
+                              <label class="btn btn-outline-success btn-sm" data-score-indicator="{{ indicator.indicator_id }}">
+                                <input data-type="float" type="radio" name="value" id="option{{ sc }}" required autocomplete="off" value="{{ sc }}"> {{sc}}
+                              </label>
+                              {% endfor %}
+                            </div>
+                            <!--<button id="save-indicator-{{ indicator.indicator_id }}" type="submit" class="btn-sm btn btn-success save-button save-button-hidden">
+                              <i class="fas fa-save"></i>
+                            </button>-->
+                          </div>
+                        </div>
+                      </form>
+                    {% endif %}
+                 </td>
+               </tr>
+
+              
               {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 

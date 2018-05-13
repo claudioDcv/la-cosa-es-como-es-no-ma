@@ -117,7 +117,7 @@ class User(AbstractUser):
     AUTH_USER_EMAIL_UNIQUE = True
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'external_info']
-    
+
     def save(self, *args, **kwargs):
 
         if self.image_profile:

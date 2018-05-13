@@ -197,6 +197,12 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
         context = get_context_current_profile(context, self)
 
+        # COUNT PROGRESS
+        total_student = 0
+        total_indicators = 0
+        total_indicators_in_courses = 0
+        final_indicator_eval_count = 0
+
         if context['current_profile']:
             has_admin = UserProfilesProgram.objects.filter(
                 user=user,
@@ -211,6 +217,8 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                 courses_with_percent = []
 
                 for course in context['courses']:
+
+                    student_total += course.students.count()
                     # students = student_list_with_indicator(course.id)
                     courses_with_percent.append({
                         'course': course,
@@ -227,18 +235,39 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
                 courses_with_percent = []
 
+                # final_indicator_eval = FinalIndicatorEvaluation.objects.filter(
+                #     course__in=[x.id for x in context['courses']],
+                # ).values('id').all()
+                # final_indicator_eval_count = final_indicator_eval.count()
+
                 for course in context['courses']:
+                    
+                    # COUNT PROGRESS
+                    fnl_ind_eval_count = FinalIndicatorEvaluation.objects.filter(
+                        course=course,
+                    ).values('id').count()
+
+                    tot_student = course.students.count()
+                    tot_ind_in_courses = course.survey.indicator.count()
+
+                    tot_stud_ind_in_course = tot_student * tot_ind_in_courses
+
+                    progress = int((fnl_ind_eval_count * 100) / (1 if tot_stud_ind_in_course == 0 else tot_stud_ind_in_course))
+
                     students = student_list_with_indicator(course.id)
                     courses_with_percent.append({
                         'course': course,
                         'students': students,
+                        'progress': progress,
                     })
                 context['courses'] = courses_with_percent
 
                 context['courser_len'] = len(context['courses'])
+
                 return context
 
             if context['current_profile'].code == 'student':
+                
                 context['courses'] = Course.objects.filter(
                     students=user,
                     subject__subjects_group__program=self.get_object())

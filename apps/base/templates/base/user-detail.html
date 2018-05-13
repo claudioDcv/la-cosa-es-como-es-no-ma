@@ -25,7 +25,7 @@
                     
                     <form class="mt-4" id="form1" style="font-size: 0" action="{% url 'self-user-detail-form' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                         <div class="file-upload d-inline-block">
-                            <label for="upload" class="btn btn-outline-primary btn-inline-block">Seleccione Imágen</label>
+                            <label for="upload" class="btn btn-outline-primary btn-inline-block">Seleccione Imagen</label>
                             <input id="imgInp" name="image_profile" class="file-upload__input" type="file">
                         </div>
                         <input type="submit" id="save-file" disabled class="file-upload-input btn btn-outline-primary btn-inline-block" value="Guardar">
@@ -82,12 +82,12 @@
                 ];
 
                 if (fsize > 4194304) {
-                    alert('Imágen muy grande, exede los 4mb');
+                    alert('Imagen muy grande, exede los 4mb');
                     return false;
                 }
 
                 if (!fileTypeSupported.find(function(e) { return e === ftype;})) {
-                    alert('Imágen solo puede ser jpg o png');
+                    alert('Imagen solo puede ser jpg o png');
                     return false;
                 }
 
