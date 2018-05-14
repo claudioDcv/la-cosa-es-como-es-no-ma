@@ -47,9 +47,9 @@
               </a>
               {% endif %}
               <div>{{ object.last_name}} <span class="txt-thin">{{ object.first_name }}</span></div>
-              <a href="{% url 'evaluated-evaluator-index' code profile object.id object.id %}">
-                  {{ object.email }}
-              </a>
+              <span class="txt-thin">
+                {{ object.email }}
+              </span>
             </th>
           </tr>
         </table>

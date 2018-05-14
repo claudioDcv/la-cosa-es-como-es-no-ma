@@ -187,6 +187,8 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         return program
 
     def get_context_data(self, **kwargs):
+
+        score = get_score()
         """Get ctx."""
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
@@ -218,11 +220,25 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
                 for course in context['courses']:
 
-                    student_total += course.students.count()
-                    # students = student_list_with_indicator(course.id)
+                    # COUNT PROGRESS
+                    fnl_ind_eval_count = FinalIndicatorEvaluation.objects.filter(
+                        course=course,
+                    ).values('id').count()
+
+                    tot_student = course.students.count()
+                    tot_ind_in_courses = course.survey.indicator.count()
+
+                    tot_stud_ind_in_course = tot_student * tot_ind_in_courses
+
+                    progress = int((fnl_ind_eval_count * 100) / (1 if tot_stud_ind_in_course == 0 else tot_stud_ind_in_course))
+
+                    students = student_list_with_indicator(course.id, score)
                     courses_with_percent.append({
                         'course': course,
+                        'students': students,
+                        'progress': progress,
                     })
+                    
                 context['courses'] = courses_with_percent
 
                 context['courser_len'] = len(context['courses'])

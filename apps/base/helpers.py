@@ -115,9 +115,12 @@ def evaluated_with_indicator(course_id, evaluated):
     }
 
 
-def student_list_with_indicator(pk):
+def student_list_with_indicator(pk, score_out = None):
     context = {}
-    score = get_score()
+    score = score_out
+
+    if score_out == None:
+        score = get_score()
 
     course = Course.objects.defer(
         'period',
@@ -160,23 +163,44 @@ def student_list_with_indicator(pk):
 
     fie_obj = {}
     total_fie_obj = 0
+    total_fie_obj = fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj)
+
+    students_with_evaluation, total_half_percent = student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj)
+
+    if students_with_evaluation is not 0:
+        total_half_percent = total_half_percent / students_with_evaluation
+    else:
+        total_half_percent = 0
+    
+    context['total_half_percent'] = total_half_percent
+    context['str_total_half_percent'] = (str(total_half_percent)[:4]) if len(str(total_half_percent)) > 4 else str(total_half_percent)
+    context['total_indicators'] = len(total_indicators)
+    context['students_with_indicator'] = students_with_indicator
+    context['course_evaluation_progress'] = int((total_fie_obj * 100 ) / student_count)
+    context['course_evaluation_include_indicator_progress'] = int((total_fie_obj * 100 ) / (student_count * len(total_indicators)))
+
+    return context
+
+def fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj):
     for fie in final_indicator_evaluation:
         evaluated_id = fie.evaluated_id
 
         if fie_obj.get(evaluated_id, False) == False:
             fie_obj[evaluated_id] = []
-        
+
         if fie_obj.get(evaluated_id) is not None:
             fie_obj.get(evaluated_id).append({
                 'id': fie.id,
                 'value': fie.value,
             })
         total_fie_obj += 1
+    return total_fie_obj
 
+def student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj):
     for student in students:
 
         indicator_list = fie_obj.get(student.get('id'), [])
-    
+
         total_achievement = 0
         for indicator in indicator_list:
             total_achievement = total_achievement + indicator.get('value')
@@ -185,7 +209,7 @@ def student_list_with_indicator(pk):
             students_with_evaluation = students_with_evaluation + 1
             half = total_achievement / len(indicator_list)
 
-            
+
         else:
             half = 0
 
@@ -205,20 +229,7 @@ def student_list_with_indicator(pk):
                 len(indicator_list) * 100) / len(total_indicators),
             'feedback_count': feedbacks_obj.get(student['id'], 0),
         })
-
-    if students_with_evaluation is not 0:
-        total_half_percent = total_half_percent / students_with_evaluation
-    else:
-        total_half_percent = 0
-    
-    context['total_half_percent'] = total_half_percent
-    context['str_total_half_percent'] = (str(total_half_percent)[:4]) if len(str(total_half_percent)) > 4 else str(total_half_percent)
-    context['total_indicators'] = len(total_indicators)
-    context['students_with_indicator'] = students_with_indicator
-    context['course_evaluation_progress'] = int((total_fie_obj * 100 ) / student_count)
-    context['course_evaluation_include_indicator_progress'] = int((total_fie_obj * 100 ) / (student_count * len(total_indicators)))
-
-    return context
+    return students_with_evaluation, total_half_percent
 
 
 def has_profile(*args, **kwargs):
