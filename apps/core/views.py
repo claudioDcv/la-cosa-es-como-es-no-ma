@@ -1,4 +1,5 @@
 import json
+import functools
 
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
@@ -187,23 +188,15 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         return program
 
     def get_context_data(self, **kwargs):
-
+        user = self.request.user
         score = get_score()
         """Get ctx."""
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
-
-        context['program'] = Program.objects.get(code=self.kwargs['code'])
-        user = self.request.user
+        context['courses'] = None
 
         context = get_context_current_profile(context, self)
-
-        # COUNT PROGRESS
-        total_student = 0
-        total_indicators = 0
-        total_indicators_in_courses = 0
-        final_indicator_eval_count = 0
 
         if context['current_profile']:
             has_admin = UserProfilesProgram.objects.filter(
@@ -213,83 +206,50 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
             ).count() > 0
 
             if context['current_profile'].code == 'admin' and has_admin:
-                context['courses'] = Course.objects.filter(
-                    subject__subjects_group__program=self.get_object())
-                
-                courses_with_percent = []
-
-                for course in context['courses']:
-
-                    # COUNT PROGRESS
-                    fnl_ind_eval_count = FinalIndicatorEvaluation.objects.filter(
-                        course=course,
-                    ).values('id').count()
-
-                    tot_student = course.students.count()
-                    tot_ind_in_courses = course.survey.indicator.count()
-
-                    tot_stud_ind_in_course = tot_student * tot_ind_in_courses
-
-                    progress = int((fnl_ind_eval_count * 100) / (1 if tot_stud_ind_in_course == 0 else tot_stud_ind_in_course))
-
-                    students = student_list_with_indicator(course.id, score)
-                    courses_with_percent.append({
-                        'course': course,
-                        'students': students,
-                        'progress': progress,
-                    })
-                    
-                context['courses'] = courses_with_percent
-
-                context['courser_len'] = len(context['courses'])
-                return context
-
+                context['courses'] = Course.objects.filter(subject__subjects_group__program=self.get_object())
+            
             if context['current_profile'].code == 'teacher':
-                context['courses'] = Course.objects.filter(
-                    teachers=user,
-                    subject__subjects_group__program=self.get_object())
-
-                courses_with_percent = []
-
-                # final_indicator_eval = FinalIndicatorEvaluation.objects.filter(
-                #     course__in=[x.id for x in context['courses']],
-                # ).values('id').all()
-                # final_indicator_eval_count = final_indicator_eval.count()
-
-                for course in context['courses']:
-                    
-                    # COUNT PROGRESS
-                    fnl_ind_eval_count = FinalIndicatorEvaluation.objects.filter(
-                        course=course,
-                    ).values('id').count()
-
-                    tot_student = course.students.count()
-                    tot_ind_in_courses = course.survey.indicator.count()
-
-                    tot_stud_ind_in_course = tot_student * tot_ind_in_courses
-
-                    progress = int((fnl_ind_eval_count * 100) / (1 if tot_stud_ind_in_course == 0 else tot_stud_ind_in_course))
-
-                    students = student_list_with_indicator(course.id)
-                    courses_with_percent.append({
-                        'course': course,
-                        'students': students,
-                        'progress': progress,
-                    })
-                context['courses'] = courses_with_percent
-
-                context['courser_len'] = len(context['courses'])
-
-                return context
-
+                context['courses'] = Course.objects.filter(teachers=user, subject__subjects_group__program=self.get_object())
+            
             if context['current_profile'].code == 'student':
                 
-                context['courses'] = Course.objects.filter(
-                    students=user,
-                    subject__subjects_group__program=self.get_object())
-                context['courser_len'] = len(context['courses'])
-                return context
-        
+                context['courses'] = Course.objects.filter(students=user, subject__subjects_group__program=self.get_object())
+            
+            final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
+                        course__in=context['courses'],
+                    ).values('id', 'course_id', 'indicator__name', 'value').all()
+            
+            course_return = []
+            for course in context['courses']:
+                tot_student = course.students.count()
+                tot_ind_in_courses = course.survey.indicator.count()
+                tot_stud_ind_in_course = tot_student * tot_ind_in_courses
+
+                total_final_indicator_evaluation = list(filter(lambda x, course=course: x['course_id'] == course.id, final_indicator_evaluation))
+
+                progress = int((len(total_final_indicator_evaluation) * 100) / (1 if tot_stud_ind_in_course == 0 else tot_stud_ind_in_course))
+                
+                teachers = course.teachers.values('id', 'last_name', 'first_name').all()
+
+                values = [x['value'] for x in total_final_indicator_evaluation]
+                
+                # 26 26=100 16=x
+                achievement_sum = functools.reduce((lambda x, y: x + y), values, 0.0)
+
+                # 16 = score['max']
+                achievement_total = len(total_final_indicator_evaluation)
+
+                achievement = (achievement_sum * 100) / ((1 if achievement_total == 0 else achievement_total) * score['max'])
+                # achievement =  (len(total_final_indicator_evaluation) * 100) / ((1 if len(values) == 0 else len(values)) * score['max'])
+
+                course_return.append({
+                    'course': course,
+                    'progress': progress,
+                    'teachers': teachers,
+                    'achievement': achievement,
+                })
+
+            context['courses'] = course_return
         return context
 
 

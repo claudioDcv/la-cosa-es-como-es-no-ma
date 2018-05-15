@@ -27,6 +27,7 @@
                 </th>
                 <td>{{ course.course.code }}</td>
                 <td>{{ course.course.section }}</td>
+
                 <td>
                   <div class="progress">
                     <div
@@ -43,28 +44,14 @@
                 <td>
                   <div class="progress">
                     <div
-                      class="progress-bar"
-                      role="progressbar"
-                      style="width: {{ course.students.total_half_percent|unlocalize }}%"
-                      aria-valuenow="{{ course.students.total_half_percent|unlocalize }}"
-                      aria-valuemin="0"
-                      aria-valuemax="100">
-                      {{ course.students.str_total_half_percent }}%
-                    </div>
-                  </div>
-                </td>
-                
-                <td>
-                  <div class="progress">
-                    <!--div
                       class="progress-bar bg-success"
                       role="progressbar"
-                      style="width: {{ course.students.total_half_percent|unlocalize }}%"
-                      aria-valuenow="{{ course.students.total_half_percent|unlocalize }}"
+                      style="width: {{ course.achievement|unlocalize }}%"
+                      aria-valuenow="{{ course.achievement|unlocalize }}"
                       aria-valuemin="0"
                       aria-valuemax="100">
-                      {{ course.students.str_total_half_percent }}%
-                    </div-->
+                      {{ course.achievement }}%
+                    </div>
                   </div>
                 </td>
 

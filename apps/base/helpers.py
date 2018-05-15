@@ -65,6 +65,7 @@ def evaluated_with_indicator(course_id, evaluated):
             'name': ind.name,
             'description': ind.description,
             'value': indicator.value,
+            'skill__name': ind.skill.name,
             'is_eval': True,
         }
     def create_indicator_no_eval(indicator):
@@ -75,6 +76,7 @@ def evaluated_with_indicator(course_id, evaluated):
             'name': ind.name,
             'description': ind.description,
             'value': -1,
+            'skill__name': ind.skill.name,
             'is_eval': False,
         }
 
