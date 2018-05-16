@@ -24,7 +24,7 @@ def get_context_current_profile(context, _self):
         context['current_profile'] = False
     try:
         if context['current_profile']:
-            
+
             _self.request.user.user_profiles_program.get(
                 profiles=context['current_profile'].code,
                 program=Program.objects.get(code=context['code']),
@@ -43,6 +43,7 @@ class IndexView(TemplateView):
             return redirect('home')
         return redirect('login')
 
+
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "base/home.html"
 
@@ -59,7 +60,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
                 program = programs.first()
                 code = program.program.code
                 return redirect('/program/{0}/student/skill-list'.format(code))
-        
+
         return super(HomeView, self).get(request, kwargs)
 
     def get_context_data(self, **kwargs):
