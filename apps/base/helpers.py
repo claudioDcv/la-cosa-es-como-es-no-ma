@@ -117,7 +117,7 @@ def evaluated_with_indicator(course_id, evaluated):
     }
 
 
-def student_list_with_indicator(pk, score_out = None):
+def student_list_with_indicator(pk, score_out = None, internal_id_name = None):
     context = {}
     score = score_out
 
@@ -139,6 +139,7 @@ def student_list_with_indicator(pk, score_out = None):
         'email',
         'username',
         'image_profile',
+        'external_info'
         ).order_by('last_name').all()
 
     total_half_percent = 0
@@ -167,7 +168,7 @@ def student_list_with_indicator(pk, score_out = None):
     total_fie_obj = 0
     total_fie_obj = fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj)
 
-    students_with_evaluation, total_half_percent = student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj)
+    students_with_evaluation, total_half_percent = student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj, internal_id_name)
 
     if students_with_evaluation is not 0:
         total_half_percent = total_half_percent / students_with_evaluation
@@ -198,8 +199,20 @@ def fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj):
         total_fie_obj += 1
     return total_fie_obj
 
-def student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj):
+def student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj, internal_id_name):
     for student in students:
+        
+        external_info = None
+        try:
+            external_info = json.loads(student['external_info'].replace('\'', '"'))
+        except Exception as _:
+            external_info = {}
+        
+        internal_id = ''
+        try:
+            internal_id = external_info[internal_id_name]
+        except Exception as _:
+            internal_id = student['username']
 
         indicator_list = fie_obj.get(student.get('id'), [])
 
@@ -221,6 +234,8 @@ def student_iterator(students, fie_obj, students_with_evaluation, score, total_h
 
         students_with_indicator.append({
             'user': student,
+            'internal_id': internal_id,
+            'external_info': external_info,
             'indicator_list': indicator_list,
             'half': half,
             'half_percent': half_percent,

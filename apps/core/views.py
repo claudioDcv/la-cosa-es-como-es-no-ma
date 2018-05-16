@@ -16,6 +16,8 @@ from apps.base.helpers import get_score, student_list_with_indicator,\
 from apps.core.models import Skill, Indicator
 from apps.business.models import Survey
 
+from apps.base.models import Parameter
+
 
 def calc_percentage(x, total):
     return (x * 100) / total
@@ -269,8 +271,10 @@ class CourseView(LoginRequiredMixin, DetailView):
         context['score'] = get_score()
         context['program'] = Program.objects.get(code=self.kwargs['code'])
 
-        students = student_list_with_indicator(self.kwargs['pk'])
+        internal_id_name = Parameter.objects.get(code='internal_id').value
         
+        students = student_list_with_indicator(self.kwargs['pk'], None, internal_id_name)
+
         context['str_total_half_percent'] = students['str_total_half_percent']
         context['total_half_percent'] = students['total_half_percent']
         context['total_indicators'] = students['total_indicators']
@@ -291,6 +295,7 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         """Get ctx."""
         context = super().get_context_data(**kwargs)
+        context['score_description'] = json.loads(Parameter.objects.get(code='score_description').value)
 
         has_admin = UserProfilesProgram.objects.filter(
             user=self.request.user,

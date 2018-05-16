@@ -93,9 +93,6 @@
   </div>
 </div>
 
-
-
-
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -111,7 +108,10 @@
                 <th scope="col">Indicador</th>
                 <th scope="col">Competencia</th>
                 <th scope="col" class="txt-right">Nivel de Logro
-                  <span class="txt-thin">[{% for sc in score.values %}{% if forloop.last %}{{ sc }}{% else %}{{ sc }}-{% endif %}{% endfor %}]</span>
+                  <span class="txt-thin">
+                      {% for desc in score_description %}
+                        <div data-toggle="tooltip" class="badge badge-info" data-placement="top" title="{{desc.desc|safe}}">{{desc.val|safe}}</div>
+                      {% endfor %}
                 </th>
               </tr>
             </thead>
@@ -208,12 +208,18 @@
               
               {% endfor %}
               
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer">
+          <span>Descripción nivel de logro</span> 
+          {% for desc in score_description %}
+            <span class="badge badge-darkbadge badge-pill badge-light">{{desc.val|safe}} - {{desc.desc|safe}}</span>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -305,5 +311,9 @@ No posee permisos.
   // createFinalIndicatorEvaluation();
   createFeedback();  
   evaluatedEvaluatorIndex();
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 </script>
 {% endblock %}
