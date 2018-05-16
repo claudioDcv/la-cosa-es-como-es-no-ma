@@ -5,55 +5,55 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>First name</th>
-            <th>Email</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in object_list %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.first_name }}</td>
-            <td>{{ user.email }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <div class="container">
+        <div class="card my-4">
+                <div class="card-header bg-dark text-white">Listado de estudiantes</div>
+                <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>RUT</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in object_list %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="card-footer bg-dark text-white">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-sm">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{page_obj.previous_page_number}}">Previous</a></li>
+                        {% endif %}
+                        
+                        {% for pg in page_range %}
+                        {% if page_obj.number == pg %}
+                            <li class="page-item active"><a class="page-link bg-dark text-white" href="?page={{pg}}">{{pg}}<span class="sr-only">(current)</span></a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{pg}}">{{pg}}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{page_obj.next_page_number}}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% if is_paginated %}
-<ul class="pagination">
-    {% if page_obj.has_previous %}
-    <li>
-        <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
-    </li>
-    {% else %}
-    <li class="disabled">
-        <span>&laquo;</span>
-    </li>
-    {% endif %} {% for i in paginator.page_range %} {% if page_obj.number == i %}
-    <li class="active">
-        <span>{{ i }}
-            <span class="sr-only">(current)</span>
-        </span>
-    </li>
-    {% else %}
-    <li>
-        <a href="?page={{ i }}">{{ i }}</a>
-    </li>
-    {% endif %} {% endfor %} {% if page_obj.has_next %}
-    <li>
-        <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
-    </li>
-    {% else %}
-    <li class="disabled">
-        <span>&raquo;</span>
-    </li>
-    {% endif %}
-</ul>
 {% endif %}
 
 {% endblock %}

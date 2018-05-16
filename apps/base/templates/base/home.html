@@ -36,6 +36,15 @@
           </li>
         {% endfor %}
       </ul>
+      <div class="card-footer">
+        {% for profile in o.profiles.all %}
+          {% if profile.code == 'admin' %}
+            <a class="btn btn-sm btn-light hvr-glow" href="{% url 'student-list' o.program.code profile.code %}">
+                <i class="fas fa-users"></i> Listado Estudiantes
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
   </div>
   {% endfor %}

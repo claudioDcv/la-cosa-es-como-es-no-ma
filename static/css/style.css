@@ -427,3 +427,13 @@ td, th {
   white-space: nowrap;
   text-shadow: 0px 0px 2px black;
 }
+
+.page-item.active .page-link.bg-dark.text-white {
+  z-index: 1;
+  color: #343a40!important;
+  background: white!important;
+  border-color: #ffffff!important;
+}
+.pagination.pagination-sm {
+  margin: 0;
+}
