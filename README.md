@@ -1,5 +1,18 @@
-# la-cosa-es-como-es-no-ma
+# La cosa es como es no mas!
 la-cosa-es-como-es-no-ma
+
+## Apps
+
+- `apps.base`: app donde esta la base como el User, Profile
+- `apps.business`: --
+- `apps.core`: --
+- `apps.log`: en TODO
+- `apps.term`: --
+- `apps.topology`: representa una jerarquia logica de la institución donde este esa app
+- `apps.reporter`: --
+- `apps.maintainer`: mantenedor para el admin donde agrega cursos y otras cosas
+- `apps.report`: Representa la app de reportes para el admin
+
 
 - export data
 ```bash
