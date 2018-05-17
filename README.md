@@ -13,11 +13,13 @@ la-cosa-es-como-es-no-ma
 - `apps.maintainer`: mantenedor para el admin donde agrega cursos y otras cosas
 - `apps.report`: Representa la app de reportes para el admin
 
+# Instalación
 
 - export data
 ```bash
 ./manage.py dumpdata --exclude auth.permission --exclude contenttypes > db.json
 ```
+# Rutas
 
 - program/arq/2/course/1/evaluated/2: `programa/<program_slug>/<profile_id>/course/<course_id>/evaluated/<user_id>`
 
