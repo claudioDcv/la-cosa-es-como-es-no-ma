@@ -268,6 +268,50 @@ window.startSkills = function(data) {
   });
 };
 
+var tableSearch = function() {
+  var input = document.getElementById('search-input');
+  var inputId = document.getElementById('search-input-id');
+  var body = document.getElementById('search-target');
+  var trs = body.getElementsByTagName('tr');
+  var actionSearch = function(type, event) {
+
+    var text = '';
+    var textId = '';
+
+    if(type == 'id') {
+      textId = event.target.value.trim();
+      text = input.value.trim();
+    }
+    if(type == 'name') {
+      text = event.target.value.trim();
+      textId = inputId.value.trim();
+    }
+
+    for (let index = 0; index < trs.length; index++) {
+      var element = trs[index];
+      var t = element.dataset.searcheable;
+      var tId = element.dataset.searcheableid;
+      if(
+        t.toLocaleLowerCase().search(text.toLocaleLowerCase()) > -1 &&
+        tId.toLocaleLowerCase().search(textId.toLocaleLowerCase()) > -1
+        ) {
+        element.style.display = 'table-row';
+      } else {
+        element.style.display = 'none';
+      }
+      if(text === '' && textId == '') {
+        element.style.display = 'table-row';
+      }
+    }
+  }
+  
+  input.addEventListener('input', function(event) {
+    actionSearch('name', event);
+  },false);
+  inputId.addEventListener('input', function(event) {
+    actionSearch('id', event);
+  },false);
+};
 
 
 var changePercent = function() {
