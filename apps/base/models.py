@@ -151,6 +151,10 @@ class User(AbstractUser):
         # if getattr(self, '_image_changed', True):
         #     small=rescale_image(self.image,width=100,height=100)
         #     self.image_small=SimpleUploadedFile(name,small_pic)
+    
+    def link(self):
+        # Return some calculated value based on the entry
+        return self.id
         
 
     @staticmethod

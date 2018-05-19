@@ -16,12 +16,12 @@ from django_tables2.utils import A  # alias for Accessor
 
 class PersonTable(tables.Table):
 
-    edit = tables.LinkColumn('item_edit', args=[A('pk')], orderable=False, empty_values=())
-    def render_edit(self):
-        return format_html('<a href="#">Edit</a>')
+    editar = tables.Column(accessor='id', verbose_name='Editar.')
+    def render_editar(self, value):
+        return format_html('<a class="btn btn-success btn-sm" href="#">Editar{0}</a>'.format(value))
 
     class Meta:
-        fields = ('id', 'username', 'first_name', 'last_name', 'edit')
+        fields = ('id', 'username', 'first_name', 'last_name', 'editar')
         model = User
 
 

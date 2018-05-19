@@ -55,7 +55,7 @@
     </div>
   </div>
 </div>
-
+<!-- desde acá
 <div class="row">
 <div class="col-12">
   <div class="card mb-4">
@@ -106,6 +106,136 @@
 </div>
 </div>
 
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <h5 class="card-header txt-thin">
+        <i class="fas fa-bolt"></i> LISTADO DE COMPETENCIAS
+      </h5>
+            <div class="card-body">
+                <div id="accordion">
+                    {% for skill in skill_list %}
+                    <div class="card skillBox-{{skill.object.id}}">
+                      
+                        <div class="card-header" class="card-link float-right" data-toggle="collapse" id="heading-{{skill.object.id}}">
+                            
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{skill.object.id}}" aria-expanded="true" aria-controls="collapse-{{skill.object.id}}">
+                                <h3>{{ skill.object.name }}</h3>
+                              </button>
+                            <div class="skillPercentage">
+                              <div id="total_percent" class="c100 p78">
+                                <span>78%</span>
+                                <div class="slice">
+                                    <div class="bar"></div>
+                                    <div class="fill"></div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <p>El estudiante reflexiona acerca de su propio comportamiento y comprende la consecuencia de sus acciones. El estudiante entiende la arquitectura como una disciplina comprometida con el destino de la ciudad, desde una perspectiva de integración del proyecto al contexto espacial en el cual se inserta.</p>
+                        </div>
+                        <div id="collapse-{{skill.object.id}}" class="collapse show" aria-labelledby="heading-{{skill.object.id}}" data-parent="#accordion-{{skill.object.id}}">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    Selecciona y utiliza sus capacidades para el desarrollo de un trabajo?
+                                    <br>
+                                    <small>1/3: Esporádicamente observado, en Nombre del Curso</small>
+                                </li>
+                                <li class="list-group-item">
+                                    El estudiante reconoce sus capacidades con la finalidad de aplicarlas selectivamente en los desafíos académicos.
+                                    <br>
+                                    <small>2/3: Frecuentemente observado, en Nombre del Curso</small>
+                                </li>
+                                <li class="list-group-item">
+                                    Toma decisiones autónomas que le permiten abordar un proceso de aprendizaje.
+                                    <br>
+                                    <small>3/3: Permanente observado, en Nombre del Curso</small>
+                                </li>
+                                <li class="list-group-item">
+                                    Toma decisiones autónomas que le permiten abordar un proceso de aprendizaje.
+                                    <br>
+                                    <small>No evaluado aún</small>
+                                </li>
+                                <li class="list-group-item">
+                                    Toma decisiones autónomas que le permiten abordar un proceso de aprendizaje.
+                                    <br>
+                                    <small>No evaluado aún</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+hasta acá -->
+
+
+<div class="row">
+    <div class="col-12 mt-4">
+        <div class="card mb-4">
+            <h5 class="card-header txt-thin">
+        <i class="fas fa-bolt"></i> LISTADO DE COMPETENCIAS
+      </h5>
+      <div class="">
+          <div id="accordion" class="accordion">
+              {% for skill in skill_list %}
+              <div class="card" id="skill-{{ skill.object.id }}" data-toggle="collapse" data-target="#collapse-{{skill.object.id}}" aria-expanded="true" aria-controls="collapse-{{skill.object.id}}">
+                <div class="card-header" id="heading-{{skill.object.id}}">
+                  <div class="mb-0">
+                      <div>
+                          {% if skill.evaluated_at_least_once %}  
+                          <div class="c100 p{{ skill.str_percent|floatformat:"0" }} xs">
+                              <span>{{ skill.str_percent }}%</span>
+                              <div class="slice">
+                                  <div class="bar"></div>
+                                  <div class="fill"></div>
+                              </div>
+                          </div>
+                          <h6>{{ skill.object.name }}</h6>
+                          {% else %}
+                          <h6>{{ skill.object.name }}<br /><small>no evaluado</small></h6>
+                          {% endif %}
+                      </div>
+                      <!--<div>{{ skill.object.description }}</div>-->
+                  </div>
+                </div>
+            
+                <div id="collapse-{{skill.object.id}}" class="collapse show" aria-labelledby="heading-{{skill.object.id}}" data-parent="#accordion">
+                  <div class="">
+                      <ul class="list-group list-group-flush">
+                        {% for indicator in skill.indicator_list %}
+                        <li class="list-group-item">
+                            <small>
+                                {% if indicator.is_evaluated %}
+                                <div class="c100 p{{ indicator.str_percent|floatformat:"0" }} xs">
+                                    <span>{{ indicator.str_percent }}%</span>
+                                    <div class="slice">
+                                        <div class="bar"></div>
+                                        <div class="fill"></div>
+                                    </div>
+                                </div><strong>{{ indicator.object.name }}</strong>
+                                {% else %}
+                                <strong>{{ indicator.object.name }} | Aun no se ha evaluado</strong>
+                                {% endif %}<br />
+                                <p>{{ indicator.object.description }}</p>
+                            </small>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% else %}
 No posee permisos
 {% endif %}
@@ -126,6 +256,8 @@ No posee permisos
   totalPercent.children[0].innerText = totalPercentValue + '%';
 
   startSkills(data);
+
+  $('.collapse').collapse()
 
 </script>
 {% endblock %}

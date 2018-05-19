@@ -437,3 +437,78 @@ td, th {
 .pagination.pagination-sm {
   margin: 0;
 }
+
+.accordion {}
+.accordion .card{
+  cursor: pointer;
+  border-radius: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.accordion .card h6 {
+  margin: 0;
+}
+
+.accordion .card .card-header {
+  padding: 5px 15px;
+}
+
+.accordion .card p {
+  margin: 0;
+}
+
+.accordion .card .list-group-flush .list-group-item {
+  padding: 5px 15px;
+}
+
+.accordion .card .c100.xs {
+  font-size: 40px;
+}
+
+.accordion .card:not(.collapsed){
+  background-color: #e8f0fe;
+}
+
+.accordion .card:hover{
+  background-color: whitesmoke;
+}
+
+.accordion .card:hover h6,
+.accordion .card:not(.collapsed) h6{
+  color: #4284f4;
+}
+
+.accordion .card:first-child{
+  border-radius: 0px 0px 0 0;
+  border-top: 1px solid rgba(0,0,0,.125);
+}
+.accordion .card:last-child{
+  border-radius: 0 0 0px 0px;
+}
+.accordion {}
+.accordion {}
+
+.desc.orderable,
+.asc.orderable {
+  position: relative;
+  padding-right: 26px;
+}
+.orderable:before {
+  display: block;
+  width: 15px;
+  height: 23px;
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  bottom: 0;
+  font-size: 14px;
+  margin: auto;
+}
+.asc.orderable:before {
+  content: "▼";
+}
+
+.desc.orderable:before {
+  content: "▲";
+}
