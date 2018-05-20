@@ -183,7 +183,7 @@ hasta acá -->
       <div class="">
           <div id="accordion" class="accordion">
               {% for skill in skill_list %}
-              <div class="card" id="skill-{{ skill.object.id }}" data-toggle="collapse" data-target="#collapse-{{skill.object.id}}" aria-expanded="true" aria-controls="collapse-{{skill.object.id}}">
+              <div class="card collapsed" id="skill-{{ skill.object.id }}" data-toggle="collapse" data-target="#collapse-{{skill.object.id}}" aria-expanded="true" aria-controls="collapse-{{skill.object.id}}">
                 <div class="card-header" id="heading-{{skill.object.id}}">
                   <div class="mb-0">
                       <div>
@@ -196,32 +196,47 @@ hasta acá -->
                               </div>
                           </div>
                           <h6>{{ skill.object.name }}</h6>
+                          <p class="text-description">{{ skill.object.description }}</p>
                           {% else %}
-                          <h6>{{ skill.object.name }}<br /><small>no evaluado</small></h6>
+                          <h6>{{ skill.object.name }}</h6>
+                            <p class="text-description">{{ skill.object.description }}</p>
+                            <small>No evaluado aún</small>
                           {% endif %}
                       </div>
                       <!--<div>{{ skill.object.description }}</div>-->
                   </div>
                 </div>
             
-                <div id="collapse-{{skill.object.id}}" class="collapse show" aria-labelledby="heading-{{skill.object.id}}" data-parent="#accordion">
+                <div id="collapse-{{skill.object.id}}" class="collapse hide" aria-labelledby="heading-{{skill.object.id}}" data-parent="#accordion">
                   <div class="">
                       <ul class="list-group list-group-flush">
                         {% for indicator in skill.indicator_list %}
                         <li class="list-group-item">
                             <small>
                                 {% if indicator.is_evaluated %}
+                                <!--
                                 <div class="c100 p{{ indicator.str_percent|floatformat:"0" }} xs">
                                     <span>{{ indicator.str_percent }}%</span>
                                     <div class="slice">
                                         <div class="bar"></div>
                                         <div class="fill"></div>
                                     </div>
-                                </div><strong>{{ indicator.object.name }}</strong>
-                                {% else %}
-                                <strong>{{ indicator.object.name }} | Aun no se ha evaluado</strong>
-                                {% endif %}<br />
+                                </div>
+                                -->
+                                <strong>{{ indicator.object.name }}</strong><br />
                                 <p>{{ indicator.object.description }}</p>
+                                <span>
+                                    {% for desc in score_description %}
+                                        {% if desc.val == indicator.value %}{{desc.val|safe}}/{{score.max}}{% endif %}
+                                        {% if desc.val == indicator.value %}: {{desc.desc|safe}}{% endif %}
+                                      {% endfor %}
+                                </span>
+                                
+                                {% else %}
+                                <strong>{{ indicator.object.name }}</strong>
+                                <p>{{ indicator.object.description }}</p>
+                                <span>No evaluado aún</span>
+                                {% endif %}<br />
                             </small>
                         </li>
                         {% endfor %}

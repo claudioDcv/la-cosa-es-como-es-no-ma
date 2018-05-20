@@ -44,6 +44,8 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         """Get ctx."""
         context = super().get_context_data(**kwargs)
+        context['score_description'] = json.loads(Parameter.objects.get(code='score_description').value)
+
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
         score = get_score()
@@ -85,7 +87,7 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
                 skill_list = Skill.objects.filter(id__in=skill_ids)
 
                 #  procedimiento para armar listado de indicadores evaluados
-                # construccion de objeto de competencias con estdiante evaluado
+                # construccion de objeto de competencias con estudiante evaluado
                 final_skill_list = []
                 for skill in skill_list:
 

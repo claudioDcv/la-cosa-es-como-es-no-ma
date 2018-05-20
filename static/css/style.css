@@ -479,6 +479,10 @@ td, th {
   color: #4284f4;
 }
 
+.accordion .card:not(.collapsed):hover {
+  background-color: #e8f0fe;
+}
+
 .accordion .card:first-child{
   border-radius: 0px 0px 0 0;
   border-top: 1px solid rgba(0,0,0,.125);
@@ -487,7 +491,11 @@ td, th {
   border-radius: 0 0 0px 0px;
 }
 .accordion {}
-.accordion {}
+.accordion .list-group-item:hover{
+  padding: 5px 15px;
+  background-color: #f8fbff;
+  border-bottom: solid 1px #d8d8d8;
+}
 
 .desc.orderable,
 .asc.orderable {
@@ -511,4 +519,11 @@ td, th {
 
 .desc.orderable:before {
   content: "▲";
+}
+
+.text-description{
+  font-size: 12px;
+  font-weight: 100;
+  margin: 6px 0;
+  line-height: 1.5;
 }
