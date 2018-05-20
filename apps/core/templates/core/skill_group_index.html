@@ -224,7 +224,7 @@ hasta acá -->
                                 </div>
                                 -->
                                 <strong>{{ indicator.object.name }}</strong><br />
-                                <p>{{ indicator.object.description }}</p>
+                                <!--<p>{{ indicator.object.description }}</p>-->
                                 <span>
                                     {% for desc in score_description %}
                                         {% if desc.val == indicator.value %}{{desc.val|safe}}/{{score.max}}{% endif %}
@@ -233,8 +233,8 @@ hasta acá -->
                                 </span>
                                 
                                 {% else %}
-                                <strong>{{ indicator.object.name }}</strong>
-                                <p>{{ indicator.object.description }}</p>
+                                <strong>{{ indicator.object.name }}</strong><br />
+                                <!--<p>{{ indicator.object.description }}</p>-->
                                 <span>No evaluado aún</span>
                                 {% endif %}<br />
                             </small>
