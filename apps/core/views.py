@@ -368,6 +368,9 @@ class EvaluatedIndexView(LoginRequiredMixin, TemplateView):
         context['score'] = get_score()
         context['evaluated'] = evaluated_with_indicator(
             self.kwargs['course_id'], self.request.user)
+
+
+        context['total_indicators'] = len(context['evaluated'].get('indicator_list')) + len(context['evaluated'].get('indicator_whitout_evaluated')) 
         context['feedback_list'] = Feedback.objects.filter(
             course=context['course'],
             evaluated=self.request.user.id,

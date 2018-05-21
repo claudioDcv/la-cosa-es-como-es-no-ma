@@ -527,3 +527,34 @@ td, th {
   margin: 6px 0;
   line-height: 1.5;
 }
+.student-card {
+  height: 250px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0px 0px 6px #67676754;
+}
+.student-card:hover {
+  box-shadow: 0px 0px 15px #67676754;
+}
+.student-card .card-header{
+  border-radius: 0;
+  border: none;
+  background: #ffffff;
+  color: #047afb;
+}
+
+.same-h {
+  display: table;
+}
+.same-h > * {
+  display: table-cell;
+}
+.progress .progress-bar {
+  background-color: #63a3e7!important;
+}
+.progress .bg-success{
+  background-color: #8BC34A !important;
+}
+.progress .bg-primary{
+  background-color: #63a3e7!important;
+}
