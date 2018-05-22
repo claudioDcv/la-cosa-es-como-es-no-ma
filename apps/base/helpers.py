@@ -1,6 +1,8 @@
 import json
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from datetime import datetime, timedelta, time
 
+from apps.business.models import Period
 from apps.base.models import Profile, Parameter
 from apps.term.models import Course, FinalIndicatorEvaluation, Feedback
 from django.db.models import Count
@@ -257,3 +259,51 @@ def has_profile(*args, **kwargs):
         if prof[0] == current_profile.id:
             current_profile_name = prof[1]
     return current_profile_name == profile
+
+
+def get_periods(code, current_id=0):
+    today = datetime.now().date()
+    '''
+    Menor o igual que [2]:
+    Entry.objects.filter(pub_date__lte=end_date)
+
+    Mayor igual que [3]:
+    Entry.objects.filter(pub_date__gte=start_date)
+    '''
+    current_period = Period.objects.filter(id=current_id)
+    periods_now = Period.objects.filter(
+        program__code=code,
+        start_date__lte=today,
+        end_date__gte=today,
+    )
+
+    periods_not_now = Period.objects.filter(
+        program__code=code
+    ).exclude(
+        id__in=[x.id for x in periods_now],    
+    )
+
+    periods = []
+
+    for period in periods_now:
+        periods.append({
+            'current': True,
+            'id': period.id,
+            'name': period.name,
+            'current': period.id == int(current_id),
+        })
+
+    for period in periods_not_now:
+        periods.append({
+            'current': False,
+            'id': period.id,
+            'name': period.name,
+            'current': period.id == int(current_id),
+        })
+
+    return {
+        'now': periods_now,
+        'not_now': periods_not_now,
+        'periods': periods,
+        'current': current_period.first(),
+    }

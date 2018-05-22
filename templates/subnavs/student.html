@@ -6,7 +6,11 @@
     <a class="nav-link" href="#">Evaluaciones</a>
   </li> -->
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'program-index' program.code 'student' %}">Cursos</a>
+    {% if period %}
+      <a class="nav-link" href="{% url 'program-index' program.code 'student' period %}">Cursos</a>
+    {% else %}
+      <a class="nav-link" href="{% url 'program-index' program.code 'student' 0 %}">Cursos</a>
+    {% endif %}
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{% url 'skill-index' program.code 'student' %}">Competencias</a>

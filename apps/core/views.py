@@ -8,11 +8,12 @@ from django.shortcuts import get_object_or_404
 from apps.base.views import get_context_current_profile
 from django.http import Http404
 
+
 from apps.core.models import Program
 from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.base.helpers import get_score, student_list_with_indicator,\
-    evaluated_with_indicator
+    evaluated_with_indicator, get_periods
 from apps.core.models import Skill, Indicator
 from apps.business.models import Survey
 
@@ -47,6 +48,8 @@ class SkillGroupIndexView(LoginRequiredMixin, DetailView):
         context['score_description'] = json.loads(Parameter.objects.get(code='score_description').value)
 
         context['code'] = self.kwargs['code']
+        context['period'] = get_periods(context['code']).get('now').first().id
+
         context['profile'] = self.kwargs['profile']
         score = get_score()
         context['score'] = score
@@ -197,8 +200,12 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
         """Get ctx."""
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
+        context['period'] = self.kwargs['period']
         context['profile'] = self.kwargs['profile']
+
         context['courses'] = None
+
+        context['periods'] = get_periods(context['code'], context['period'])
 
         context = get_context_current_profile(context, self)
 
@@ -210,14 +217,25 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
             ).count() > 0
 
             if context['current_profile'].code == 'admin' and has_admin:
-                context['courses'] = Course.objects.filter(subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    subject__subjects_group__program=self.get_object(),
+                    period=context['period'],
+                )
             
             if context['current_profile'].code == 'teacher':
-                context['courses'] = Course.objects.filter(teachers=user, subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    teachers=user,
+                    subject__subjects_group__program=self.get_object(),
+                    period=context['period'],
+                )
             
             if context['current_profile'].code == 'student':
                 
-                context['courses'] = Course.objects.filter(students=user, subject__subjects_group__program=self.get_object())
+                context['courses'] = Course.objects.filter(
+                    students=user,
+                    subject__subjects_group__program=self.get_object(),
+                    period=context['period'],
+                )
             
             final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
                         course__in=context['courses'],
