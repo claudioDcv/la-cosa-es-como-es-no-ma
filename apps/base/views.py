@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.core.models import Program
 from apps.base.forms import ImageUploadForm
+from apps.base.helpers import get_periods
 
 
 def get_context_current_profile(context, _self):
@@ -56,16 +57,27 @@ class HomeView(LoginRequiredMixin, TemplateView):
         if len(student_profile) == 1:
             prof = student_profile.first()
             programs = prof.user_profiles_program.all()
+
             if len(programs) == 1:
                 program = programs.first()
                 code = program.program.code
                 return redirect('/program/{0}/student/skill-list'.format(code))
-
+     
         return super(HomeView, self).get(request, kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+
+        context['program_periods'] = []
+        for user_profiles_program in context['user'].user_profiles_program.all():
+            code = user_profiles_program.program.code
+            p = get_periods(code).get('now').first()
+            context['program_periods'].append({
+                'user_profiles_program': user_profiles_program,
+                'period': p,
+            })
+
         return context
 
 

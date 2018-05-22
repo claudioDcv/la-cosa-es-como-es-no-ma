@@ -6,6 +6,14 @@
 {% block subheader %}
   <div class="subnav">
     {% include "subnav.html" %}
+     | <strong>Periodo</strong>
+    <span>
+        <select name="" id="period-selected" class="form-control">
+            {% for period in periods.periods %}
+            <option value="{{period.id}}" {% if period.current %}selected="selected"{% endif %}>{{period.name}}</option>
+            {% endfor %}
+        </select>
+    </span>
   </div>
 {% endblock %}
 
@@ -42,5 +50,18 @@
 No posee permisos.
 {% endif %}
 
+<script>
+    var periodSelected = document.getElementById('period-selected');
+
+    if (periodSelected) {
+      periodSelected.addEventListener('change', function(event) {
+
+        var value = this.options[this.selectedIndex].value;
+        var url = "{% url 'program-index' code profile 0 %}";
+        var urlReload = url.replace(/.$/, value);
+        location.href = urlReload;
+      }, false);
+    }
+  </script>
 
 {% endblock %}

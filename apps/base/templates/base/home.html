@@ -6,29 +6,29 @@
 
 {% block content %}
 <div class="row">
-  {% for o in user.user_profiles_program.all %}
+  {% for o in program_periods %}
   <div class="col-md-4 mt-2">
     <div class="card">
       <div class="card-header card-header-custom">
         {% if request.user.is_superuser %}
-        <a href="/admin/core/program/{{ o.program.id }}/change/">
+        <a href="/admin/core/program/{{ o.user_profiles_program.program.id }}/change/">
           <i class="fas fa-pen-square"></i>
         </a>
         {% endif %}{{ student.user.id }}
-        <i class="fas fa-graduation-cap"></i> {{ o.program.name }}
+        <i class="fas fa-graduation-cap"></i> {{ o.user_profiles_program.program.name }}
       </div>
       <ul class="list-group list-group-flush">
-        {% for profile in o.profiles.all %}
+        {% for profile in o.user_profiles_program.profiles.all %}
           <li class="list-group-item">
             <div>
               <strong>{{ profile.name }}</strong>
             </div>
             <div class="btn-group" role="group" aria-label="Basic example">
-              <a class="btn btn-sm btn-link" href="{% url 'program-index' o.program.code profile.code %}">
+              <a class="btn btn-sm btn-link" href="{% url 'program-index' o.user_profiles_program.program.code profile.code o.period.id %}">
                 <i class="fas fa-book"></i> Cursos
               </a>
               {% if profile.code == 'student' %}
-              <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.program.code profile.code %}">
+              <a class="btn btn-sm btn-link" href="{% url 'skill-index' o.user_profiles_program.program.code profile.code o.period.id %}">
                 <i class="fas fa-bolt"></i> Competencias
               </a>
               {% endif %}
@@ -37,9 +37,9 @@
         {% endfor %}
       </ul>
       <div class="card-footer">
-        {% for profile in o.profiles.all %}
+        {% for profile in o.user_profiles_program.profiles.all %}
           {% if profile.code == 'admin' %}
-            <a class="btn btn-sm btn-light hvr-glow" href="{% url 'student-list' o.program.code profile.code %}">
+            <a class="btn btn-sm btn-light hvr-glow" href="{% url 'student-list' o.user_profiles_program.program.code profile.code %}">
                 <i class="fas fa-users"></i> Listado Estudiantes
             </a>
           {% endif %}
