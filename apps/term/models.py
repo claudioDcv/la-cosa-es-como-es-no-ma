@@ -1,8 +1,13 @@
+import json
+
 from django.db import models
 from apps.base.models import User, SoftDeleteTSModel, DescriptiveModel
 from apps.core.models import Indicator, Program, Subject
 from apps.business.models import Campus, Period, Survey
 
+## HARDCODED
+MIN_INDICATOR_VALUE = 0
+MAX_INDICATOR_VALUE = 3
 
 class Course(SoftDeleteTSModel, DescriptiveModel):
     code = models.CharField(max_length=100)
@@ -33,6 +38,72 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         unique_together = (('code', 'section'),)
         verbose_name = 'curso'
         verbose_name_plural = 'cursos'
+
+    @property
+    def total_evaluated_values(self):
+        return FinalIndicatorEvaluation.objects.filter(
+            course=self,
+        ).values_list('value', flat=True)
+
+    @property
+    def progress_level(self):
+        students = self.students.all()
+        indicators = self.survey.indicator.all()
+        teachers = self.teachers.all()
+
+        len_total_values = len(students) * len(indicators) * len(teachers)
+
+        len_total_evaluated_values = len(self.total_evaluated_values)
+
+        return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
+
+    @property
+    def goal_level(self):
+        len_total_evaluated_values = len(self.total_evaluated_values)
+        sum_total_evaluated_values = sum(self.total_evaluated_values)
+
+        max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
+
+        return float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
+
+    @classmethod
+    def json(
+        cls,
+        active=True,
+        period=None,
+        evaluated=None,
+        evaluator=None,
+        subject=None,
+        skill=None,
+        progress_level_below_or_equal=None,
+        progress_level_above_or_equal=None,
+        goal_level_not_none=None,
+        goal_level_below_or_equal=None,
+        goal_level_above_or_equal=None,
+    ):
+        courses = Course.objects.all()
+
+        result = []
+
+        for c in courses:
+            result.append({
+                'id': c.id,
+                'name': c.name,
+                'code': c.code,
+                'section': c.section,
+                'period': c.period.name,
+                'campus': c.campus.name,
+                'subject': c.subject.name,
+                'survey': c.survey.name,
+                'program': c.period.program.name,
+                'teachers': [t.email for t in c.teachers.order_by('email').all()],
+                'students': [s.email for s in c.students.order_by('email').all()],
+                'active': c.period.is_active,
+                'progress_level': c.progress_level,
+                'goal_level': c.goal_level,                
+            })
+
+        return json.dumps(result)
 
 
 class Feedback(SoftDeleteTSModel):

@@ -1,6 +1,11 @@
+from datetime import datetime
+
 from django.db import models
-from apps.base.models import SoftDeleteTSModel, DescriptiveModel
-from apps.core.models import Indicator, Program, Subject
+from apps.base.models import SoftDeleteTSModel
+from apps.base.models import DescriptiveModel
+from apps.core.models import Indicator
+from apps.core.models import Program
+from apps.core.models import Subject
 
 
 class Survey(SoftDeleteTSModel, DescriptiveModel):
@@ -23,6 +28,13 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
 
     def __str__(self):
         return '{0} {1}'.format(self.name, self.program)
+
+    @property
+    def is_active(self):
+        start_date = self.start_date
+        end_date = self.end_date
+        now = datetime.now().date()
+        return start_date <= now <= end_date
 
 
 class Campus(SoftDeleteTSModel, DescriptiveModel):
