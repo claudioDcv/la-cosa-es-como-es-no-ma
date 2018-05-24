@@ -18,7 +18,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile period %}">Programa ({{ program.name }})</a></li>
     <li class="breadcrumb-item active" aria-current="page">Curso ({{ course.name }})</li>
   </ol>
 </nav>
@@ -111,7 +111,7 @@
                   </a>
                   {% endif %}
                   <div>{{ student.user.last_name}} <span class="txt-thin">{{ student.user.first_name }}  | {{ student.internal_id }}</span></div>
-                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}">
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id period %}">
                       {{ student.user.email }}
                   </a>
                 </th>
@@ -133,7 +133,7 @@
                   {% endif %}
                 </td>
                 <td class="txt-right">
-                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id %}" class="btn btn-success btn-sm">
+                  <a href="{% url 'evaluated-evaluator-index' code profile object.id student.user.id period %}" class="btn btn-success btn-sm">
                     <i class="fas fa-tasks"></i> Evaluar
                   </a>
                 </td>

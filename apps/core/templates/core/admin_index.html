@@ -24,7 +24,7 @@
               {% for course in courses %}
               <tr>
                 <th scope="row">
-                  <a href="{% url 'course-index' code profile course.course.id %}">
+                  <a href="{% url 'course-index' code profile course.course.id period %}">
                     {{ course.course.id }} ({{ course.course.code }})
                   </a>
                 </th>
@@ -68,7 +68,7 @@
                 </td>
                 
                 <td class="txt-right">
-                  <a href="{% url 'course-index' code profile course.course.id 0 %}" class="btn btn-success btn-sm">
+                  <a href="{% url 'course-index' code profile course.course.id period %}" class="btn btn-success btn-sm">
                     <i class="fas fa-eye"></i> Ver
                   </a>
                 </td>

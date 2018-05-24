@@ -18,8 +18,8 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile %}">Programa ({{ program.name }})</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id %}">Curso ({{ course.name }})</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'program-index' code profile period %}">Programa ({{ program.name }})</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'course-index' code profile course.id period %}">Curso ({{ course.name }})</a></li>
     <li class="breadcrumb-item active" aria-current="page">Evaluando a ({{ object.first_name }} {{ object.last_name }})</li>
   </ol>
 </nav>
