@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from apps.base.views import get_context_current_profile
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
 from apps.core.models import Program
@@ -18,6 +19,37 @@ from apps.core.models import Skill, Indicator
 from apps.business.models import Survey
 
 from apps.base.models import Parameter
+
+
+def paginateitor(queryset, page_out):
+    per_page = 5
+    paginator = Paginator(queryset, per_page)
+    
+    try:
+        page = page_out
+    except:
+        page = 1
+
+    try:
+        blogs = paginator.page(page)
+    except(EmptyPage, InvalidPage):
+        blogs = paginator.page(1)
+
+    # Get the index of the current page
+    index = blogs.number - 1  # edited to something easier without index
+    # This value is maximum index of your pages, so the last page - 1
+    max_index = len(paginator.page_range)
+    # You want a range of 7, so lets calculate where to slice the list
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 3 if index <= max_index - 3 else max_index
+    # Get our new page range. In the latest versions of Django page_range returns 
+    # an iterator. Thus pass it to list, to make our slice possible again.
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+    return {
+        'objects': blogs,
+        'page_range': page_range,
+    }
 
 
 def calc_percentage(x, total):
@@ -216,14 +248,16 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                 program=context['program'],
             ).count() > 0
 
+            queryset = None
+
             if context['current_profile'].code == 'admin' and has_admin:
-                context['courses'] = Course.objects.filter(
+                queryset = Course.objects.filter(
                     subject__subjects_group__program=self.get_object(),
                     period=context['period'],
                 )
             
             if context['current_profile'].code == 'teacher':
-                context['courses'] = Course.objects.filter(
+                queryset = Course.objects.filter(
                     teachers=user,
                     subject__subjects_group__program=self.get_object(),
                     period=context['period'],
@@ -231,11 +265,22 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
             
             if context['current_profile'].code == 'student':
                 
-                context['courses'] = Course.objects.filter(
+                queryset = Course.objects.filter(
                     students=user,
                     subject__subjects_group__program=self.get_object(),
                     period=context['period'],
                 )
+
+            try:
+                page = int(self.request.GET.get('page', '1'))
+            except:
+                page = 1
+            paginator = paginateitor(queryset, page)
+
+            context['courses'] = paginator['objects'].object_list
+            context['paginator'] = paginator['objects']
+            context['page_range'] = paginator['page_range']
+
             
             final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
                         course__in=context['courses'],
@@ -272,6 +317,7 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                 })
 
             context['courses'] = course_return
+
         return context
 
 
@@ -285,6 +331,7 @@ class CourseView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
+        context['period'] = self.kwargs['period']
 
         context = get_context_current_profile(context, self)
 
@@ -315,6 +362,8 @@ class EvaluatedIndexEvaluatorView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         """Get ctx."""
         context = super().get_context_data(**kwargs)
+        context['period'] = self.kwargs['period']
+
         context['score_description'] = json.loads(Parameter.objects.get(code='score_description').value)
 
         has_admin = UserProfilesProgram.objects.filter(
@@ -373,6 +422,7 @@ class EvaluatedIndexView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['code'] = self.kwargs['code']
         context['profile'] = self.kwargs['profile']
+        context['period'] = self.kwargs['period']
         context['program'] = Program.objects.get(code=self.kwargs['code'])
         
         context['course'] = Course.objects.filter(

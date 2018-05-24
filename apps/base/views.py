@@ -72,10 +72,18 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context['program_periods'] = []
         for user_profiles_program in context['user'].user_profiles_program.all():
             code = user_profiles_program.program.code
-            p = get_periods(code).get('now').first()
+
+            class Period:
+                id = 0
+            period = Period
+            try:
+                period = get_periods(code).get('now').first()
+            except Exception as _:
+                pass
+
             context['program_periods'].append({
                 'user_profiles_program': user_profiles_program,
-                'period': p,
+                'period': period or Period,
             })
 
         return context

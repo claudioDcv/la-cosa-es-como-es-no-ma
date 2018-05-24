@@ -46,6 +46,45 @@
     No existen elementos.
   {% endif %}
 
+  <div class="row">
+    <div class="col-12 mb-4">
+  
+  <nav aria-label="paginator">
+      <ul class="pagination pagination-sm">
+
+        {% if paginator.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1"><i class="fas fa-angle-double-left"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginator.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+        </li>
+        {% endif %}
+
+        {% for pg in page_range %}
+            {% if paginator.number == pg %}
+                <li class="page-item active"></liclass><a href="?page={{pg}}" class="page-link">{{pg}}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+                <li class="page-item"></li><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if paginator.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginator.next_page_number }}"><i class="fas fa-angle-right"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginator.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+        </li>
+        {% endif %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">{{ paginator.number }}/{{ paginator.paginator.num_pages }}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
 {% else %}
 No posee permisos.
 {% endif %}
@@ -57,6 +96,9 @@ No posee permisos.
       periodSelected.addEventListener('change', function(event) {
 
         var value = this.options[this.selectedIndex].value;
+        
+        localStorage.setItem('period', value);
+
         var url = "{% url 'program-index' code profile 0 %}";
         var urlReload = url.replace(/.$/, value);
         location.href = urlReload;
