@@ -9,9 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from apps.base.models import User, Profile
 from apps.term.models import FinalIndicatorEvaluation, Feedback
 from apps.term.api.serializers import FeedbackSerializer, FinalIndicatorEvaluationSerializer
-
 from apps.base.api.serializers import UserSerializer
-
 from apps.base.api_helpers import response_401
 
 

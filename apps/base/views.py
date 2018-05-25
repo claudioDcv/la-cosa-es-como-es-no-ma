@@ -17,22 +17,25 @@ from apps.base.helpers import get_periods
 
 
 def get_context_current_profile(context, _self):
-    context['has_profile'] = False
+    has_profile = 'has_profile'
+    context[has_profile] = False
+    current_profile = 'current_profile'
+
     try:
-        context['current_profile'] = Profile.objects.get(
+        context[current_profile] = Profile.objects.get(
             code=_self.kwargs['profile'])
     except Profile.DoesNotExist:
-        context['current_profile'] = False
+        context[current_profile] = False
     try:
-        if context['current_profile']:
+        if context[current_profile]:
 
             _self.request.user.user_profiles_program.get(
-                profiles=context['current_profile'].code,
+                profiles=context[current_profile].code,
                 program=Program.objects.get(code=context['code']),
             )
-            context['has_profile'] = True
+            context[has_profile] = True
     except Exception:
-        context['has_profile'] = False
+        context[has_profile] = False
     return context
 
 
@@ -46,7 +49,8 @@ class IndexView(TemplateView):
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = "base/home.html"
+    template_name = 'base/home.html'
+    url_redirect = '/program/{0}/student/skill-list'
 
     def get(self, request, **kwargs):
         student_profile = User.objects.filter(
@@ -61,7 +65,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
             if len(programs) == 1:
                 program = programs.first()
                 code = program.program.code
-                return redirect('/program/{0}/student/skill-list'.format(code))
+                return redirect(self.url_redirect.format(code))
      
         return super(HomeView, self).get(request, kwargs)
 

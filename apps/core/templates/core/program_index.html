@@ -8,7 +8,7 @@
     {% include "subnav.html" %}
      | <strong>Periodo</strong>
     <span>
-        <select name="" id="period-selected" class="form-control">
+        <select name="" id="period-selected" class="form-control form-control-sm">
             {% for period in periods.periods %}
             <option value="{{period.id}}" {% if period.current %}selected="selected"{% endif %}>{{period.name}}</option>
             {% endfor %}
@@ -28,6 +28,29 @@
     <li class="breadcrumb-item active" aria-current="page">Programa ({{ program.name }})</li>
   </ol>
 </nav>
+
+<div class="card mb-4 bg-light text-dark">
+  <div class="card-body">
+      <form action="" method="get" class="form-inline">
+          <div class="form-group">
+            <label for="staticQ mr-2">Buscar (Nombre y/o Código)</label>
+            <input type="text" name="q" value="{{q}}" id="q" class="form-control-sm form-control mx-2">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fas fa-search"></i>
+            </button>
+          </div>
+      </form>
+  </div>
+</div>
+
+{% if q != ''%}
+<div class="row">
+  <div class="col-12">
+    Resultados para <strong>{{ q }}</strong>
+  </div>
+</div>
+{% endif %}
+
 
   {% if courses|length > 0 %}
     {% if  current_profile.code == 'admin' %}
@@ -54,27 +77,27 @@
 
         {% if paginator.has_previous %}
         <li class="page-item">
-          <a class="page-link" href="?page=1"><i class="fas fa-angle-double-left"></i></a>
+          <a class="page-link" href="{{ querystring_page }}=1"><i class="fas fa-angle-double-left"></i></a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ paginator.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
         </li>
         {% endif %}
 
         {% for pg in page_range %}
             {% if paginator.number == pg %}
-                <li class="page-item active"></liclass><a href="?page={{pg}}" class="page-link">{{pg}}<span class="sr-only">(current)</span></a></li>
+                <li class="page-item active"></liclass><a href="{{ querystring }}" class="page-link">{{pg}}<span class="sr-only">(current)</span></a></li>
             {% else %}
-                <li class="page-item"></li><a href="?page={{pg}}" class="page-link">{{pg}}</a></li>
+                <li class="page-item"></li><a href="{{ querystring_page }}={{pg}}" class="page-link">{{pg}}</a></li>
             {% endif %}
         {% endfor %}
 
         {% if paginator.has_next %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ paginator.next_page_number }}"><i class="fas fa-angle-right"></i></a>
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.next_page_number }}"><i class="fas fa-angle-right"></i></a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ paginator.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
         </li>
         {% endif %}
         <li class="page-item disabled">
@@ -90,6 +113,30 @@ No posee permisos.
 {% endif %}
 
 <script>
+
+    function SetCaretAtEnd(elem) {
+        var elemLen = elem.value.length;
+        // For IE Only
+        if (document.selection) {
+            // Set focus
+            elem.focus();
+            // Use IE Ranges
+            var oSel = document.selection.createRange();
+            // Reset position to 0 & then set at end
+            oSel.moveStart('character', -elemLen);
+            oSel.moveStart('character', elemLen);
+            oSel.moveEnd('character', 0);
+            oSel.select();
+        }
+        else if (elem.selectionStart || elem.selectionStart == '0') {
+            // Firefox/Chrome
+            elem.selectionStart = elemLen;
+            elem.selectionEnd = elemLen;
+            elem.focus();
+        } // if
+    } //
+    SetCaretAtEnd(document.getElementById('q'));
+
     var periodSelected = document.getElementById('period-selected');
 
     if (periodSelected) {

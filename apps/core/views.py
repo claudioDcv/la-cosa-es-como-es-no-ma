@@ -7,61 +7,23 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from apps.base.views import get_context_current_profile
 from django.http import Http404
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
+from django.db.models import Q
 
 from apps.core.models import Program
 from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.base.helpers import get_score, student_list_with_indicator,\
-    evaluated_with_indicator, get_periods
+    evaluated_with_indicator, get_periods, pagineitor
 from apps.core.models import Skill, Indicator
+
 from apps.business.models import Survey
 
 from apps.base.models import Parameter
 
 
-def paginateitor(queryset, page_out):
-    per_page = 5
-    paginator = Paginator(queryset, per_page)
-    
-    try:
-        page = page_out
-    except:
-        page = 1
-
-    try:
-        blogs = paginator.page(page)
-    except(EmptyPage, InvalidPage):
-        blogs = paginator.page(1)
-
-    # Get the index of the current page
-    index = blogs.number - 1  # edited to something easier without index
-    # This value is maximum index of your pages, so the last page - 1
-    max_index = len(paginator.page_range)
-    # You want a range of 7, so lets calculate where to slice the list
-    start_index = index - 3 if index >= 3 else 0
-    end_index = index + 3 if index <= max_index - 3 else max_index
-    # Get our new page range. In the latest versions of Django page_range returns 
-    # an iterator. Thus pass it to list, to make our slice possible again.
-    page_range = list(paginator.page_range)[start_index:end_index]
-
-    return {
-        'objects': blogs,
-        'page_range': page_range,
-    }
-
-
 def calc_percentage(x, total):
     return (x * 100) / total
-
-
-def get_id_profile_by_name(name):
-    prof_id = 0
-    for prof in Profile.ROLE_CHOICES:
-        if prof[1] == name:
-            prof_id = prof[0]
-    return prof_id
 
 
 class SkillGroupIndexView(LoginRequiredMixin, DetailView):
@@ -271,16 +233,53 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                     period=context['period'],
                 )
 
+            # Pagination and order sort
             try:
                 page = int(self.request.GET.get('page', '1'))
             except:
                 page = 1
-            paginator = paginateitor(queryset, page)
+            
+            try:
+                order_by = self.request.GET.get('order_by', 'id')
+            except:
+                order_by = 'id'
+            
+            try:
+                q = self.request.GET.get('q', '')
+            except:
+                q = ''
+            
+            if order_by:
+                queryset = queryset.order_by(*order_by.split(','))
+            
+            if order_by:
+                queryset = queryset.filter(
+                    Q(name__icontains=q) |
+                    Q(code__icontains=q)
+                )
+
+            paginator = pagineitor(queryset, page)
 
             context['courses'] = paginator['objects'].object_list
             context['paginator'] = paginator['objects']
             context['page_range'] = paginator['page_range']
+            context['order_by'] = order_by
+            context['q'] = q
 
+            context['querystring'] = '?q={2}&page={0}&order_by={1}'.format(
+                context['paginator'].number,
+                order_by,
+                q
+            )
+            context['querystring_order_by'] = '?q={1}&page={0}&order_by'.format(
+                context['paginator'].number,
+                q
+            )
+            context['querystring_page'] = '?q={1}&order_by={0}&page'.format(
+                order_by,
+                q
+            )
+            # End Pagination
             
             final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
                         course__in=context['courses'],
