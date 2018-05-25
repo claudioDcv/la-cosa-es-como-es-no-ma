@@ -269,7 +269,6 @@ def has_profile(*args, **kwargs):
 
 
 def get_periods(code, current_id=0):
-
     today = datetime.now().date()
     '''
     Menor o igual que [2]:
@@ -346,5 +345,3 @@ def pagineitor(queryset, page_out):
         'objects': objects,
         'page_range': page_range,
     }
-
-

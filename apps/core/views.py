@@ -7,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from apps.base.views import get_context_current_profile
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
+
 
 from django.db.models import Q
 
@@ -15,11 +17,44 @@ from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.base.helpers import get_score, student_list_with_indicator,\
     evaluated_with_indicator, get_periods, pagineitor
+
+
 from apps.core.models import Skill, Indicator
 
 from apps.business.models import Survey
 
 from apps.base.models import Parameter
+
+
+def paginateitor(queryset, page_out):
+    per_page = 5
+    paginator = Paginator(queryset, per_page)
+    
+    try:
+        page = page_out
+    except:
+        page = 1
+
+    try:
+        blogs = paginator.page(page)
+    except(EmptyPage, InvalidPage):
+        blogs = paginator.page(1)
+
+    # Get the index of the current page
+    index = blogs.number - 1  # edited to something easier without index
+    # This value is maximum index of your pages, so the last page - 1
+    max_index = len(paginator.page_range)
+    # You want a range of 7, so lets calculate where to slice the list
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 3 if index <= max_index - 3 else max_index
+    # Get our new page range. In the latest versions of Django page_range returns 
+    # an iterator. Thus pass it to list, to make our slice possible again.
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+    return {
+        'objects': blogs,
+        'page_range': page_range,
+    }
 
 
 def calc_percentage(x, total):
@@ -238,7 +273,7 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                 page = int(self.request.GET.get('page', '1'))
             except:
                 page = 1
-            
+          
             try:
                 order_by = self.request.GET.get('order_by', 'id')
             except:
@@ -260,9 +295,11 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
 
             paginator = pagineitor(queryset, page)
 
+
             context['courses'] = paginator['objects'].object_list
             context['paginator'] = paginator['objects']
             context['page_range'] = paginator['page_range']
+
             context['order_by'] = order_by
             context['q'] = q
 

@@ -8,7 +8,11 @@
     {% include "subnav.html" %}
      | <strong>Periodo</strong>
     <span>
+<<<<<<< HEAD
         <select name="" id="period-selected" class="form-control form-control-sm">
+=======
+        <select name="" id="period-selected" class="form-control">
+>>>>>>> 453887a8c43d5eabb405d328e140c80f6ab2187a
             {% for period in periods.periods %}
             <option value="{{period.id}}" {% if period.current %}selected="selected"{% endif %}>{{period.name}}</option>
             {% endfor %}
@@ -94,10 +98,12 @@
 
         {% if paginator.has_next %}
         <li class="page-item">
+
           <a class="page-link" href="{{ querystring_page }}={{ paginator.next_page_number }}"><i class="fas fa-angle-right"></i></a>
         </li>
         <li class="page-item">
           <a class="page-link" href="{{ querystring_page }}={{ paginator.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+
         </li>
         {% endif %}
         <li class="page-item disabled">

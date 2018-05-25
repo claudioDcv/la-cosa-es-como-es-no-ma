@@ -65,8 +65,9 @@ class HomeView(LoginRequiredMixin, TemplateView):
             if len(programs) == 1:
                 program = programs.first()
                 code = program.program.code
+
                 return redirect(self.url_redirect.format(code))
-     
+
         return super(HomeView, self).get(request, kwargs)
 
     def get_context_data(self, **kwargs):
