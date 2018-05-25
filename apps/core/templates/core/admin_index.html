@@ -5,13 +5,40 @@
     <div class="card">
       <h5 class="card-header">CURSOS</h5>
       <div>
-        <div class="table-responsive">
+        <div class="table-responsive table-sm">
           <table class="table table-hover mb-0">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Sección</th>
-                <th scope="col">Nombre</th>
+                <th scope="col"> 
+                    {% if order_by == 'id,code'%}
+                      <a href="{{ querystring_order_by }}=-id,-code">#</a>
+                    {% elif order_by == '-id,-code' %}
+                      <a href="{{ querystring_order_by }}=id,code">#</a>
+                    {% else %}
+                      <a href="{{ querystring_order_by }}=-id,-code">#</a>
+                    {% endif %}
+                  </th>
+                  
+                <th scope="col"> 
+                    {% if order_by == 'section'%}
+                      <a href="{{ querystring_order_by }}=-section">Sección</a>
+                    {% elif order_by == '-section' %}
+                      <a href="{{ querystring_order_by }}=section">Sección</a>
+                    {% else %}
+                      <a href="{{ querystring_order_by }}=-section">Sección</a>
+                    {% endif %}
+                  </th>
+
+                <th scope="col"> 
+                  {% if order_by == 'name'%}
+                    <a href="{{ querystring_order_by }}=-name">Nombre</a>
+                  {% elif order_by == '-name' %}
+                    <a href="{{ querystring_order_by }}=name">Nombre</a>
+                  {% else %}
+                    <a href="{{ querystring_order_by }}=-name">Nombre</a>
+                  {% endif %}
+                </th>
+
                 <th>Profesores</th>
 
                 <th scope="col">Progreso</th>

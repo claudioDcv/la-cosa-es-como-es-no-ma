@@ -10,12 +10,17 @@ from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
 
+from django.db.models import Q
+
 from apps.core.models import Program
 from apps.term.models import Course, Feedback, FinalIndicatorEvaluation
 from apps.base.models import Profile, User, UserProfilesProgram
 from apps.base.helpers import get_score, student_list_with_indicator,\
-    evaluated_with_indicator, get_periods
+    evaluated_with_indicator, get_periods, pagineitor
+
+
 from apps.core.models import Skill, Indicator
+
 from apps.business.models import Survey
 
 from apps.base.models import Parameter
@@ -54,14 +59,6 @@ def paginateitor(queryset, page_out):
 
 def calc_percentage(x, total):
     return (x * 100) / total
-
-
-def get_id_profile_by_name(name):
-    prof_id = 0
-    for prof in Profile.ROLE_CHOICES:
-        if prof[1] == name:
-            prof_id = prof[0]
-    return prof_id
 
 
 class SkillGroupIndexView(LoginRequiredMixin, DetailView):
@@ -271,16 +268,55 @@ class ProgramIndexView(LoginRequiredMixin, DetailView):
                     period=context['period'],
                 )
 
+            # Pagination and order sort
             try:
                 page = int(self.request.GET.get('page', '1'))
             except:
                 page = 1
-            paginator = paginateitor(queryset, page)
+          
+            try:
+                order_by = self.request.GET.get('order_by', 'id')
+            except:
+                order_by = 'id'
+            
+            try:
+                q = self.request.GET.get('q', '')
+            except:
+                q = ''
+            
+            if order_by:
+                queryset = queryset.order_by(*order_by.split(','))
+            
+            if order_by:
+                queryset = queryset.filter(
+                    Q(name__icontains=q) |
+                    Q(code__icontains=q)
+                )
+
+            paginator = pagineitor(queryset, page)
+
 
             context['courses'] = paginator['objects'].object_list
             context['paginator'] = paginator['objects']
             context['page_range'] = paginator['page_range']
 
+            context['order_by'] = order_by
+            context['q'] = q
+
+            context['querystring'] = '?q={2}&page={0}&order_by={1}'.format(
+                context['paginator'].number,
+                order_by,
+                q
+            )
+            context['querystring_order_by'] = '?q={1}&page={0}&order_by'.format(
+                context['paginator'].number,
+                q
+            )
+            context['querystring_page'] = '?q={1}&order_by={0}&page'.format(
+                order_by,
+                q
+            )
+            # End Pagination
             
             final_indicator_evaluation = FinalIndicatorEvaluation.objects.filter(
                         course__in=context['courses'],

@@ -9,11 +9,16 @@ from django.db.models import Count
 
 from operator import itemgetter
 
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
+
+
 def get_param(*args, **kwargs):
     key = kwargs['code']
+    program_code = 'program_code'
+
     is_static = True if kwargs.get('static', 'no') == 'yes' else False
 
-    program = kwargs['program_code'] if kwargs.get('program_code') else ''
+    program = kwargs.get(program_code, '')
 
     prefix = getattr(kwargs, 'prefix', '')
     text = getattr(kwargs, 'default_text', '--')
@@ -186,6 +191,7 @@ def student_list_with_indicator(pk, score_out = None, internal_id_name = None):
 
     return context
 
+
 def fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj):
     for fie in final_indicator_evaluation:
         evaluated_id = fie.evaluated_id
@@ -200,6 +206,7 @@ def fie_iterator(final_indicator_evaluation, fie_obj, total_fie_obj):
             })
         total_fie_obj += 1
     return total_fie_obj
+
 
 def student_iterator(students, fie_obj, students_with_evaluation, score, total_half_percent, students_with_indicator, total_indicators, feedbacks_obj, internal_id_name):
     for student in students:
@@ -306,4 +313,35 @@ def get_periods(code, current_id=0):
         'not_now': periods_not_now,
         'periods': periods,
         'current': current_period.first(),
+    }
+
+
+def pagineitor(queryset, page_out):
+    per_page = 10
+    paginator = Paginator(queryset, per_page)
+    
+    try:
+        page = page_out
+    except:
+        page = 1
+
+    try:
+        objects = paginator.page(page)
+    except(EmptyPage, InvalidPage):
+        objects = paginator.page(1)
+
+    # Get the index of the current page
+    index = objects.number - 1  # edited to something easier without index
+    # This value is maximum index of your pages, so the last page - 1
+    max_index = len(paginator.page_range)
+    # You want a range of 7, so lets calculate where to slice the list
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 3 if index <= max_index - 3 else max_index
+    # Get our new page range. In the latest versions of Django page_range returns 
+    # an iterator. Thus pass it to list, to make our slice possible again.
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+    return {
+        'objects': objects,
+        'page_range': page_range,
     }
