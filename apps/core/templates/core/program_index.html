@@ -8,11 +8,7 @@
     {% include "subnav.html" %}
      | <strong>Periodo</strong>
     <span>
-<<<<<<< HEAD
         <select name="" id="period-selected" class="form-control form-control-sm">
-=======
-        <select name="" id="period-selected" class="form-control">
->>>>>>> 453887a8c43d5eabb405d328e140c80f6ab2187a
             {% for period in periods.periods %}
             <option value="{{period.id}}" {% if period.current %}selected="selected"{% endif %}>{{period.name}}</option>
             {% endfor %}
