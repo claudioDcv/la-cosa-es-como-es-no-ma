@@ -1,6 +1,11 @@
+from datetime import datetime
+
 from django.db import models
-from apps.base.models import SoftDeleteTSModel, DescriptiveModel
-from apps.core.models import Indicator, Program, Subject
+from apps.base.models import SoftDeleteTSModel
+from apps.base.models import DescriptiveModel
+from apps.core.models import Indicator
+from apps.core.models import Program
+from apps.core.models import Subject
 
 
 class Survey(SoftDeleteTSModel, DescriptiveModel):
@@ -24,6 +29,57 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
     def __str__(self):
         return '{0} {1}'.format(self.name, self.program)
 
+    @property
+    def is_active(self):
+        start_date = self.start_date
+        end_date = self.end_date
+        now = datetime.now().date()
+        return start_date <= now <= end_date
+
+    @property
+    def is_past(self):
+        end_date = self.end_date
+        now = datetime.now().date()
+        return end_date < now
+
+    @property
+    def is_future(self):
+        start_date = self.start_date
+        now = datetime.now().date()
+        return now < start_date
+
+    @property
+    def time_status(self):
+        if self.is_active:
+            return 'active'
+        elif self.is_past:
+            return 'past'
+        elif self.is_future:
+            return 'future'
+        else:
+            return None
+
+    @classmethod
+    def all_active(cls):
+        now = datetime.now().date()
+        return Period.objects.filter(
+            start_date__lte=now,
+            end_date__gte=now,
+        )
+
+    @classmethod
+    def all_past(cls):
+        now = datetime.now().date()
+        return Period.objects.filter(
+            end_date__lt=now,
+        )
+
+    @classmethod
+    def all_future(cls):
+        now = datetime.now().date()
+        return Period.objects.filter(
+            start_date__gt=now,
+        )
 
 class Campus(SoftDeleteTSModel, DescriptiveModel):
     program = models.ManyToManyField(Program)
