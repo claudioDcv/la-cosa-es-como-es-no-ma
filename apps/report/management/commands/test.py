@@ -49,21 +49,25 @@ from apps.report.constants.managment_commands import NUMBER_STUDENTS
 def course_json():
     program = Program.objects.get(code='1400S')
     period = Period.objects.get(code='Dario_2018_1')
+    period_2 = Period.objects.get(code='2018-1')
     subject = Subject.objects.get(code='AHA113')
     campus = Campus.objects.get(code='RESB')
     skill = Skill.objects.get(code='CG07')
+    skills_group = SkillsGroup.objects.get(code='CG')
+    skills_group_2 = SkillsGroup.objects.get(code='CE')
     teacher = User.objects.get(email='dario_profesor_disenoarquitectonico@test.cl')
     student = User.objects.get(email='dario_alumno_1@test.cl')
 
     json_courses = Course.all_json(
         # time_status='active',
         # program=program,
-        # period=period,
-        # subject=subject,
+        periods=[period, period_2],
+        # subjects=subject,
         # campus=campus,
-        # skill=skill,
-        # teacher=teacher,
-        # student=student,
+        # skills=skill,
+        skills_groups=skills_group,
+        # teachers=teacher,
+        # students=student,
         # progress_level_not_none=None,
         # progress_level_less_than=None,
         # progress_level_greater_than=None,
@@ -76,6 +80,7 @@ def course_json():
         # goal_level_greater_or_equal_than=None,
         # order_by='progress_level',
         show_skills=True,
+        show_skills_groups=True,
     )
 
     with open('result_course.json','w') as f_in:

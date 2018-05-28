@@ -81,6 +81,7 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
             start_date__gt=now,
         )
 
+
 class Campus(SoftDeleteTSModel, DescriptiveModel):
     program = models.ManyToManyField(Program)
 

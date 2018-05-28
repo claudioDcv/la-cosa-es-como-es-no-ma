@@ -79,6 +79,13 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     def skills(self):
         return set([i.skill for i in self.survey.indicator.all()])
 
+    @property
+    def skills_groups(self):
+        return set([i.skill.skill_group for i in self.survey.indicator.all()])
+
+    def get_skills_by_skills_group(self, skills_group):
+        return set([i.skill for i in self.survey.indicator.filter(skill__skill_group=skills_group)])
+
     def total_evaluated_values_by_skill(self, skill):
         return FinalIndicatorEvaluation.objects.filter(
             course=self,
@@ -105,17 +112,44 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
 
         return float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
 
+    def total_evaluated_values_by_skills_group(self, skills_group):
+        return FinalIndicatorEvaluation.objects.filter(
+            course=self,
+            indicator__skill__skill_group=skills_group,
+        ).values_list('value', flat=True)
+
+    def progress_level_by_skills_group(self, skills_group):
+        students = self.students.all()
+        indicators = self.survey.indicator.filter(skill__skill_group=skills_group)
+        teachers = self.teachers.all()
+
+        len_total_values = len(students) * len(indicators) * len(teachers)
+
+        len_total_evaluated_values = len(self.total_evaluated_values_by_skills_group(skills_group))
+
+        return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
+
+    def goal_level_by_skills_group(self, skills_group):
+        total_evaluated_values = self.total_evaluated_values_by_skills_group(skills_group)
+        len_total_evaluated_values = len(total_evaluated_values)
+        sum_total_evaluated_values = sum(total_evaluated_values)
+
+        max_total_evaluated_values = len_total_evaluated_values * (MAX_INDICATOR_VALUE - MIN_INDICATOR_VALUE)
+
+        return float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
+
     @classmethod
     def all_json(
         cls,
         time_status='active', # 'active', 'past', 'future', 'all' # Ok 
-        program=None, # Ok
-        period=None, # Ok
-        campus=None, # Ok
-        teacher=None, # Ok
-        student=None, # Ok
-        subject=None, # Ok
-        skill=None, # Ok
+        programs=None,
+        periods=None,
+        campus=None,
+        teachers=None,
+        students=None,
+        subjects=None,
+        skills=None,
+        skills_groups=None,
         progress_level_not_none=None, # None (all), True, False
         progress_level_less_than=None,
         progress_level_greater_than=None,
@@ -128,11 +162,15 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         goal_level_greater_or_equal_than=None,
         order_by=None,
         show_skills=False,
+        show_skills_groups=False,
     ):
-        courses = Course.objects.all()
+        courses = Course.objects.all().distinct()
 
-        if period is not None:
-            courses = courses.filter(period=period)
+        if periods is not None:
+            if type(periods) is not list:
+                periods = [periods]
+            if len(periods) > 0:
+                courses = courses.filter(period__in=periods)
         elif time_status != 'all':
             if time_status == 'active':
                 courses = courses.filter(period__in=Period.all_active())
@@ -141,23 +179,47 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
             elif time_status == 'future':
                 courses = courses.filter(period__in=Period.all_future())
 
-        if program is not None:
-            courses = courses.filter(period__program=program)
+        if programs is not None:
+            if type(programs) is not list:
+                programs = [programs]
+            if len(programs) > 0:
+                courses = courses.filter(period__program__in=programs)
 
-        if subject is not None:
-            courses = courses.filter(subject=subject)
+        if subjects is not None:
+            if type(subjects) is not list:
+                subjects = [subjects]
+            if len(subjects) > 0:
+                courses = courses.filter(subject__in=subjects)
 
         if campus is not None:
-            courses = courses.filter(campus=campus)
+            if type(campus) is not list:
+                campus = [campus]
+            if len(campus) > 0:
+                courses = courses.filter(campus__in=campus)
 
-        if skill is not None:
-            courses = courses.filter(survey__indicator__skill=skill)
+        if skills is not None:
+            if type(skills) is not list:
+                skills = [skills]
+            if len(skills) > 0:
+                courses = courses.filter(survey__indicator__skill__in=skills)
 
-        if teacher is not None:
-            courses = courses.filter(teachers=teacher)
+        if skills_groups is not None:
+            if type(skills_groups) is not list:
+                skills_groups = [skills_groups]
+            if len(skills_groups) > 0:
+                courses = courses.filter(survey__indicator__skill__skill_group__in=skills_groups)
 
-        if student is not None:
-            courses = courses.filter(students=student)
+        if teachers is not None:
+            if type(teachers) is not list:
+                teachers = [teachers]
+            if len(teachers) > 0:
+                courses = courses.filter(teachers__in=teachers)
+
+        if students is not None:
+            if type(students) is not list:
+                students = [students]
+            if len(students) > 0:
+                courses = courses.filter(students__in=students)
 
         if progress_level_not_none is not None:
             if progress_level_not_none:
@@ -223,12 +285,29 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
                     skills.append({
                         'name': s.name,
                         'code': s.code,
+                        'group': s.skill_group.name,
                         'progress_level': c.progress_level_by_skill(s),
                         'goal_level': c.goal_level_by_skill(s),                    
                     })
 
                 json_course.update({  
                     'skills': skills,             
+                })
+
+            if show_skills:
+                skills_groups = []
+
+                for s in c.skills_groups:
+                    skills_groups.append({
+                        'name': s.name,
+                        'code': s.code,
+                        'skills': [sk.name for sk in c.get_skills_by_skills_group(s)],
+                        'progress_level': c.progress_level_by_skills_group(s),
+                        'goal_level': c.goal_level_by_skills_group(s),                    
+                    })
+
+                json_course.update({  
+                    'skills_groups': skills_groups,             
                 })
 
             result.append(json_course)
