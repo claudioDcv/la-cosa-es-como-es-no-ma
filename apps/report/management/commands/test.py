@@ -56,17 +56,18 @@ def course_json():
     skills_group = SkillsGroup.objects.get(code='CG')
     skills_group_2 = SkillsGroup.objects.get(code='CE')
     teacher = User.objects.get(email='dario_profesor_disenoarquitectonico@test.cl')
+    teacher_2 = User.objects.get(email='dario_profesor_introduccionarte@test.cl')
     student = User.objects.get(email='dario_alumno_1@test.cl')
 
     json_courses = Course.all_json(
         # time_status='active',
         # program=program,
-        periods=[period, period_2],
+        # periods=[period, period_2],
         # subjects=subject,
         # campus=campus,
         # skills=skill,
         skills_groups=skills_group,
-        # teachers=teacher,
+        # teachers=[teacher, teacher_2],
         # students=student,
         # progress_level_not_none=None,
         # progress_level_less_than=None,
@@ -81,10 +82,11 @@ def course_json():
         # order_by='progress_level',
         show_skills=True,
         show_skills_groups=True,
+        # as_json=True,
     )
 
     with open('result_course.json','w') as f_in:
-        f_in.write(json_courses)
+        f_in.write(str(json_courses))
 
     # courses = json.loads(json_courses)
 

@@ -163,6 +163,7 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         order_by=None,
         show_skills=False,
         show_skills_groups=False,
+        as_json=False,
     ):
         courses = Course.objects.all().distinct()
 
@@ -317,7 +318,7 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
             key = order_by.replace('-','')
             result.sort(key = lambda c: c[key] if c[key] is not None else 0, reverse=reverse)
 
-        return json.dumps(result)
+        return json.dumps(result) if as_json else result
 
 
 class Feedback(SoftDeleteTSModel):
