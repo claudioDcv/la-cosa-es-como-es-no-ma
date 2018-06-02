@@ -82,7 +82,7 @@ def course_json():
         # order_by='progress_level',
         show_skills=True,
         show_skills_groups=True,
-        # as_json=True,
+        as_json=True,
     )
 
     with open('result_course.json','w') as f_in:
@@ -90,6 +90,24 @@ def course_json():
 
     # courses = json.loads(json_courses)
 
+def period_json():
+    program = Program.objects.get(code='1400S')
+    period = Period.objects.get(code='Dario_2018_1')
+    period_2 = Period.objects.get(code='2018-1')
+
+    json_periods = Period.all_json(
+        time_status='all',
+        # program=program,
+        # periods=[period, period_2],
+        show_skills=False,
+        show_skills_groups=False,
+        as_json=True,
+    )
+
+    with open('result_period.json','w') as f_in:
+        f_in.write(str(json_periods))
+
+    # period = json.loads(json_periods)
 
 class Command(BaseCommand):
     # def add_arguments(self, parser):
@@ -106,4 +124,4 @@ class Command(BaseCommand):
         #     period_qs = Period.objects.filter(code=period_code)
         #     if len(period_qs) == 1:
         #         get_data_from_period(period_qs[0])
-        course_json()
+        period_json()

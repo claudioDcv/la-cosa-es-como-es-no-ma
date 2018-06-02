@@ -49,6 +49,14 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         verbose_name_plural = 'cursos'
 
     @property
+    def len_total_values(self):
+        students = self.students.all()
+        indicators = self.survey.indicator.all()
+        teachers = self.teachers.all()
+
+        return len(students) * len(indicators) * len(teachers)
+
+    @property
     def total_evaluated_values(self):
         return FinalIndicatorEvaluation.objects.filter(
             course=self,
@@ -56,14 +64,8 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
 
     @property
     def progress_level(self):
-        students = self.students.all()
-        indicators = self.survey.indicator.all()
-        teachers = self.teachers.all()
-
-        len_total_values = len(students) * len(indicators) * len(teachers)
-
         len_total_evaluated_values = len(self.total_evaluated_values)
-
+        len_total_values = self.len_total_values
         return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
 
     @property
@@ -86,6 +88,13 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     def get_skills_by_skills_group(self, skills_group):
         return set([i.skill for i in self.survey.indicator.filter(skill__skill_group=skills_group)])
 
+    def len_total_values_by_skill(self, skill):
+        students = self.students.all()
+        indicators = self.survey.indicator.filter(skill=skill)
+        teachers = self.teachers.all()
+
+        return len(students) * len(indicators) * len(teachers)
+
     def total_evaluated_values_by_skill(self, skill):
         return FinalIndicatorEvaluation.objects.filter(
             course=self,
@@ -93,14 +102,8 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         ).values_list('value', flat=True)
 
     def progress_level_by_skill(self, skill):
-        students = self.students.all()
-        indicators = self.survey.indicator.filter(skill=skill)
-        teachers = self.teachers.all()
-
-        len_total_values = len(students) * len(indicators) * len(teachers)
-
         len_total_evaluated_values = len(self.total_evaluated_values_by_skill(skill))
-
+        len_total_values = self.len_total_values_by_skill(skill)
         return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
 
     def goal_level_by_skill(self, skill):
@@ -112,6 +115,13 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
 
         return float(sum_total_evaluated_values)/max_total_evaluated_values if max_total_evaluated_values > 0 else None
 
+    def len_total_values_by_skills_group(self, skills_group):
+        students = self.students.all()
+        indicators = self.survey.indicator.filter(skill__skill_group=skills_group)
+        teachers = self.teachers.all()
+
+        return len(students) * len(indicators) * len(teachers)
+        
     def total_evaluated_values_by_skills_group(self, skills_group):
         return FinalIndicatorEvaluation.objects.filter(
             course=self,
@@ -119,14 +129,8 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         ).values_list('value', flat=True)
 
     def progress_level_by_skills_group(self, skills_group):
-        students = self.students.all()
-        indicators = self.survey.indicator.filter(skill__skill_group=skills_group)
-        teachers = self.teachers.all()
-
-        len_total_values = len(students) * len(indicators) * len(teachers)
-
         len_total_evaluated_values = len(self.total_evaluated_values_by_skills_group(skills_group))
-
+        len_total_values = self.len_total_values_by_skills_group(skills_group)
         return float(len_total_evaluated_values)/len_total_values if len_total_values > 0 else None
 
     def goal_level_by_skills_group(self, skills_group):
