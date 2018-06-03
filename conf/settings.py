@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'apps.log',
     'apps.term',
     'apps.topology',
-    'apps.reporter',
     'apps.maintainer',
     'apps.report',
 ]

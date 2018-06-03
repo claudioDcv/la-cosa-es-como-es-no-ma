@@ -345,3 +345,38 @@ def pagineitor(queryset, page_out):
         'objects': objects,
         'page_range': page_range,
     }
+
+
+def csv_to_list(data):
+    '''
+        this file must contain a header
+    '''
+    file_data = data.read().decode('utf-8')
+    lines = file_data.split('\n')
+
+    count = 0
+    header = []
+    # data outr
+    data = []
+    for line in lines:
+        fields = line.split(',')
+        # Proccesing header
+        if count == 0:
+            for field in fields:
+                # create header field
+                header.append(field)
+        # Proccesing data
+        else:
+            field_number = 0
+            # create object
+            obj = {}
+            # iterate row
+            for field in fields: 
+                #assign field to object with header name             
+                obj[header[field_number]] = field
+                field_number += 1 
+            # add row to data
+            data.append(obj)
+        count += 1
+    # show data
+    return data

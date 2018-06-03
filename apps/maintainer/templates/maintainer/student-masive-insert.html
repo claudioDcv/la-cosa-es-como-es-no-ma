@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Estudiante Carga Masiva{% endblock %}
+
+{% block content %}
+<div class="card mt-4">
+    <h5 class="card-header">Seleccione archivo CSV de estudiantes a cargar</h5>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="file" name="csv_file" id="" class="form-control">
+            </div>
+            <input type="submit" value="Procesar" class="btn btn-primary"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

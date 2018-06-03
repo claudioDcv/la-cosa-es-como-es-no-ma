@@ -2,96 +2,195 @@
 
 {% load static %}
 
+
+{% block subheader %}
+<div class="subnav">
+    {% include "subnav.html" %}
+</div>
+{% endblock %}
+
+
 {% block title %}Home{% endblock %}
 
 {% block content %}
 
-{% load django_tables2 %}
 {% load i18n %}
-{% block table-wrapper %}
-<div class="row">
-    <div class="col-12">
-        <div class="card my-4">
-            <h5 class="card-header">Estudiantes</h5>
-                <div class="table-container table-responsive">
-                        {% block table %}
-                            <table class="table table-sm table-hover">
-                                {% block table.thead %}
-                                {% if table.show_header %}
-                                    <thead class="thead-default">
-                                    <tr>
-                                    {% for column in table.columns %}
-                                        <th {{ column.attrs.th.as_html }}>
-                                            {% if column.orderable %}
-                                                <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
-                                            {% else %}
-                                                {{ column.header }}
-                                            {% endif %}
-                                        </th>
-                                    {% endfor %}
-                                    </tr>
-                                    </thead>
-                                {% endif %}
-                                {% endblock table.thead %}
-                                {% block table.tbody %}
-                                    <tbody>
-                                    {% for row in table.paginated_rows %}
-                                        {% block table.tbody.row %}
-                                        <tr scope="row" {{ row.attrs.as_html }}>
-                                            {% for column, cell in row.items %}
-                                                <td {{ column.attrs.td.as_html }}>{% if column.localize == None %}{{ cell }}{% else %}{% if column.localize %}{{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}</td>
-                                            {% endfor %}
-                                        </tr>
-                                        {% endblock table.tbody.row %}
-                                    {% empty %}
-                                        {% if table.empty_text %}
-                                        {% block table.tbody.empty_text %}
-                                            <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
-                                        {% endblock table.tbody.empty_text %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    </tbody>
-                                {% endblock table.tbody %}
-                                {% block table.tfoot %}
-                                {% if table.has_footer %}
-                                <tfoot>
-                                    <tr>
-                                    {% for column in table.columns %}
-                                        <td {{ column.attrs.tf.as_html }}>{{ column.footer }}</td>
-                                    {% endfor %}
-                                    </tr>
-                                </tfoot>
-                                {% endif %}
-                                {% endblock table.tfoot %}
-                            </table>
-                        {% endblock table %}
-                    </div>
-                    <div class="card-footer">
-                            {% if table.page and table.paginator.num_pages > 1 %}
-                            {% block pagination %}
-                            <nav aria-label="paginator">
-                                <ul class="pagination pagination-sm">
-                                        {% if table.page.has_previous %}
-                                            <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{table.page.previous_page_number}}&sort={{q}}"><i class="fas fa-angle-double-left"></i></a></li>
-                                        {% endif %}
-                                        {% for pg in page_range %}
-                                        {% if table.page.number == pg %}
-                                            <li class="page-item active"><a class="page-link bg-dark text-white" href="?page={{pg}}&sort={{q}}">{{pg}}<span class="sr-only">(current)</span></a></li>
-                                        {% else %}
-                                            <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{pg}}&sort={{q}}">{{pg}}</a></li>
-                                        {% endif %}
-                                        {% endfor %}
-                                        {% if table.page.has_next %}
-                                        <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{table.page.next_page_number}}&sort={{q}}"><i class="fas fa-angle-double-right"></i></a></li>
-                                        {% endif %}
-                                </ul>
-                            </nav>
-                            {% endblock pagination %}
-                        {% endif %}
-                    </div>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'program-index' code profile period %}">Programa ({{ program.name }})</a></li>
+    </ol>
+</nav>
+
+
+<div class="card mb-4 bg-light text-dark">
+    <div class="card-body">
+        <form action="" method="get" class="form-inline">
+            <div class="form-group">
+              <label for="staticQ mr-2">Buscar (Nombre y/o Apellido)</label>
+              <input type="text" name="q" value="{{q}}" id="q" class="form-control-sm form-control mx-2">
+              <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fas fa-search"></i>
+              </button>
+            </div>
+        </form>
+        <hr />
+        <div>
+            <div class="pull-right">
+                <a class="btn btn-success btn-sm" href="{% url 'student-masive-insert' code profile %}">Carga Masiva</a>
+            </div>
         </div>
     </div>
+  </div>
+  
+  {% if q != ''%}
+  <div class="row">
+    <div class="col-12">
+      Resultados para <strong>{{ q }}</strong>
+    </div>
+  </div>
+  {% endif %}
+
+
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <h5 class="card-header">ESTUDIANTES</h5>
+        <div>
+          <div class="table-responsive table-sm">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th scope="col"> 
+                      {% if order_by == 'first_name,last_name'%}
+                        <a href="{{ querystring_order_by }}=-first_name,-last_name">#</a>
+                      {% elif order_by == '-first_name,-last_name' %}
+                        <a href="{{ querystring_order_by }}=first_name,last_name">#</a>
+                      {% else %}
+                        <a href="{{ querystring_order_by }}=first_name,last_name">#</a>
+                      {% endif %}
+                    </th>
+                    
+                  <th scope="col"> 
+                      {% if order_by == 'email'%}
+                        <a href="{{ querystring_order_by }}=-email">Email</a>
+                      {% elif order_by == '-email' %}
+                        <a href="{{ querystring_order_by }}=email">Email</a>
+                      {% else %}
+                        <a href="{{ querystring_order_by }}=-email">Email</a>
+                      {% endif %}
+                    </th>
+  
+                  <th scope="col"> 
+                    {% if order_by == 'username'%}
+                      <a href="{{ querystring_order_by }}=-username">Username</a>
+                    {% elif order_by == '-username' %}
+                      <a href="{{ querystring_order_by }}=username">Username</a>
+                    {% else %}
+                      <a href="{{ querystring_order_by }}=-username">Username</a>
+                    {% endif %}
+                  </th>
+  
+                  <th scope="col" class="txt-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                <tr>
+                  <th scope="row">
+                    <a href="{% url 'student-update' code profile student.id %}">
+                      {{ student.first_name }} {{ student.last_name }}
+                    </a>
+                  </th>
+                  <td>{{ student.email }}</td>
+                  <td>{{ student.username }}</td>
+
+                  <td class="txt-right">
+                    <a href="{% url 'student-update' code profile student.id %}" class="btn btn-success btn-sm">
+                      <i class="fas fa-eye"></i> Ver
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<div class="row">
+    <div class="col-12 mb-4">
+  
+  <nav aria-label="paginator">
+      <ul class="pagination pagination-sm">
+
+        {% if paginator.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="{{ querystring_page }}=1"><i class="fas fa-angle-double-left"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+        </li>
+        {% endif %}
+
+        {% for pg in page_range %}
+            {% if paginator.number == pg %}
+                <li class="page-item active"></liclass><a href="{{ querystring }}" class="page-link">{{pg}}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+                <li class="page-item"></li><a href="{{ querystring_page }}={{pg}}" class="page-link">{{pg}}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if paginator.has_next %}
+        <li class="page-item">
+
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.next_page_number }}"><i class="fas fa-angle-right"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ querystring_page }}={{ paginator.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+
+        </li>
+        {% endif %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">{{ paginator.number }}/{{ paginator.paginator.num_pages }}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>
 
-{% endblock table-wrapper %}
+
+
+<script>
+
+    function SetCaretAtEnd(elem) {
+        var elemLen = elem.value.length;
+        // For IE Only
+        if (document.selection) {
+            // Set focus
+            elem.focus();
+            // Use IE Ranges
+            var oSel = document.selection.createRange();
+            // Reset position to 0 & then set at end
+            oSel.moveStart('character', -elemLen);
+            oSel.moveStart('character', elemLen);
+            oSel.moveEnd('character', 0);
+            oSel.select();
+        }
+        else if (elem.selectionStart || elem.selectionStart == '0') {
+            // Firefox/Chrome
+            elem.selectionStart = elemLen;
+            elem.selectionEnd = elemLen;
+            elem.focus();
+        } // if
+    } //
+    SetCaretAtEnd(document.getElementById('q'));
+</script>
 {% endblock %}

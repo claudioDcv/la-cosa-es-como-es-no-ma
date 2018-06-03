@@ -1,66 +1,117 @@
-from django.views.generic import TemplateView
-from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from apps.base.models import User
-from apps.base.views import get_context_current_profile
-from apps.base.models import Profile, UserProfilesProgram
-from apps.core.models import Program
+from django.db.models import Q
 from django.http import Http404
-
-from django_tables2 import SingleTableView
-import django_tables2 as tables
 from django.utils.html import format_html
-from django_tables2.utils import A  # alias for Accessor
+from django.views.generic import TemplateView
+from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
+
+from apps.base.helpers import get_periods, pagineitor, csv_to_list
+from apps.base.models import Profile, User, UserProfilesProgram
+from apps.base.views import get_context_current_profile
+from apps.core.models import Program
+
+from django.http import HttpResponse
+import json
 
 
-class PersonTable(tables.Table):
-
-    editar = tables.Column(accessor='id', verbose_name='Editar.')
-    def render_editar(self, value):
-        return format_html('<a class="btn btn-success btn-sm" href="#">Editar{0}</a>'.format(value))
-
-    class Meta:
-        fields = ('id', 'username', 'first_name', 'last_name', 'editar')
-        model = User
-
-
-class StudentListView(SingleTableView):
-    model = User
-    table_class = PersonTable
+class StudentListView(LoginRequiredMixin, TemplateView):
     template_name = 'maintainer/student-list.html'
-    paginate_by = 15
-    prev_next_item = 3
+
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        """Get ctx."""
         context = super().get_context_data(**kwargs)
-        
-        paginator = self.get_paginator(self.get_queryset(), self.paginate_by)
+        context['code'] = self.kwargs['code']
+        context['profile'] = self.kwargs['profile']
+        context['program'] = Program.objects.get(code=self.kwargs['code'])
+        period = get_periods(context['code']).get('now').first()
+        context['period'] = period.id
+
+        queryset = User.objects.filter(
+            user_profiles_program__program__code=context['code'],
+            user_profiles_program__profiles__code='student',
+        )
+
+        # Pagination and order sort
         try:
             page = int(self.request.GET.get('page', '1'))
         except:
             page = 1
-
-        try:
-            blogs = paginator.page(page)
-        except Exception as _:
-            blogs = paginator.page(1)
-
-        # Get the index of the current page
-        index = blogs.number - 1  # edited to something easier without index
-        # This value is maximum index of your pages, so the last page - 1
-        max_index = len(paginator.page_range)
-        # You want a range of 7, so lets calculate where to slice the list
-        start_index = index - self.prev_next_item if index >= self.prev_next_item else 0
-        end_index = index + self.prev_next_item if index <= max_index - self.prev_next_item else max_index
-        # Get our new page range. In the latest versions of Django page_range returns 
-        # an iterator. Thus pass it to list, to make our slice possible again.
-        page_range = list(paginator.page_range)[start_index:end_index]
         
-        context['q'] = self.request.GET.get('sort', '')
-        context['page_range'] = page_range
+        try:
+            order_by = self.request.GET.get('order_by', 'id')
+        except:
+            order_by = 'id'
+        
+        try:
+            q = self.request.GET.get('q', '')
+        except:
+            q = ''
+        
+        if order_by:
+            queryset = queryset.order_by(*order_by.split(','))
+        
+        if order_by:
+            queryset = queryset.filter(
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q)
+            )
+
+        paginator = pagineitor(queryset, page)
+
+
+        context['students'] = paginator['objects'].object_list
+        context['paginator'] = paginator['objects']
+        context['page_range'] = paginator['page_range']
+
+        context['order_by'] = order_by
+        context['q'] = q
+
+        context['querystring'] = '?q={2}&page={0}&order_by={1}'.format(
+            context['paginator'].number,
+            order_by,
+            q
+        )
+        context['querystring_order_by'] = '?q={1}&page={0}&order_by'.format(
+            context['paginator'].number,
+            q
+        )
+        context['querystring_page'] = '?q={1}&order_by={0}&page'.format(
+            order_by,
+            q
+        )
+        # End Pagination
 
         return context
+    
+class StudentUpdate(UpdateView):
+    model = User
+    fields = ['first_name', 'last_name', 'username']
+    template_name = 'maintainer/student-update-form.html'
 
-    def get_queryset(self):
-        return User.objects.filter(user_profiles_program__profiles='student')  # Default: Model.objects.all()
+
+class StudentMasiveInsertView(LoginRequiredMixin, TemplateView):
+    template_name = 'maintainer/student-masive-insert.html'
+
+
+    def post(self, request, **kwargs):
+        if request.POST and request.FILES:
+            data = csv_to_list(request.FILES['csv_file'])
+            return HttpResponse(json.dumps(data), content_type="application/json")
+    
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        """Get ctx."""
+        context = super().get_context_data(**kwargs)
+        context['code'] = self.kwargs['code']
+        context['profile'] = self.kwargs['profile']
+        context['program'] = Program.objects.get(code=self.kwargs['code'])
+        period = get_periods(context['code']).get('now').first()
+        context['period'] = period.id
+
+        if self.request.method == 'POST':
+            self.post(self.request, kwargs)
