@@ -297,7 +297,7 @@ class Period(SoftDeleteTSModel, DescriptiveModel):
                     'skills': skills,             
                 })
 
-            if show_skills:
+            if show_skills_groups:
                 skills_groups = []
 
                 for s in p.skills_groups:
