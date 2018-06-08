@@ -146,6 +146,7 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
     def all_json(
         cls,
         time_status='active', # 'active', 'past', 'future', 'all' # Ok 
+        courses=None,
         programs=None,
         periods=None,
         campus=None,
@@ -165,106 +166,114 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
         goal_level_less_or_equal_than=None,
         goal_level_greater_or_equal_than=None,
         order_by=None,
+        show_teachers=False,
+        show_students=False,
         show_skills=False,
         show_skills_groups=False,
         as_json=False,
     ):
-        courses = Course.objects.all().distinct()
+        q_courses = Course.objects.all().distinct()
 
-        if periods is not None:
-            if type(periods) is not list:
-                periods = [periods]
-            if len(periods) > 0:
-                courses = courses.filter(period__in=periods)
-        elif time_status != 'all':
-            if time_status == 'active':
-                courses = courses.filter(period__in=Period.all_active())
-            elif time_status == 'past':
-                courses = courses.filter(period__in=Period.all_past())
-            elif time_status == 'future':
-                courses = courses.filter(period__in=Period.all_future())
+        if courses is not None:
+            if type(courses) is not list:
+                courses = [courses]
+            if len(courses) > 0:
+                q_courses = q_courses.filter(id__in=[c.id for c in courses])
+        else:
+            if periods is not None:
+                if type(periods) is not list:
+                    periods = [periods]
+                if len(periods) > 0:
+                    q_courses = q_courses.filter(period__in=periods)
+            elif time_status != 'all':
+                if time_status == 'active':
+                    q_courses = q_courses.filter(period__in=Period.all_active())
+                elif time_status == 'past':
+                    q_courses = q_courses.filter(period__in=Period.all_past())
+                elif time_status == 'future':
+                    q_courses = q_courses.filter(period__in=Period.all_future())
 
-        if programs is not None:
-            if type(programs) is not list:
-                programs = [programs]
-            if len(programs) > 0:
-                courses = courses.filter(period__program__in=programs)
+            if programs is not None:
+                if type(programs) is not list:
+                    programs = [programs]
+                if len(programs) > 0:
+                    q_courses = q_courses.filter(period__program__in=programs)
 
-        if subjects is not None:
-            if type(subjects) is not list:
-                subjects = [subjects]
-            if len(subjects) > 0:
-                courses = courses.filter(subject__in=subjects)
+            if subjects is not None:
+                if type(subjects) is not list:
+                    subjects = [subjects]
+                if len(subjects) > 0:
+                    q_courses = q_courses.filter(subject__in=subjects)
 
-        if campus is not None:
-            if type(campus) is not list:
-                campus = [campus]
-            if len(campus) > 0:
-                courses = courses.filter(campus__in=campus)
+            if campus is not None:
+                if type(campus) is not list:
+                    campus = [campus]
+                if len(campus) > 0:
+                    q_courses = q_courses.filter(campus__in=campus)
 
-        if skills is not None:
-            if type(skills) is not list:
-                skills = [skills]
-            if len(skills) > 0:
-                courses = courses.filter(survey__indicator__skill__in=skills)
+            if skills is not None:
+                if type(skills) is not list:
+                    skills = [skills]
+                if len(skills) > 0:
+                    q_courses = q_courses.filter(survey__indicator__skill__in=skills)
 
-        if skills_groups is not None:
-            if type(skills_groups) is not list:
-                skills_groups = [skills_groups]
-            if len(skills_groups) > 0:
-                courses = courses.filter(survey__indicator__skill__skill_group__in=skills_groups)
+            if skills_groups is not None:
+                if type(skills_groups) is not list:
+                    skills_groups = [skills_groups]
+                if len(skills_groups) > 0:
+                    q_courses = q_courses.filter(survey__indicator__skill__skill_group__in=skills_groups)
 
-        if teachers is not None:
-            if type(teachers) is not list:
-                teachers = [teachers]
-            if len(teachers) > 0:
-                courses = courses.filter(teachers__in=teachers)
+            if teachers is not None:
+                if type(teachers) is not list:
+                    teachers = [teachers]
+                if len(teachers) > 0:
+                    q_courses = q_courses.filter(teachers__in=teachers)
 
-        if students is not None:
-            if type(students) is not list:
-                students = [students]
-            if len(students) > 0:
-                courses = courses.filter(students__in=students)
+            if students is not None:
+                if type(students) is not list:
+                    students = [students]
+                if len(students) > 0:
+                    q_courses = q_courses.filter(students__in=students)
 
-        if progress_level_not_none is not None:
-            if progress_level_not_none:
-                courses = [c for c in courses if c.progress_level is not None]        
-            else:
-                courses = [c for c in courses if c.progress_level is None]        
+            if progress_level_not_none is not None:
+                if progress_level_not_none:
+                    q_courses = [c for c in q_courses if c.progress_level is not None]        
+                else:
+                    q_courses = [c for c in q_courses if c.progress_level is None]        
 
-        if progress_level_less_than is not None:
-            courses = [c for c in courses if c.progress_level is not None and c.progress_level < progress_level_less_than]        
+            if progress_level_less_than is not None:
+                q_courses = [c for c in q_courses if c.progress_level is not None and c.progress_level < progress_level_less_than]        
 
-        if progress_level_greater_than is not None:
-            courses = [c for c in courses if c.progress_level is not None and c.progress_level > progress_level_greater_than]        
+            if progress_level_greater_than is not None:
+                q_courses = [c for c in q_courses if c.progress_level is not None and c.progress_level > progress_level_greater_than]        
 
-        if progress_level_less_or_equal_than is not None:
-            courses = [c for c in courses if c.progress_level is not None and c.progress_level <= progress_level_less_or_equal_than]        
+            if progress_level_less_or_equal_than is not None:
+                q_courses = [c for c in q_courses if c.progress_level is not None and c.progress_level <= progress_level_less_or_equal_than]        
 
-        if progress_level_greater_or_equal_than is not None:
-            courses = [c for c in courses if c.progress_level is not None and c.progress_level >= progress_level_greater_or_equal_than]        
+            if progress_level_greater_or_equal_than is not None:
+                q_courses = [c for c in q_courses if c.progress_level is not None and c.progress_level >= progress_level_greater_or_equal_than]        
 
-        if goal_level_not_none is not None:
-            if goal_level_not_none:
-                courses = [c for c in courses if c.goal_level is not None]        
-            else:
-                courses = [c for c in courses if c.goal_level is None]        
+            if goal_level_not_none is not None:
+                if goal_level_not_none:
+                    q_courses = [c for c in q_courses if c.goal_level is not None]        
+                else:
+                    q_courses = [c for c in q_courses if c.goal_level is None]        
 
-        if goal_level_less_than is not None:
-            courses = [c for c in courses if c.goal_level is not None and c.goal_level < goal_level_less_than]        
+            if goal_level_less_than is not None:
+                q_courses = [c for c in q_courses if c.goal_level is not None and c.goal_level < goal_level_less_than]        
 
-        if goal_level_greater_than is not None:
-            courses = [c for c in courses if c.goal_level is not None and c.goal_level > goal_level_greater_than]        
+            if goal_level_greater_than is not None:
+                q_courses = [c for c in q_courses if c.goal_level is not None and c.goal_level > goal_level_greater_than]        
 
-        if goal_level_less_or_equal_than is not None:
-            courses = [c for c in courses if c.goal_level is not None and c.goal_level <= goal_level_less_or_equal_than]        
+            if goal_level_less_or_equal_than is not None:
+                q_courses = [c for c in q_courses if c.goal_level is not None and c.goal_level <= goal_level_less_or_equal_than]        
 
-        if goal_level_greater_or_equal_than is not None:
-            courses = [c for c in courses if c.goal_level is not None and c.goal_level >= goal_level_greater_or_equal_than]
+            if goal_level_greater_or_equal_than is not None:
+                q_courses = [c for c in q_courses if c.goal_level is not None and c.goal_level >= goal_level_greater_or_equal_than]
 
         result = []
 
-        for c in courses:
+        for c in q_courses:
 
             json_course = {
                 'id': c.id,
@@ -276,12 +285,20 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
                 'subject': c.subject.name,
                 'survey': c.survey.name,
                 'program': c.period.program.name,
-                'teachers': [t.email for t in c.teachers.order_by('email').all()],
-                'students': [s.email for s in c.students.order_by('email').all()],
                 'time_status': c.period.time_status,
                 'progress_level': c.progress_level,
                 'goal_level': c.goal_level,   
             }
+
+            if show_teachers:
+                json_course.update({  
+                    'teachers': [t.email for t in c.teachers.order_by('email').all()],             
+                })
+
+            if show_students:
+                json_course.update({  
+                    'students': [s.email for s in c.students.order_by('email').all()],             
+                })
 
             if show_skills:
                 skills = []
@@ -299,7 +316,7 @@ class Course(SoftDeleteTSModel, DescriptiveModel):
                     'skills': skills,             
                 })
 
-            if show_skills:
+            if show_skills_groups:
                 skills_groups = []
 
                 for s in c.skills_groups:
